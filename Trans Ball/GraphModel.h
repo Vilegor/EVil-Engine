@@ -1,14 +1,13 @@
 //
-//  Shader.fsh
+//  GraphModel.h
 //  Trans Ball
 //
 //  Created by Egor Vilkin on 7/30/14.
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-varying lowp vec4 colorVarying;
+#import <Foundation/Foundation.h>
 
-void main()
-{
-    gl_FragColor = vec4(0.0,0.0,0.0,1.0);
-}
+@interface GraphModel : NSObject
+
+@end
