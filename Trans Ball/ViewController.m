@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "GraphFace.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -83,6 +84,8 @@ GLfloat gCubeVertexData[216] =
     
     GLuint _vertexArray;
     GLuint _vertexBuffer;
+    
+    GraphFace *testFace;
 }
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKBaseEffect *effect;
@@ -149,8 +152,8 @@ GLfloat gCubeVertexData[216] =
     [self loadShaders];
     
     self.effect = [[GLKBaseEffect alloc] init];
-    self.effect.light0.enabled = GL_TRUE;
-    self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
+//    self.effect.light0.enabled = GL_TRUE;
+//    self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
     
     glEnable(GL_DEPTH_TEST);
     
@@ -158,15 +161,23 @@ GLfloat gCubeVertexData[216] =
     glBindVertexArrayOES(_vertexArray);
     
     glGenBuffers(1, &_vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
-    
-    glEnableVertexAttribArray(GLKVertexAttribPosition);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(GLKVertexAttribNormal);
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
+//    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
+    [self setupModels];
+//    glEnableVertexAttribArray(GLKVertexAttribPosition);
+//    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+//    glEnableVertexAttribArray(GLKVertexAttribNormal);
+//    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
     
     glBindVertexArrayOES(0);
+}
+
+- (void)setupModels
+{
+    GLfloat v0[] = {0.5f,0.0f,0.0f, 0,0,1, 1,0,0,1};
+    GLfloat v1[] = {0.0f,0.5f,0.0f, 0,0,1, 0,1,0,1};
+    GLfloat v2[] = {-0.5f,-0.5f,0.0f, 0,0,1, 0,0,1,1};
+    testFace = [GraphFace faceWithID:0 vertexBuffer:&_vertexBuffer vertexes:@[[GraphVertex vertexWithData:v0], [GraphVertex vertexWithData:v1], [GraphVertex vertexWithData:v2]]];
 }
 
 - (void)tearDownGL
@@ -217,23 +228,26 @@ GLfloat gCubeVertexData[216] =
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-    glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glBindVertexArrayOES(_vertexArray);
     
     // Render the object with GLKit
     [self.effect prepareToDraw];
+    [testFace draw];
     
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    
+//    glDrawArrays(GL_TRIANGLES, 0, 36);
+
     // Render the object again with ES2
     glUseProgram(_program);
     
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
     
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    [testFace draw];
+    
+//    glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
 #pragma mark -  OpenGL ES 2 shader compilation

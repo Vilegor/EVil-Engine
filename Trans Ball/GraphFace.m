@@ -9,40 +9,40 @@
 #import "GraphFace.h"
 
 @interface GraphFace() {
-    NSMutableArray *_vertex;
-    GLfloat *_normal;
+    GLfloat *_vertexData;
+    GLuint _vertexCount;
 }
 @end
 
 @implementation GraphFace
 
-- (id)initWithID:(GLint)faceID vertexes:(NSArray *)vertexex andNormal:(GLfloat *)normal
++ (GraphFace *)faceWithID:(GLint)faceID vertexes:(NSArray *)vertexex
+{
+    return [[GraphFace alloc] initWithID:faceID vertexes:vertexex];
+}
+
+- (id)initWithID:(GLint)faceID vertexes:(NSArray *)vertexex
 {
     self = [super init];
     if (self) {
         _faceID = faceID;
-        _vertex = [[NSMutableArray alloc] initWithArray:vertexex];
-        _normal = calloc(3, sizeof(GLfloat));   // XYZ
-        
-        _normal[0] = normal[0];
-        _normal[1] = normal[1];
-        _normal[2] = normal[2];
+        _vertexCount = vertexex.count;
+        _vertexData = calloc(_vertexCount * VERTEX_DATA_SIZE, sizeof(GLfloat));
+        for (int i = 0; i < _vertexCount; i++) {
+            GLfloat *v = [vertexex[i] dataArray];
+            for (int j = 0; j < VERTEX_DATA_SIZE; j++)
+                _vertexData[i*VERTEX_DATA_SIZE + j] = v[j];
+        }
     }
     
     return self;
 }
 
-- (NSArray *)vertexArray
+- (GLfloat *)vertexData
 {
-    return [NSArray arrayWithArray:_vertex];
-}
-
-- (GLfloat *)normalArray
-{
-    GLfloat *tmp = calloc(3, sizeof(GLfloat));
-    tmp[0] = _normal[0];
-    tmp[1] = _normal[1];
-    tmp[2] = _normal[2];
+    GLfloat *tmp = calloc(VERTEX_DATA_SIZE * _vertexCount, sizeof(GLfloat));
+    for (int i = 0; i < VERTEX_DATA_SIZE * _vertexCount; i++)
+        tmp[i] = _vertexData[i];
     
     return tmp;
 }

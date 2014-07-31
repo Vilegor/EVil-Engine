@@ -9,34 +9,24 @@
 #import "GraphVertex.h"
 
 @interface GraphVertex() {
-    GLfloat *_coord;
-    GLfloat *_normal;
-    GLfloat *_color;
+    GLfloat *_data;
 }
 @end
 
 @implementation GraphVertex
 
-- (id)initWithDataArray:(GLfloat *)data         // data[10]
++ (GraphVertex *)vertexWithData:(GLfloat *)data
+{
+    return [[GraphVertex alloc] initWithDataArray:data];
+}
+
+- (id)initWithDataArray:(GLfloat *)data         // data[10] = xyz nxnynz rgba
 {
     self = [super init];
     if (self) {
-        _coord = calloc(3, sizeof(GLfloat));    // XYZ
-        _normal = calloc(3, sizeof(GLfloat));   // XYZ
-        _color = calloc(4, sizeof(GLfloat));    // RGBA
-        
-        _coord[0] = data[0];
-        _coord[1] = data[1];
-        _coord[2] = data[2];
-        
-        _normal[0] = data[3];
-        _normal[1] = data[4];
-        _normal[2] = data[5];
-        
-        _color[0] = data[6];
-        _color[1] = data[7];
-        _color[2] = data[8];
-        _color[3] = data[9];
+        _data = calloc(VERTEX_DATA_SIZE, sizeof(GLfloat));
+        for (int i = 0; i < VERTEX_DATA_SIZE; i++)
+            _data[i] = data[i];
     }
     return self;
 }
@@ -44,9 +34,9 @@
 - (GLfloat *)coordArray
 {
     GLfloat *tmp = calloc(3, sizeof(GLfloat));
-    tmp[0] = _coord[0];
-    tmp[1] = _coord[1];
-    tmp[2] = _coord[2];
+    tmp[0] = _data[0];
+    tmp[1] = _data[1];
+    tmp[2] = _data[2];
     
     return tmp;
 }
@@ -54,9 +44,9 @@
 - (GLfloat *)normalArray
 {
     GLfloat *tmp = calloc(3, sizeof(GLfloat));
-    tmp[0] = _normal[0];
-    tmp[1] = _normal[1];
-    tmp[2] = _normal[2];
+    tmp[0] = _data[3];
+    tmp[1] = _data[4];
+    tmp[2] = _data[5];
     
     return tmp;
 }
@@ -64,26 +54,34 @@
 - (GLfloat *)colorArray
 {
     GLfloat *tmp = calloc(4, sizeof(GLfloat));
-    tmp[0] = _color[0];
-    tmp[1] = _color[1];
-    tmp[2] = _color[2];
-    tmp[3] = _color[3];
+    tmp[0] = _data[6];
+    tmp[1] = _data[7];
+    tmp[2] = _data[8];
+    tmp[3] = _data[9];
     
     return tmp;
 }
 
-- (GLfloat *)baseInfoArray
+- (GLfloat *)dataArray
 {
-    GLfloat *tmp = calloc(6, sizeof(GLfloat));    // XYZ nXnYnZ
-    tmp[0] = _coord[0];
-    tmp[1] = _coord[1];
-    tmp[2] = _coord[2];
-    
-    tmp[3] = _normal[0];
-    tmp[4] = _normal[1];
-    tmp[5] = _normal[2];
+    GLfloat *tmp = calloc(VERTEX_DATA_SIZE, sizeof(GLfloat));
+    for (int i = 0; i < VERTEX_DATA_SIZE; i++)
+        tmp[i] = _data[i];
     
     return tmp;
+}
+
+- (GLfloat)x
+{
+    return _data[0];
+}
+- (GLfloat)y
+{
+    return _data[1];
+}
+- (GLfloat)z
+{
+    return _data[2];
 }
 
 @end

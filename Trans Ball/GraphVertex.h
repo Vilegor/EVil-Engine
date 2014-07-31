@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#define VERTEX_DATA_SIZE 10
 
 @interface GraphVertex : NSObject
 
@@ -16,9 +16,10 @@
 
 @property(nonatomic, readonly) GLfloat *coordArray;
 @property(nonatomic, readonly) GLfloat *normalArray;
-@property(nonatomic, readonly) GLfloat *baseInfoArray;
 @property(nonatomic, readonly) GLfloat *colorArray;
+@property(nonatomic, readonly) GLfloat *dataArray;
 
++ (GraphVertex *)vertexWithData:(GLfloat *)data;
 - (id)initWithDataArray:(GLfloat *)data;
 
 @end
