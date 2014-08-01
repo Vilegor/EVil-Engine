@@ -11,10 +11,11 @@
 
 @interface GraphFace : NSObject     // always triangle face
 
-@property(nonatomic, readonly) GLint faceID;
+@property(nonatomic, readonly) GLuint faceID;
 @property(nonatomic, readonly) GLfloat *vertexData;
+@property(nonatomic, readonly) GLuint vertexCount;
 
-+ (GraphFace *)faceWithID:(GLint)faceID vertexes:(NSArray *)vertexex;
-- (id)initWithID:(GLint)faceID vertexes:(NSArray *)vertexex;
++ (GraphFace *)faceWithID:(GLuint)faceID andVertices:(NSArray *)vertices;
+- (id)initWithID:(GLuint)faceID andVertices:(NSArray *)vertices;
 
 @end

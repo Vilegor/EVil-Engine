@@ -78,6 +78,7 @@
 		0EAF0604198914E0005483AB /* GraphFace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphFace.m; sourceTree = "<group>"; };
 		0EAF0606198914F8005483AB /* GraphVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphVertex.h; sourceTree = "<group>"; };
 		0EAF0607198914F8005483AB /* GraphVertex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphVertex.m; sourceTree = "<group>"; };
+		0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawableProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +199,7 @@
 				0EAF0604198914E0005483AB /* GraphFace.m */,
 				0EAF0606198914F8005483AB /* GraphVertex.h */,
 				0EAF0607198914F8005483AB /* GraphVertex.m */,
+				0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */,
 			);
 			name = "Model Components";
 			sourceTree = "<group>";

@@ -177,7 +177,7 @@ GLfloat gCubeVertexData[216] =
     GLfloat v0[] = {0.5f,0.0f,0.0f, 0,0,1, 1,0,0,1};
     GLfloat v1[] = {0.0f,0.5f,0.0f, 0,0,1, 0,1,0,1};
     GLfloat v2[] = {-0.5f,-0.5f,0.0f, 0,0,1, 0,0,1,1};
-    testFace = [GraphFace faceWithID:0 vertexBuffer:&_vertexBuffer vertexes:@[[GraphVertex vertexWithData:v0], [GraphVertex vertexWithData:v1], [GraphVertex vertexWithData:v2]]];
+    testFace = [GraphFace faceWithID:1 andVertices:@[[GraphVertex vertexWithData:v0], [GraphVertex vertexWithData:v1], [GraphVertex vertexWithData:v2]]];
 }
 
 - (void)tearDownGL
@@ -228,14 +228,14 @@ GLfloat gCubeVertexData[216] =
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.52f, 0.9f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glBindVertexArrayOES(_vertexArray);
     
     // Render the object with GLKit
     [self.effect prepareToDraw];
-    [testFace draw];
+    //[testFace draw];
     
 //    glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -245,7 +245,7 @@ GLfloat gCubeVertexData[216] =
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
     
-    [testFace draw];
+    //[testFace draw];
     
 //    glDrawArrays(GL_TRIANGLES, 0, 36);
 }

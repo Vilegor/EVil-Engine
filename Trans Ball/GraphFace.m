@@ -16,20 +16,20 @@
 
 @implementation GraphFace
 
-+ (GraphFace *)faceWithID:(GLint)faceID vertexes:(NSArray *)vertexex
++ (GraphFace *)faceWithID:(GLuint)faceID andVertices:(NSArray *)vertices
 {
-    return [[GraphFace alloc] initWithID:faceID vertexes:vertexex];
+    return [[GraphFace alloc] initWithID:faceID andVertices:vertices];
 }
 
-- (id)initWithID:(GLint)faceID vertexes:(NSArray *)vertexex
+- (id)initWithID:(GLuint)faceID andVertices:(NSArray *)vertices
 {
     self = [super init];
     if (self) {
         _faceID = faceID;
-        _vertexCount = vertexex.count;
+        _vertexCount = vertices.count;
         _vertexData = calloc(_vertexCount * VERTEX_DATA_SIZE, sizeof(GLfloat));
         for (int i = 0; i < _vertexCount; i++) {
-            GLfloat *v = [vertexex[i] dataArray];
+            GLfloat *v = [vertices[i] dataArray];
             for (int j = 0; j < VERTEX_DATA_SIZE; j++)
                 _vertexData[i*VERTEX_DATA_SIZE + j] = v[j];
         }
@@ -45,6 +45,11 @@
         tmp[i] = _vertexData[i];
     
     return tmp;
+}
+
+- (GLuint)vertexCount
+{
+    return _vertexCount;
 }
 
 @end
