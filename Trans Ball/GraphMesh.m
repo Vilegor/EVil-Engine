@@ -55,7 +55,7 @@
         _vertexCount = vertices.count;
         _vertexData = calloc(_vertexCount * VERTEX_DATA_SIZE, sizeof(GLfloat));
         for (int i = 0; i < _vertexCount; i++) {
-            GLfloat *v = [vertices[i] dataArray];
+            GLfloat *v = [(GraphVertex *)vertices[i] dataArray];
             for (int j = 0; j < VERTEX_DATA_SIZE; j++)
                 _vertexData[i*VERTEX_DATA_SIZE + j] = v[j];
         }

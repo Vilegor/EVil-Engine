@@ -8,6 +8,8 @@
 
 #import "GraphObject.h"
 #import "GraphFace.h"
+
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 #define MAX_RANGE_LIMIT 0.05f
 
 @interface GraphObject() {
@@ -41,7 +43,6 @@
                 [_meshDictionary setObject:m forKey:m.name];
             }
         }
-        _vertexBuffer = 0;
         [self resetDrawableData];
     }
     
@@ -50,13 +51,14 @@
 
 - (void)setupVertexData
 {
-    _vertexData = calloc(_vertexCount, sizeof(GLfloat));
+    if (_vertexData)
+        free(_vertexData);
+    _vertexData = calloc(_vertexCount * VERTEX_DATA_SIZE, sizeof(GLfloat));
     NSArray *meshes = [_meshDictionary allValues];
     int v = 0;
     for (GraphMesh *m in meshes) {
-        for (int i = 0; i < m.vertexCount; i++) {
-            for (int j = 0; j < VERTEX_DATA_SIZE; j++)
-                _vertexData[v] = m.vertexData[i*VERTEX_DATA_SIZE + j];
+        for (int i = 0; i < m.vertexCount * VERTEX_DATA_SIZE; i++) {
+            _vertexData[v++] = m.vertexData[i];
         }
     }
     
@@ -68,15 +70,8 @@
     if (!_vertexBuffer)
         glGenBuffers(1, &_vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*3*3, _vertexData, GL_STATIC_DRAW);
-    
-    glEnableVertexAttribArray(GLKVertexAttribPosition);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    
-    glEnableVertexAttribArray(GLKVertexAttribNormal);
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*VERTEX_DATA_SIZE*_vertexCount, _vertexData, GL_STATIC_DRAW);
 }
-
 
 - (void)minimizeVertexCount:(GLfloat)limit
 {
@@ -95,13 +90,33 @@
 
 - (void)draw
 {
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 40, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 40, BUFFER_OFFSET(12));
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    
+    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, 40, BUFFER_OFFSET(24));
+    glEnableVertexAttribArray(GLKVertexAttribColor);
+    
     glDrawArrays(GL_TRIANGLE_FAN, 0, _vertexCount);
 }
 
 - (void)resetDrawableData
 {
+    if (_vertexBuffer) {
+        glDeleteBuffers(1, &_vertexBuffer);
+        _vertexBuffer = 0;
+    }
+    
     [self setupVertexData];
     [self setupGL];
+}
+
+- (void)dealloc
+{
+    glDeleteBuffers(1, &_vertexBuffer);
 }
 
 @end

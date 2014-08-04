@@ -8,6 +8,8 @@
 
 #import "GraphModel.h"
 
+static int modelId;
+
 @interface GraphModel() {
     NSMutableDictionary *_objectDictionary;
 }
@@ -17,7 +19,7 @@
 
 + (GraphModel *)emptyModel
 {
-    return [[GraphModel alloc] init];
+    return [[GraphModel alloc] initWithName:[NSString stringWithFormat:@"Model_%d", modelId++]];
 }
 
 + (GraphModel *)modelWithName:(NSString *)modelName
@@ -43,7 +45,11 @@
 
 - (void)addObject:(GraphObject *)object
 {
-    [_objectDictionary setObject:object forKey:object.name];
+    if ([_objectDictionary objectForKey:object.name])
+        NSLog(@"WARNING! Object name '%@' is already in use!", object.name);
+    else {
+        [_objectDictionary setObject:object forKey:object.name];
+    }
 }
 
 - (void)removeObject:(NSString *)objectName
