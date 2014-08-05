@@ -119,11 +119,11 @@ enum
 
 - (void)setupModels
 {
-    GLfloat v0[] = {0.5f,0.5f,0,    0,1,0,  255,255,255,255};
-    GLfloat v1[] = {0,-1,0,         0,1,0,  255,255,255,255};
-    GLfloat v2[] = {-0.5f,0.5f,0,   0,1,0,  255,255,255,255};
-    GLfloat v3[] = {0,0.5f,0,       0,1,0,  255,255,255,255};
-    GLfloat v4[] = {0,0.5f,-0.2f,   0,1,0,  0.9f*255,0.9f*255,0.9f*255,255};
+    GLfloat v0[] = {0.5f,0.5f,0,    0,1,0,  255,255,255,255,    0,0};
+    GLfloat v1[] = {0,-1,0,         0,1,0,  255,255,255,255,    1,0};
+    GLfloat v2[] = {-0.5f,0.5f,0,   0,1,0,  255,255,255,255,    1,1};
+    GLfloat v3[] = {0,0.5f,0,       0,1,0,  255,255,255,255,    0,0};
+    GLfloat v4[] = {0,0.5f,-0.2f,   0,1,0,  0.9f*255,0.9f*255,0.9f*255,255, 1,1};
     
     VertexStruct *w_v = calloc(3, sizeof(VertexStruct));
     VertexStruct *b_v = calloc(3, sizeof(VertexStruct));
@@ -132,15 +132,27 @@ enum
     w_v[1] = VertexMake(v1);
     w_v[2] = VertexMake(v2);
     
-    b_v[0] =VertexMake(v1);
-    b_v[1] =VertexMake(v3);
-    b_v[2] =VertexMake(v4);
+    b_v[0] = VertexMake(v1);
+    b_v[1] = VertexMake(v3);
+    b_v[2] = VertexMake(v4);
     
     testModel = [GraphModel emptyModel];
     GraphObject *wings = [GraphObject objectWithName:@"Wings" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:w_v vsize:3]]];
     GraphObject *body = [GraphObject objectWithName:@"Body" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:b_v vsize:3]]];
     [testModel addObject:wings];
     [testModel addObject:body];
+    
+    // Load texture
+    glGetError();
+    NSError *theError;
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"texture" ofType:@"jpg"]; // 1
+    GLKTextureInfo *texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&theError]; // 2
+    glBindTexture(texInfo.target, texInfo.name); // 3
+    glEnable(texInfo.target); // 4
+    glGetError();
+    
+    self.effect.texture2d0.name = texInfo.name;
+    self.effect.texture2d0.enabled = true;
 }
 
 - (void)tearDownGL
@@ -178,7 +190,7 @@ enum
     modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
 
     self.effect.transform.modelviewMatrix = modelViewMatrix;
-//
+
 //    // Compute the model view matrix for the object rendered with ES2
 //    modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 1.5f);
 //    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
@@ -202,7 +214,7 @@ enum
     [self.effect prepareToDraw];
     [testModel draw];
     
-//    // Render the object again with ES2
+    // Render the object again with ES2
 //    glUseProgram(_program);
 //    
 //    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);

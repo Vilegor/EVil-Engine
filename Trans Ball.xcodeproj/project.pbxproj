@@ -31,6 +31,7 @@
 		0EAF0602198914C4005483AB /* GraphMesh.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0601198914C4005483AB /* GraphMesh.m */; };
 		0EAF0605198914E0005483AB /* GraphFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0604198914E0005483AB /* GraphFace.m */; };
 		0EEC849C1990D958001049F0 /* GraphVertex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEC849B1990D958001049F0 /* GraphVertex.m */; };
+		0EEC84A21990E367001049F0 /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0EEC84A11990E367001049F0 /* texture.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		0EAF0606198914F8005483AB /* GraphVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphVertex.h; sourceTree = "<group>"; };
 		0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawableProtocol.h; sourceTree = "<group>"; };
 		0EEC849B1990D958001049F0 /* GraphVertex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphVertex.m; sourceTree = "<group>"; };
+		0EEC84A11990E367001049F0 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,14 +145,11 @@
 			isa = PBXGroup;
 			children = (
 				0EAF05F91989145D005483AB /* Model Components */,
+				0EEC84A01990E35A001049F0 /* Textures */,
+				0EEC849D1990E0B8001049F0 /* Shaders */,
+				0EEC849E1990E0CF001049F0 /* App */,
 				0EAF05D919890410005483AB /* ViewController.h */,
 				0EAF05DA19890410005483AB /* ViewController.m */,
-				0EAF05CC19890410005483AB /* AppDelegate.h */,
-				0EAF05CD19890410005483AB /* AppDelegate.m */,
-				0EAF05CF19890410005483AB /* Main_iPhone.storyboard */,
-				0EAF05D219890410005483AB /* Main_iPad.storyboard */,
-				0EAF05D519890410005483AB /* Shader.fsh */,
-				0EAF05D719890410005483AB /* Shader.vsh */,
 				0EAF05DC19890410005483AB /* Images.xcassets */,
 				0EAF05C419890410005483AB /* Supporting Files */,
 			);
@@ -202,6 +201,34 @@
 				0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */,
 			);
 			name = "Model Components";
+			sourceTree = "<group>";
+		};
+		0EEC849D1990E0B8001049F0 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				0EAF05D519890410005483AB /* Shader.fsh */,
+				0EAF05D719890410005483AB /* Shader.vsh */,
+			);
+			name = Shaders;
+			sourceTree = "<group>";
+		};
+		0EEC849E1990E0CF001049F0 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				0EAF05CC19890410005483AB /* AppDelegate.h */,
+				0EAF05CD19890410005483AB /* AppDelegate.m */,
+				0EAF05CF19890410005483AB /* Main_iPhone.storyboard */,
+				0EAF05D219890410005483AB /* Main_iPad.storyboard */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		0EEC84A01990E35A001049F0 /* Textures */ = {
+			isa = PBXGroup;
+			children = (
+				0EEC84A11990E367001049F0 /* texture.jpg */,
+			);
+			name = Textures;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0EAF05D619890410005483AB /* Shader.fsh in Resources */,
+				0EEC84A21990E367001049F0 /* texture.jpg in Resources */,
 				0EAF05D419890410005483AB /* Main_iPad.storyboard in Resources */,
 				0EAF05D119890410005483AB /* Main_iPhone.storyboard in Resources */,
 				0EAF05DD19890410005483AB /* Images.xcassets in Resources */,

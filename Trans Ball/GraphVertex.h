@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#define VERTEX_DATA_SIZE 10
+#define VERTEX_DATA_SIZE 12
 
 typedef struct
 {
@@ -22,6 +22,9 @@ typedef struct
     GLubyte g;
     GLubyte b;
     GLubyte a;
+    
+    GLfloat tex_x;
+    GLfloat tex_y;
     
 } VertexStruct;
 

@@ -23,5 +23,8 @@ VertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]) {
     vertex.b = data[8];
     vertex.a = data[9];
     
+    vertex.tex_x = data[10];
+    vertex.tex_y = data[11];
+    
     return vertex;
 }
