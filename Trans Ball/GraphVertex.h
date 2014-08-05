@@ -8,18 +8,21 @@
 
 #define VERTEX_DATA_SIZE 10
 
-@interface GraphVertex : NSObject
+typedef struct
+{
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    
+    GLfloat nx;
+    GLfloat ny;
+    GLfloat nz;
+    
+    GLubyte r;
+    GLubyte g;
+    GLubyte b;
+    GLubyte a;
+    
+} VertexStruct;
 
-@property(nonatomic, readonly) GLfloat x;
-@property(nonatomic, readonly) GLfloat y;
-@property(nonatomic, readonly) GLfloat z;
-
-@property(nonatomic, readonly) GLfloat *coordArray;
-@property(nonatomic, readonly) GLfloat *normalArray;
-@property(nonatomic, readonly) GLfloat *colorArray;
-@property(nonatomic, readonly) GLfloat *dataArray;
-
-+ (GraphVertex *)vertexWithData:(GLfloat *)data;
-- (id)initWithDataArray:(GLfloat *)data;
-
-@end
+VertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]);

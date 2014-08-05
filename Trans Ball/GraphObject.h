@@ -15,13 +15,13 @@
 
 @property(weak, nonatomic) GraphModel *parent;
 @property(nonatomic, strong, readonly) NSString *name;
-@property(nonatomic, readonly) GLfloat *vertexData;
+@property(nonatomic, readonly) VertexStruct *vertexData;
 @property(nonatomic, readonly) GLuint vertexCount;
 
 + (GraphObject *)objectWithName:(NSString *)objectName andMeshes:(NSArray *)meshes;
 - (id)initWithName:(NSString *)objectName andMeshes:(NSArray *)meshes;
 
 - (GraphMesh *)meshByName:(NSString *)meshName;
-- (GLuint)meshCount;
+- (NSInteger)meshCount;
 
 @end

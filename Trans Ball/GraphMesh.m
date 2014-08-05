@@ -10,8 +10,8 @@
 #import "GraphFace.h"
 
 @interface GraphMesh() {
-    GLfloat *_vertexData;
-    GLuint _vertexCount;
+    VertexStruct *_vertexData;
+    size_t _vertexCount;
 }
 @end
 
@@ -22,9 +22,9 @@
     return [[GraphMesh alloc] initWithName:meshName andFaces:faces];
 }
 
-+ (GraphMesh *)meshWithName:(NSString *)meshName andVertices:(NSArray *)vertices
++ (GraphMesh *)meshWithName:(NSString *)meshName andVertices:(VertexStruct *)vertices vsize:(size_t)count
 {
-    return [[GraphMesh alloc] initWithName:meshName andVertices:vertices];
+    return [[GraphMesh alloc] initWithName:meshName andVertices:vertices vsize:count];
 }
 
 - (id)initWithName:(NSString *)meshName andFaces:(NSArray *)faces
@@ -35,10 +35,10 @@
         _vertexCount = 0;
         for (GraphFace *f in faces)
             _vertexCount += f.vertexCount;
-        _vertexData = calloc(_vertexCount * VERTEX_DATA_SIZE, sizeof(GLfloat));
+        _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
         for (int i = 0; i < _vertexCount; i++) {
-            GLfloat *f = [faces[i] vertexData];
-            GLuint size = [faces[i] vertexCount]*VERTEX_DATA_SIZE;
+            VertexStruct *f = [faces[i] vertexData];
+            size_t size = [faces[i] vertexCount];
             for (int j = 0; j < size; j++)
                 _vertexData[i*size + j] = f[j];
         }
@@ -47,33 +47,31 @@
     return self;
 }
 
-- (id)initWithName:(NSString *)meshName andVertices:(NSArray *)vertices
+- (id)initWithName:(NSString *)meshName andVertices:(VertexStruct *)vertices vsize:(size_t)count
 {
     self = [super init];
     if (self) {
         _name = meshName;
-        _vertexCount = vertices.count;
-        _vertexData = calloc(_vertexCount * VERTEX_DATA_SIZE, sizeof(GLfloat));
+        _vertexCount = count;
+        _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
         for (int i = 0; i < _vertexCount; i++) {
-            GLfloat *v = [(GraphVertex *)vertices[i] dataArray];
-            for (int j = 0; j < VERTEX_DATA_SIZE; j++)
-                _vertexData[i*VERTEX_DATA_SIZE + j] = v[j];
+            _vertexData[i] = vertices[i];
         }
     }
     
     return self;
 }
 
-- (GLfloat *)vertexData
+- (VertexStruct *)vertexData
 {
-    GLfloat *tmp = calloc(VERTEX_DATA_SIZE * _vertexCount, sizeof(GLfloat));
-    for (int i = 0; i < VERTEX_DATA_SIZE * _vertexCount; i++)
+    VertexStruct *tmp = calloc(_vertexCount, sizeof(VertexStruct));
+    for (int i = 0; i < _vertexCount; i++)
         tmp[i] = _vertexData[i];
     
     return tmp;
 }
 
-- (GLuint)vertexCount
+- (size_t)vertexCount
 {
     return _vertexCount;
 }

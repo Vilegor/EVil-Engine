@@ -14,7 +14,7 @@
 
 @interface GraphObject() {
     GLuint _vertexBuffer;
-    GLfloat *_vertexData;   // 1 vertex = 10 GLfloat
+    VertexStruct *_vertexData;   // 1 vertex = 10 GLfloat
     GLuint _vertexCount;
     NSMutableDictionary *_meshDictionary;
 }
@@ -53,11 +53,11 @@
 {
     if (_vertexData)
         free(_vertexData);
-    _vertexData = calloc(_vertexCount * VERTEX_DATA_SIZE, sizeof(GLfloat));
+    _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
     NSArray *meshes = [_meshDictionary allValues];
     int v = 0;
     for (GraphMesh *m in meshes) {
-        for (int i = 0; i < m.vertexCount * VERTEX_DATA_SIZE; i++) {
+        for (int i = 0; i < m.vertexCount; i++) {
             _vertexData[v++] = m.vertexData[i];
         }
     }
@@ -70,7 +70,7 @@
     if (!_vertexBuffer)
         glGenBuffers(1, &_vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*VERTEX_DATA_SIZE*_vertexCount, _vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VertexStruct)*_vertexCount, _vertexData, GL_STATIC_DRAW);
 }
 
 - (void)minimizeVertexCount:(GLfloat)limit
@@ -83,7 +83,7 @@
     return _meshDictionary[meshName];
 }
 
-- (GLuint)meshCount
+- (NSInteger)meshCount
 {
     return [_meshDictionary count];
 }
@@ -91,13 +91,13 @@
 - (void)draw
 {
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 40, BUFFER_OFFSET(0));
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, x));
     glEnableVertexAttribArray(GLKVertexAttribPosition);
     
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 40, BUFFER_OFFSET(12));
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, nx));
     glEnableVertexAttribArray(GLKVertexAttribNormal);
     
-    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, 40, BUFFER_OFFSET(24));
+    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, r));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     
     glDrawArrays(GL_TRIANGLE_FAN, 0, _vertexCount);

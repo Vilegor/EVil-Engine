@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "GraphModel.h"
-#import "GraphVertex.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -106,7 +105,7 @@ enum
     
     self.effect = [[GLKBaseEffect alloc] init];
     //self.effect.light0.enabled = GL_TRUE;
-    //self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 1.0f, 1.0f, 0.1f);
+    //self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.8f, 0.0f, 1.0f);
     
     glEnable(GL_DEPTH_TEST);
     
@@ -120,21 +119,26 @@ enum
 
 - (void)setupModels
 {
-    GLfloat v0[] = {0.5f,0.5f,0,    0,0,1,  1,1,1,1};
-    GLfloat v1[] = {0,-1,0,         0,0,1,  1,1,1,1};
-    GLfloat v2[] = {-0.5f,0.5f,0,   0,0,1,  1,1,1,1};
-    GLfloat v3[] = {0,0.5f,0,       0,0,1,  1,1,1,1};
-    GLfloat v4[] = {0,0.5f,-0.2f,   0,0,1,  0.9,0.9,0.9,1};
+    GLfloat v0[] = {0.5f,0.5f,0,    0,1,0,  255,255,255,255};
+    GLfloat v1[] = {0,-1,0,         0,1,0,  255,255,255,255};
+    GLfloat v2[] = {-0.5f,0.5f,0,   0,1,0,  255,255,255,255};
+    GLfloat v3[] = {0,0.5f,0,       0,1,0,  255,255,255,255};
+    GLfloat v4[] = {0,0.5f,-0.2f,   0,1,0,  0.9f*255,0.9f*255,0.9f*255,255};
     
-    GraphVertex *vv0 = [GraphVertex vertexWithData:v0];
-    GraphVertex *vv1 = [GraphVertex vertexWithData:v1];
-    GraphVertex *vv2 = [GraphVertex vertexWithData:v2];
-    GraphVertex *vv3 = [GraphVertex vertexWithData:v3];
-    GraphVertex *vv4 = [GraphVertex vertexWithData:v4];
+    VertexStruct *w_v = calloc(3, sizeof(VertexStruct));
+    VertexStruct *b_v = calloc(3, sizeof(VertexStruct));
+    
+    w_v[0] = VertexMake(v0);
+    w_v[1] = VertexMake(v1);
+    w_v[2] = VertexMake(v2);
+    
+    b_v[0] =VertexMake(v1);
+    b_v[1] =VertexMake(v3);
+    b_v[2] =VertexMake(v4);
     
     testModel = [GraphModel emptyModel];
-    GraphObject *wings = [GraphObject objectWithName:@"Wings" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:@[vv0, vv1, vv2]]]];
-    GraphObject *body = [GraphObject objectWithName:@"Body" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:@[vv1, vv3, vv4]]]];
+    GraphObject *wings = [GraphObject objectWithName:@"Wings" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:w_v vsize:3]]];
+    GraphObject *body = [GraphObject objectWithName:@"Body" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:b_v vsize:3]]];
     [testModel addObject:wings];
     [testModel addObject:body];
 }
@@ -164,7 +168,7 @@ enum
     
     self.effect.transform.projectionMatrix = projectionMatrix;
 
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -4.0f);
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, delta - 4.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 4.8f + delta, 1.0f, 0.0f, 0.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 0.0f, 1.0f);
     

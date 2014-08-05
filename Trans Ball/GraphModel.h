@@ -11,7 +11,7 @@
 @interface GraphModel : NSObject <GraphDrawableProtocol>
 
 @property(nonatomic, strong, readonly) NSString *name;
-@property(nonatomic, readonly) GLuint objectCount;
+@property(nonatomic, readonly) NSInteger objectCount;
 
 + (GraphModel *)emptyModel;
 + (GraphModel *)modelWithName:(NSString *)modelName;

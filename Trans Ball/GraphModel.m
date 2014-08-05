@@ -38,7 +38,7 @@ static int modelId;
     return self;
 }
 
-- (GLuint)objectCount
+- (NSInteger)objectCount
 {
     return [_objectDictionary count];
 }

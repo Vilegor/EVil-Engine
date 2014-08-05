@@ -9,45 +9,42 @@
 #import "GraphFace.h"
 
 @interface GraphFace() {
-    GLfloat *_vertexData;
-    GLuint _vertexCount;
+    VertexStruct *_vertexData;
+    size_t _vertexCount;
 }
 @end
 
 @implementation GraphFace
 
-+ (GraphFace *)faceWithID:(GLuint)faceID andVertices:(NSArray *)vertices
++ (GraphFace *)faceWithID:(GLuint)faceID andVertices:(VertexStruct *)vertices vsize:(size_t)count
 {
-    return [[GraphFace alloc] initWithID:faceID andVertices:vertices];
+    return [[GraphFace alloc] initWithID:faceID andVertices:vertices vsize:count];
 }
 
-- (id)initWithID:(GLuint)faceID andVertices:(NSArray *)vertices
+- (id)initWithID:(GLuint)faceID andVertices:(VertexStruct *)vertices vsize:(size_t)count
 {
     self = [super init];
     if (self) {
         _faceID = faceID;
-        _vertexCount = vertices.count;
-        _vertexData = calloc(_vertexCount * VERTEX_DATA_SIZE, sizeof(GLfloat));
-        for (int i = 0; i < _vertexCount; i++) {
-            GLfloat *v = [vertices[i] dataArray];
-            for (int j = 0; j < VERTEX_DATA_SIZE; j++)
-                _vertexData[i*VERTEX_DATA_SIZE + j] = v[j];
-        }
+        _vertexCount = count;
+        _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
+        for (int i = 0; i < _vertexCount; i++)
+            _vertexData[i] = vertices[i];
     }
     
     return self;
 }
 
-- (GLfloat *)vertexData
+- (VertexStruct *)vertexData
 {
-    GLfloat *tmp = calloc(VERTEX_DATA_SIZE * _vertexCount, sizeof(GLfloat));
-    for (int i = 0; i < VERTEX_DATA_SIZE * _vertexCount; i++)
+    VertexStruct *tmp = calloc(_vertexCount, sizeof(VertexStruct));
+    for (int i = 0; i < _vertexCount; i++)
         tmp[i] = _vertexData[i];
     
     return tmp;
 }
 
-- (GLuint)vertexCount
+- (size_t)vertexCount
 {
     return _vertexCount;
 }
