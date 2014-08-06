@@ -32,6 +32,7 @@
 		0EAF0605198914E0005483AB /* GraphFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0604198914E0005483AB /* GraphFace.m */; };
 		0EEC849C1990D958001049F0 /* GraphVertex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEC849B1990D958001049F0 /* GraphVertex.m */; };
 		0EEC84A21990E367001049F0 /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0EEC84A11990E367001049F0 /* texture.jpg */; };
+		0EEC84A51990F637001049F0 /* GraphMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEC84A41990F637001049F0 /* GraphMaterial.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,8 @@
 		0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawableProtocol.h; sourceTree = "<group>"; };
 		0EEC849B1990D958001049F0 /* GraphVertex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphVertex.m; sourceTree = "<group>"; };
 		0EEC84A11990E367001049F0 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
+		0EEC84A31990F637001049F0 /* GraphMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphMaterial.h; sourceTree = "<group>"; };
+		0EEC84A41990F637001049F0 /* GraphMaterial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphMaterial.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +201,8 @@
 				0EAF0604198914E0005483AB /* GraphFace.m */,
 				0EAF0606198914F8005483AB /* GraphVertex.h */,
 				0EEC849B1990D958001049F0 /* GraphVertex.m */,
+				0EEC84A31990F637001049F0 /* GraphMaterial.h */,
+				0EEC84A41990F637001049F0 /* GraphMaterial.m */,
 				0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */,
 			);
 			name = "Model Components";
@@ -334,6 +339,7 @@
 			files = (
 				0EAF05DB19890410005483AB /* ViewController.m in Sources */,
 				0EAF05CE19890410005483AB /* AppDelegate.m in Sources */,
+				0EEC84A51990F637001049F0 /* GraphMaterial.m in Sources */,
 				0EAF05FC198914A3005483AB /* GraphModel.m in Sources */,
 				0EAF0602198914C4005483AB /* GraphMesh.m in Sources */,
 				0EAF05CA19890410005483AB /* main.m in Sources */,

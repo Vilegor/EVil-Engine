@@ -100,8 +100,11 @@
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, r));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     
-    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, tex_x));
-    glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+    if (_material) {
+        [_material enable];
+        glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, tex_x));
+        glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+    }
     
     glDrawArrays(GL_TRIANGLE_FAN, 0, _vertexCount);
 }

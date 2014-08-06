@@ -103,10 +103,6 @@ enum
     
     [self loadShaders];
     
-    self.effect = [[GLKBaseEffect alloc] init];
-    //self.effect.light0.enabled = GL_TRUE;
-    //self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.8f, 0.0f, 1.0f);
-    
     glEnable(GL_DEPTH_TEST);
     
     glGenVertexArraysOES(1, &_vertexArray);
@@ -143,16 +139,12 @@ enum
     [testModel addObject:body];
     
     // Load texture
-    glGetError();
-    NSError *theError;
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"texture" ofType:@"jpg"]; // 1
-    GLKTextureInfo *texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&theError]; // 2
-    glBindTexture(texInfo.target, texInfo.name); // 3
-    glEnable(texInfo.target); // 4
-    glGetError();
-    
-    self.effect.texture2d0.name = texInfo.name;
-    self.effect.texture2d0.enabled = true;
+//    glGetError();
+//    NSError *theError;
+//    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"texture" ofType:@"jpg"]; // 1
+//    GLKTextureInfo *texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&theError]; // 2
+//    glBindTexture(texInfo.target, texInfo.name); // 3
+//    glEnable(texInfo.target); // 4
 }
 
 - (void)tearDownGL
@@ -178,27 +170,17 @@ enum
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
     
-    self.effect.transform.projectionMatrix = projectionMatrix;
-
     GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, delta - 4.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 4.8f + delta, 1.0f, 0.0f, 0.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 0.0f, 1.0f);
     
-    // Compute the model view matrix for the object rendered with GLKit
+    // Compute the model view matrix for the object rendered with ES2
     GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -1.5f, delta);
     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, 1.57f, 0.0f, 0.0f, 1.0f);
     modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
 
-    self.effect.transform.modelviewMatrix = modelViewMatrix;
-
-//    // Compute the model view matrix for the object rendered with ES2
-//    modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 1.5f);
-//    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
-//    modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
-//    
-//    _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
-//    
-//    _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
+    _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
+    _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
 
     _rotation += self.timeSinceLastUpdate * (0.8 - delta);
 }
@@ -210,17 +192,13 @@ enum
     
     glBindVertexArrayOES(_vertexArray);
     
-    // Render the object with GLKit
-    [self.effect prepareToDraw];
-    [testModel draw];
-    
     // Render the object again with ES2
-//    glUseProgram(_program);
-//    
-//    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
-//    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
-//    
-//    [testModel draw];
+    glUseProgram(_program);
+    
+    glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
+    glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
+    
+    [testModel draw];
 }
 
 #pragma mark -  OpenGL ES 2 shader compilation
