@@ -17,6 +17,7 @@
     VertexStruct *_vertexData;   // 1 vertex = 10 GLfloat
     GLuint _vertexCount;
     NSMutableDictionary *_meshDictionary;
+    GraphMaterial *_material;
 }
 
 @end
@@ -107,6 +108,24 @@
     }
     
     glDrawArrays(GL_TRIANGLE_FAN, 0, _vertexCount);
+    [_material disable];
+}
+
+- (void)setMaterial:(GraphMaterial *)material
+{
+    @synchronized(self) {
+        if (!material)
+            [_material disable];
+        _material = material;
+        [material load];
+    }
+}
+
+- (GraphMaterial *)material
+{
+    @synchronized(self) {
+        return _material;
+    }
 }
 
 - (void)resetDrawableData

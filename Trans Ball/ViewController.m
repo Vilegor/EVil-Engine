@@ -116,10 +116,10 @@ enum
 - (void)setupModels
 {
     GLfloat v0[] = {0.5f,0.5f,0,    0,1,0,  255,255,255,255,    0,0};
-    GLfloat v1[] = {0,-1,0,         0,1,0,  255,255,255,255,    1,0};
-    GLfloat v2[] = {-0.5f,0.5f,0,   0,1,0,  255,255,255,255,    1,1};
+    GLfloat v1[] = {0,-1,0,         0,1,0,  255,255,255,255,    0.4,0};
+    GLfloat v2[] = {-0.5f,0.5f,0,   0,1,0,  255,255,255,255,    0.4,0.4};
     GLfloat v3[] = {0,0.5f,0,       0,1,0,  255,255,255,255,    0,0};
-    GLfloat v4[] = {0,0.5f,-0.2f,   0,1,0,  0.9f*255,0.9f*255,0.9f*255,255, 1,1};
+    GLfloat v4[] = {0,0.5f,-0.2f,   0,1,0,  0.8f*255,0.8f*255,0.8f*255,255, 0.4,0.4};
     
     VertexStruct *w_v = calloc(3, sizeof(VertexStruct));
     VertexStruct *b_v = calloc(3, sizeof(VertexStruct));
@@ -138,13 +138,7 @@ enum
     [testModel addObject:wings];
     [testModel addObject:body];
     
-    // Load texture
-//    glGetError();
-//    NSError *theError;
-//    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"texture" ofType:@"jpg"]; // 1
-//    GLKTextureInfo *texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&theError]; // 2
-//    glBindTexture(texInfo.target, texInfo.name); // 3
-//    glEnable(texInfo.target); // 4
+    wings.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
 }
 
 - (void)tearDownGL
@@ -235,6 +229,8 @@ enum
     // This needs to be done prior to linking.
     glBindAttribLocation(_program, GLKVertexAttribPosition, "position");
     glBindAttribLocation(_program, GLKVertexAttribNormal, "normal");
+    glBindAttribLocation(_program, GLKVertexAttribColor, "color");
+    glBindAttribLocation(_program, GLKVertexAttribTexCoord0, "texCoord");
     
     // Link program.
     if (![self linkProgram:_program]) {

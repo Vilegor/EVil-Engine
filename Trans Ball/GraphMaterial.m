@@ -25,7 +25,7 @@
     self = [super init];
     if (self) {
         _name = name;
-        _fileName = [fileName pathComponents][0];
+        _fileName = [[fileName lastPathComponent] stringByDeletingPathExtension];
         _fileExt = [fileName pathExtension];
     }
     return self;
