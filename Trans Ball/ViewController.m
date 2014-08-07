@@ -116,29 +116,41 @@ enum
 
 - (void)setupModels
 {
-    GLfloat v0[] = {0.5f,0.5f,0,    0,1,0,  255,255,255,255,    0,0};
-    GLfloat v1[] = {0,-1,0,         0,1,0,  255,255,255,255,    0.3,0};
-    GLfloat v2[] = {-0.5f,0.5f,0,   0,1,0,  255,255,255,255,    0.3,0.3};
-    GLfloat v3[] = {0,0.5f,0,       0,1,0,  255,255,255,255,    0,0};
-    GLfloat v4[] = {0,0.5f,-0.2f,   0,1,0,  0.8f*255,0.8f*255,0.8f*255,255, 0.3,0.3};
+    GLfloat v0[] = {0,-1,0,             0,1,0,  255,255,255,255,                    0,0};
+    GLfloat v1[] = {0.1f,0.5f,0.3f,     0,1,0,  0.8f*255,0.8f*255,0.8f*255,255,     0.3,0};
+    GLfloat v2[] = {-0.1f,0.5f,0.3f,    0,1,0,  0.8f*255,0.8f*255,0.8f*255,255,     0.3,0.3};
+    GLfloat v3[] = {0,0.5f,0,           0,1,0,  0.9f*255,0.9f*255,0.9f*255,255,     0,0.3};
+    GLfloat v4[] = {0.8f,0.4f,0.2f,     0,1,0,  255,255,255,255,                    0.3,0.3};
+    GLfloat v5[] = {-0.8f,0.4f,0.2f,    0,1,0,  255,255,255,255,                    0,0.3};
     
-    VertexStruct *w_v = calloc(3, sizeof(VertexStruct));
-    VertexStruct *b_v = calloc(3, sizeof(VertexStruct));
+    VertexStruct *w_vl = calloc(3, sizeof(VertexStruct));
+    VertexStruct *w_vr = calloc(3, sizeof(VertexStruct));
+    VertexStruct *b_vl = calloc(3, sizeof(VertexStruct));
+    VertexStruct *b_vr = calloc(3, sizeof(VertexStruct));
     
-    w_v[0] = VertexMake(v0);
-    w_v[1] = VertexMake(v1);
-    w_v[2] = VertexMake(v2);
+    w_vl[0] = VertexMake(v0);
+    w_vl[1] = VertexMake(v1);
+    w_vl[2] = VertexMake(v4);
     
-    b_v[0] = VertexMake(v1);
-    b_v[1] = VertexMake(v3);
-    b_v[2] = VertexMake(v4);
+    w_vr[0] = VertexMake(v0);
+    w_vr[1] = VertexMake(v2);
+    w_vr[2] = VertexMake(v5);
+    
+    b_vl[0] = VertexMake(v0);
+    b_vl[1] = VertexMake(v2);
+    b_vl[2] = VertexMake(v3);
+    
+    b_vr[0] = VertexMake(v0);
+    b_vr[1] = VertexMake(v1);
+    b_vr[2] = VertexMake(v3);
     
     testModel = [GraphModel emptyModel];
-    GraphObject *wings = [GraphObject objectWithName:@"Wings" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:w_v vsize:3]]];
-    GraphObject *body = [GraphObject objectWithName:@"Body" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:b_v vsize:3]]];
+    GraphObject *wings = [GraphObject objectWithName:@"Wings" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:w_vl vsize:3], [GraphMesh meshWithName:@"right" andVertices:w_vr vsize:3]]];
+    GraphObject *body = [GraphObject objectWithName:@"Body" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3], [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3]]];
     [testModel addObject:wings];
     [testModel addObject:body];
     
+    //body.material =
     wings.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
 }
 
