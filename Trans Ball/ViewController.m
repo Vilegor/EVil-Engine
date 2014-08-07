@@ -30,6 +30,7 @@ enum
 
 @interface ViewController () {
     GLuint _program;
+    int _hasTextureUniform;
     
     GLKMatrix4 _modelViewProjectionMatrix;
     GLKMatrix3 _normalMatrix;
@@ -116,10 +117,10 @@ enum
 - (void)setupModels
 {
     GLfloat v0[] = {0.5f,0.5f,0,    0,1,0,  255,255,255,255,    0,0};
-    GLfloat v1[] = {0,-1,0,         0,1,0,  255,255,255,255,    0.4,0};
-    GLfloat v2[] = {-0.5f,0.5f,0,   0,1,0,  255,255,255,255,    0.4,0.4};
+    GLfloat v1[] = {0,-1,0,         0,1,0,  255,255,255,255,    0.3,0};
+    GLfloat v2[] = {-0.5f,0.5f,0,   0,1,0,  255,255,255,255,    0.3,0.3};
     GLfloat v3[] = {0,0.5f,0,       0,1,0,  255,255,255,255,    0,0};
-    GLfloat v4[] = {0,0.5f,-0.2f,   0,1,0,  0.8f*255,0.8f*255,0.8f*255,255, 0.4,0.4};
+    GLfloat v4[] = {0,0.5f,-0.2f,   0,1,0,  0.8f*255,0.8f*255,0.8f*255,255, 0.3,0.3};
     
     VertexStruct *w_v = calloc(3, sizeof(VertexStruct));
     VertexStruct *b_v = calloc(3, sizeof(VertexStruct));
@@ -188,6 +189,7 @@ enum
     
     // Render the object again with ES2
     glUseProgram(_program);
+    [GraphMaterial setUniformLocations:_program];
     
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);

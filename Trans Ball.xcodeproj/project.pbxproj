@@ -84,6 +84,7 @@
 		0EEC84A11990E367001049F0 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
 		0EEC84A31990F637001049F0 /* GraphMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphMaterial.h; sourceTree = "<group>"; };
 		0EEC84A41990F637001049F0 /* GraphMaterial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphMaterial.m; sourceTree = "<group>"; };
+		0EEC84AB19938905001049F0 /* UniformProcessorProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniformProcessorProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +205,7 @@
 				0EEC84A31990F637001049F0 /* GraphMaterial.h */,
 				0EEC84A41990F637001049F0 /* GraphMaterial.m */,
 				0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */,
+				0EEC84AB19938905001049F0 /* UniformProcessorProtocol.h */,
 			);
 			name = "Model Components";
 			sourceTree = "<group>";

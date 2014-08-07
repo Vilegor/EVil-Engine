@@ -7,7 +7,9 @@
 //
 
 #import <GLKit/GLKit.h>
-@interface GraphMaterial : NSObject
+#import "UniformProcessorProtocol.h"
+
+@interface GraphMaterial : NSObject <UniformProcessorProtocol>
 
 @property (nonatomic, strong, readonly) NSString *name;
 @property (nonatomic, strong, readonly) NSString *fileName;

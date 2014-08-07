@@ -8,6 +8,8 @@
 
 #import "GraphMaterial.h"
 
+static int hasTextureUniform;
+
 @interface GraphMaterial() {
     GLKTextureInfo *texInfo;
 }
@@ -42,14 +44,21 @@
 
 - (void)enable
 {
+    glUniform1i(hasTextureUniform, 1);
     glBindTexture(texInfo.target, texInfo.name);
     glEnable(texInfo.target);
 }
 
 - (void)disable
 {
+    glUniform1i(hasTextureUniform, 0);
     glBindTexture(texInfo.target, 0);
     glDisable(texInfo.target);
+}
+
++ (void)setUniformLocations:(GLint)program
+{
+    hasTextureUniform = glGetUniformLocation(program, "hasTexture");
 }
 
 @end
