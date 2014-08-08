@@ -10,14 +10,15 @@
 #import "GraphFace.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
-#define MAX_RANGE_LIMIT 0.05f
 
 @interface GraphObject() {
     GLuint _vertexBuffer;
-    VertexStruct *_vertexData;   // 1 vertex = 10 GLfloat
+    VertexStruct *_vertexData;
     GLuint _vertexCount;
+	GLubyte *_indices;
+	
+	GraphMaterial *_material;
     NSMutableDictionary *_meshDictionary;
-    GraphMaterial *_material;
 }
 
 @end
@@ -63,7 +64,7 @@
         }
     }
     
-    [self minimizeVertexCount:MAX_RANGE_LIMIT];
+    [self minimizeVertexCount];
 }
 
 - (void)setupGL
@@ -74,9 +75,12 @@
     glBufferData(GL_ARRAY_BUFFER, sizeof(VertexStruct)*_vertexCount, _vertexData, GL_STATIC_DRAW);
 }
 
-- (void)minimizeVertexCount:(GLfloat)limit
+- (void)minimizeVertexCount
 {
-    
+    _indices = calloc(_vertexCount, sizeof(GLubyte));
+	for (int i = 0; i < _vertexCount; i++) {
+		_indices[i] = i;
+	}
 }
 
 - (GraphMesh *)meshByName:(NSString *)meshName
@@ -105,7 +109,7 @@
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
     
     [_material enable];
-    glDrawArrays(GL_TRIANGLE_FAN, 0, _vertexCount);
+	glDrawElements(GL_TRIANGLE_FAN, _vertexCount, GL_UNSIGNED_BYTE, _indices);
     [_material disable];
 }
 

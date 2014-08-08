@@ -7,6 +7,7 @@
 //
 
 #define VERTEX_DATA_SIZE 12
+#define MAX_RANGE_LIMIT 0.05f
 
 typedef struct
 {
@@ -29,3 +30,6 @@ typedef struct
 } VertexStruct;
 
 VertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]);
+GLfloat* VertexData(VertexStruct vertex);
+BOOL VertexCompare(VertexStruct v1, VertexStruct v2);
+GLfloat VerteciesRange(VertexStruct v1, VertexStruct v2);
