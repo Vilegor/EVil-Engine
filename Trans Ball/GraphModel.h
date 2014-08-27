@@ -17,7 +17,6 @@
 
 + (GraphModel *)emptyModel;
 + (GraphModel *)modelWithName:(NSString *)modelName;
-+ (GraphModel *)modelWithName:(NSString *)modelName andMeshes:(NSArray *)meshes;
 - (id)initWithName:(NSString *)modelName;
 
 - (void)addObject:(GraphObject *)object;

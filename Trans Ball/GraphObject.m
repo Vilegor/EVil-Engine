@@ -41,7 +41,7 @@
         _meshDictionary = [NSMutableDictionary dictionary];
         for (GraphMesh *m in meshes) {
             if ([_meshDictionary objectForKey:m.name])
-                NSLog(@"WARNING! Mesh name '%@' is already in use!", m.name);
+                NSLog(@"WARNING! %@: Mesh name '%@' is already in use!", _name, m.name);
             else {
                 _vertexCount += m.vertexCount;
                 [_meshDictionary setObject:m forKey:m.name];
@@ -114,7 +114,7 @@
 		for (int j = i + 1; j < _vertexCount; j++) {
 			if (VertexCompare(_vertexData[i], _vertexData[j])) {
 				_indices[j] = v;
-                used[j] = 255;   // mark to skip then delete
+                used[j] = 255;  // mark to skip then delete
 			}
 		}
         v++;

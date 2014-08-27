@@ -7,9 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "GraphModel.h"
-
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#import "ASEConverter.h"
 
 // Uniform index.
 enum
@@ -36,12 +34,9 @@ enum
     GLKMatrix3 _normalMatrix;
     float _rotation;
     
-    GLuint _vertexArray;
-    
     GraphModel *testModel;
 }
 @property (strong, nonatomic) EAGLContext *context;
-@property (strong, nonatomic) GLKBaseEffect *effect;
 
 - (void)setupGL;
 - (void)tearDownGL;
@@ -101,73 +96,20 @@ enum
 - (void)setupGL
 {
     [EAGLContext setCurrentContext:self.context];
-    
     [self loadShaders];
     
     glEnable(GL_DEPTH_TEST);
-    
-    glGenVertexArraysOES(1, &_vertexArray);
-    glBindVertexArrayOES(_vertexArray);
-    
     [self setupModels];
-    
-    glBindVertexArrayOES(0);
 }
 
 - (void)setupModels
 {
-	GLfloat v0[] = {0,-1,0,				0,1,0,	255,255,255,255,	0,0};
-    GLfloat v1[] = {0.1f,0.5f,0,        0,1,0,	204,204,204,255,	80,0};
-    GLfloat v2[] = {-0.1f,0.5f,0,       0,1,0,  204,204,204,255,	80,80};
-    GLfloat v3[] = {0,0.5f,-0.3,        0,1,0,  230,230,230,255,	0,80};
-    GLfloat v4[] = {0.8f,0.4f,-0.1f,    0,1,0,  255,255,255,255,	80,80};
-    GLfloat v5[] = {-0.8f,0.4f,-0.1f,   0,1,0,  255,255,255,255,	0,80};
-    
-    VertexStruct *w_vl = calloc(3, sizeof(VertexStruct));
-    VertexStruct *w_vr = calloc(3, sizeof(VertexStruct));
-    VertexStruct *b_vl = calloc(3, sizeof(VertexStruct));
-    VertexStruct *b_vr = calloc(3, sizeof(VertexStruct));
-    
-    w_vl[0] = VertexMake(v0);
-    w_vl[1] = VertexMake(v1);
-    w_vl[2] = VertexMake(v4);
-    
-    w_vr[0] = VertexMake(v0);
-    w_vr[1] = VertexMake(v2);
-    w_vr[2] = VertexMake(v5);
-    
-    b_vl[0] = VertexMake(v0);
-    b_vl[1] = VertexMake(v2);
-    b_vl[2] = VertexMake(v3);
-    
-    b_vr[0] = VertexMake(v0);
-    b_vr[1] = VertexMake(v1);
-    b_vr[2] = VertexMake(v3);
-    
-    testModel = [GraphModel emptyModel];
-//    GraphObject *wings = [GraphObject objectWithName:@"Wings" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:w_vl vsize:3], [GraphMesh meshWithName:@"right" andVertices:w_vr vsize:3]]];
-//    GraphObject *body = [GraphObject objectWithName:@"Body" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3], [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3]]];
-//    [testModel addObject:wings];
-//    [testModel addObject:body];
-//    
-//    body.material =
-//    wings.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
-    
-    GraphObject *plane = [GraphObject objectWithName:@"Plane" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3],
-                                                                          [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3],
-                                                                          [GraphMesh meshWithName:@"leftWing" andVertices:w_vl vsize:3],
-                                                                          [GraphMesh meshWithName:@"rightWing" andVertices:w_vr vsize:3]]];
-    [testModel addObject:plane];
-    testModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
+	testModel = [ASEConverter paperPlaneModel];
 }
 
 - (void)tearDownGL
 {
     [EAGLContext setCurrentContext:self.context];
-    
-    glDeleteVertexArraysOES(1, &_vertexArray);
-    
-    self.effect = nil;
     
     if (_program) {
         glDeleteProgram(_program);
@@ -203,8 +145,6 @@ enum
 {
     glClearColor(0.52f, 0.9f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    glBindVertexArrayOES(_vertexArray);
     
     // Render the object again with ES2
     glUseProgram(_program);

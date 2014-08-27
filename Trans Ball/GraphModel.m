@@ -27,13 +27,6 @@ static int modelId;
     return [[GraphModel alloc] initWithName:modelName];
 }
 
-+ (GraphModel *)modelWithName:(NSString *)modelName andMeshes:(NSArray *)meshes
-{
-    GraphModel *model = [[GraphModel alloc] initWithName:modelName];
-    [model addObject:[GraphObject objectWithName:modelName andMeshes:meshes]];
-    return model;
-}
-
 - (id)initWithName:(NSString *)modelName
 {
     self = [super init];
@@ -64,7 +57,7 @@ static int modelId;
 - (void)addObject:(GraphObject *)object
 {
     if ([_objectDictionary objectForKey:object.name])
-        NSLog(@"WARNING! Object name '%@' is already in use!", object.name);
+        NSLog(@"WARNING! %@: Object name '%@' is already in use!", _name, object.name);
     else {
         [_objectDictionary setObject:object forKey:object.name];
     }
