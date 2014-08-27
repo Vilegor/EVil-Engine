@@ -35,7 +35,8 @@
         _vertexCount = 0;
         for (GraphFace *f in faces)
             _vertexCount += f.vertexCount;
-        _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
+        if (_vertexCount)
+            _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
         for (int i = 0; i < _vertexCount; i++) {
             VertexStruct *f = [faces[i] vertexData];
             size_t size = [faces[i] vertexCount];

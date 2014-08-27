@@ -117,11 +117,11 @@ enum
 - (void)setupModels
 {
 	GLfloat v0[] = {0,-1,0,				0,1,0,	255,255,255,255,	0,0};
-    GLfloat v1[] = {0.1f,0.5f,0.3f,     0,1,0,	204,204,204,255,	80,0};
-    GLfloat v2[] = {-0.1f,0.5f,0.3f,    0,1,0,  204,204,204,255,	80,80};
-    GLfloat v3[] = {0,0.5f,0,           0,1,0,  230,230,230,255,	0,80};
-    GLfloat v4[] = {0.8f,0.4f,0.2f,     0,1,0,  255,255,255,255,	80,80};
-    GLfloat v5[] = {-0.8f,0.4f,0.2f,    0,1,0,  255,255,255,255,	0,80};
+    GLfloat v1[] = {0.1f,0.5f,0,        0,1,0,	204,204,204,255,	80,0};
+    GLfloat v2[] = {-0.1f,0.5f,0,       0,1,0,  204,204,204,255,	80,80};
+    GLfloat v3[] = {0,0.5f,-0.3,        0,1,0,  230,230,230,255,	0,80};
+    GLfloat v4[] = {0.8f,0.4f,-0.1f,    0,1,0,  255,255,255,255,	80,80};
+    GLfloat v5[] = {-0.8f,0.4f,-0.1f,   0,1,0,  255,255,255,255,	0,80};
     
     VertexStruct *w_vl = calloc(3, sizeof(VertexStruct));
     VertexStruct *w_vr = calloc(3, sizeof(VertexStruct));
@@ -145,13 +145,20 @@ enum
     b_vr[2] = VertexMake(v3);
     
     testModel = [GraphModel emptyModel];
-    GraphObject *wings = [GraphObject objectWithName:@"Wings" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:w_vl vsize:3], [GraphMesh meshWithName:@"right" andVertices:w_vr vsize:3]]];
-    GraphObject *body = [GraphObject objectWithName:@"Body" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3], [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3]]];
-    [testModel addObject:wings];
-    [testModel addObject:body];
+//    GraphObject *wings = [GraphObject objectWithName:@"Wings" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:w_vl vsize:3], [GraphMesh meshWithName:@"right" andVertices:w_vr vsize:3]]];
+//    GraphObject *body = [GraphObject objectWithName:@"Body" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3], [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3]]];
+//    [testModel addObject:wings];
+//    [testModel addObject:body];
+//    
+//    body.material =
+//    wings.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
     
-    body.material =
-    wings.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
+    GraphObject *plane = [GraphObject objectWithName:@"Plane" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3],
+                                                                          [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3],
+                                                                          [GraphMesh meshWithName:@"leftWing" andVertices:w_vl vsize:3],
+                                                                          [GraphMesh meshWithName:@"rightWing" andVertices:w_vr vsize:3]]];
+    [testModel addObject:plane];
+    testModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
 }
 
 - (void)tearDownGL

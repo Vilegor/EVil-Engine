@@ -57,6 +57,9 @@
 {
     if (_vertexData)
         free(_vertexData);
+    if (!_vertexCount)
+        return;
+    
     _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
     NSArray *meshes = [_meshDictionary allValues];
     int v = 0;
@@ -101,27 +104,45 @@
 {
 	_indexCount = _vertexCount;
     _indices = calloc(_indexCount, sizeof(GLubyte));
-	for (int i = 0; i < _vertexCount; i++) {
-		_indices[i] = i;
+    GLubyte *used = calloc(_vertexCount, sizeof(GLubyte));
+	for (int i = 0, v = 0; i < _vertexCount; i++) {
+        if (used[i] != 0)
+            continue;
+        
+        used[i] = 1;            // mark to skip
+        _indices[i] = v;
 		for (int j = i + 1; j < _vertexCount; j++) {
 			if (VertexCompare(_vertexData[i], _vertexData[j])) {
-				_indices[j] = i;
-				[self deleteVertexAt:j];
-				j--;
+				_indices[j] = v;
+                used[j] = 255;   // mark to skip then delete
 			}
 		}
+        v++;
 	}
+    
+    // delete vertecies
+    for (int i = 0; i < _vertexCount; i++) {
+        if (used[i] == 255) {
+            [self deleteVertexAt:i andMark:used];
+            i--;
+        }
+    }
+    
+    free(used);
 }
 
-- (void)deleteVertexAt:(int)index
+- (void)deleteVertexAt:(int)index andMark:(GLubyte *)marksArray
 {
 	_vertexCount--;
 	VertexStruct *newVertexArray = calloc(_vertexCount, sizeof(VertexStruct));
 	for (int i = 0; i < _vertexCount; i++) {
-		if (i >= index)
+		if (i >= index) {
 			newVertexArray[i] = _vertexData[i+1];
-		else
+            marksArray[i] = marksArray[i+1];
+        }
+		else {
 			newVertexArray[i] = _vertexData[i];
+        }
 	}
 	_vertexData = newVertexArray;
 }

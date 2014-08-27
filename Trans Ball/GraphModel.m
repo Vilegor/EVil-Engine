@@ -27,7 +27,25 @@ static int modelId;
     return [[GraphModel alloc] initWithName:modelName];
 }
 
++ (GraphModel *)modelWithName:(NSString *)modelName andMeshes:(NSArray *)meshes
+{
+    GraphModel *model = [[GraphModel alloc] initWithName:modelName];
+    [model addObject:[GraphObject objectWithName:modelName andMeshes:meshes]];
+    return model;
+}
+
 - (id)initWithName:(NSString *)modelName
+{
+    self = [super init];
+    if (self) {
+        _name = modelName;
+        _objectDictionary = [NSMutableDictionary dictionary];
+    }
+    
+    return self;
+}
+
+- (id)initWithName:(NSString *)modelName andMeshes:(NSArray *)meshes
 {
     self = [super init];
     if (self) {
@@ -74,6 +92,25 @@ static int modelId;
     for (GraphObject *obj in _objectDictionary.allValues) {
         [obj resetDrawableData];
     }
+}
+
+- (void)setMaterial:(GraphMaterial *)material
+{
+    for (GraphObject *obj in _objectDictionary.allValues) {
+        obj.material = material;
+    }
+}
+
+- (GraphMaterial *)getMaterial
+{
+    GraphMaterial *lastMaterial;
+    for (GraphObject *obj in _objectDictionary.allValues) {
+        if (!lastMaterial)
+            lastMaterial = obj.material;
+        else if (![lastMaterial isEqual:obj.material])
+            return nil;
+    }
+    return lastMaterial;
 }
 
 @end

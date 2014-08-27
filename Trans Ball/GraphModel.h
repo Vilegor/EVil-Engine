@@ -7,14 +7,17 @@
 //
 
 #import "GraphObject.h"
+#import "GraphMaterial.h"
 
 @interface GraphModel : NSObject <GraphDrawableProtocol>
 
 @property(nonatomic, strong, readonly) NSString *name;
 @property(nonatomic, readonly) NSInteger objectCount;
+@property(nonatomic, setter = setMaterial:, getter = getMaterial) GraphMaterial *material;
 
 + (GraphModel *)emptyModel;
 + (GraphModel *)modelWithName:(NSString *)modelName;
++ (GraphModel *)modelWithName:(NSString *)modelName andMeshes:(NSArray *)meshes;
 - (id)initWithName:(NSString *)modelName;
 
 - (void)addObject:(GraphObject *)object;

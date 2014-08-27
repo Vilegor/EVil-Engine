@@ -57,10 +57,16 @@ BOOL VertexCompare(VertexStruct v1, VertexStruct v2) {
 	
 	GLfloat *d1 = VertexData(v1);
 	GLfloat *d2 = VertexData(v2);
-	for (int i = 3; i < VERTEX_DATA_SIZE; i++)
-		if (d1[i] != d2[i])
+	for (int i = 3; i < VERTEX_DATA_SIZE; i++) {
+		if (d1[i] != d2[i]) {
+            free(d1);
+            free(d2);
 			return NO;
+        }
+    }
 	
+    free(d1);
+    free(d2);
 	return YES;
 }
 

@@ -61,4 +61,16 @@ static int hasTextureUniform;
     hasTextureUniform = glGetUniformLocation(program, "hasTexture");
 }
 
+#pragma mark - Compare
+
+- (BOOL)isEqual:(id)object
+{
+    if ([object isKindOfClass:[self class]]) {
+        GraphMaterial *material = object;
+        return [material.name isEqualToString:_name];
+    }
+
+    return NO;
+}
+
 @end
