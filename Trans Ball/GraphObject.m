@@ -15,7 +15,9 @@
     GLuint _vertexBuffer;
     VertexStruct *_vertexData;
     GLuint _vertexCount;
+	
 	GLubyte *_indices;
+	GLuint _indexCount;
 	
 	GraphMaterial *_material;
     NSMutableDictionary *_meshDictionary;
@@ -75,24 +77,6 @@
     glBufferData(GL_ARRAY_BUFFER, sizeof(VertexStruct)*_vertexCount, _vertexData, GL_STATIC_DRAW);
 }
 
-- (void)minimizeVertexCount
-{
-    _indices = calloc(_vertexCount, sizeof(GLubyte));
-	for (int i = 0; i < _vertexCount; i++) {
-		_indices[i] = i;
-	}
-}
-
-- (GraphMesh *)meshByName:(NSString *)meshName
-{
-    return _meshDictionary[meshName];
-}
-
-- (NSInteger)meshCount
-{
-    return [_meshDictionary count];
-}
-
 - (void)draw
 {
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
@@ -109,8 +93,65 @@
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
     
     [_material enable];
-	glDrawElements(GL_TRIANGLE_FAN, _vertexCount, GL_UNSIGNED_BYTE, _indices);
+	glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_BYTE, _indices);
     [_material disable];
+}
+
+- (void)minimizeVertexCount
+{
+	_indexCount = _vertexCount;
+    _indices = calloc(_indexCount, sizeof(GLubyte));
+	for (int i = 0; i < _vertexCount; i++) {
+		_indices[i] = i;
+		for (int j = i + 1; j < _vertexCount; j++) {
+			if (VertexCompare(_vertexData[i], _vertexData[j])) {
+				_indices[j] = i;
+				[self deleteVertexAt:j];
+				j--;
+			}
+		}
+	}
+}
+
+- (void)deleteVertexAt:(int)index
+{
+	_vertexCount--;
+	VertexStruct *newVertexArray = calloc(_vertexCount, sizeof(VertexStruct));
+	for (int i = 0; i < _vertexCount; i++) {
+		if (i >= index)
+			newVertexArray[i] = _vertexData[i+1];
+		else
+			newVertexArray[i] = _vertexData[i];
+	}
+	_vertexData = newVertexArray;
+}
+
+#pragma mark - Debug Methods
+
+- (void)printArray:(GLubyte *)arr size:(int)s
+{
+	for (int i = 0; i < s; i++) {
+		printf("%d - %d\n", i, arr[i]);
+	}
+}
+
+- (void)printVertecies
+{
+    for (int i = 0; i < _vertexCount; i++) {
+		printf("%d - (%.1f,%.1f,%.1f)\n", i, _vertexData[i].x,_vertexData[i].y,_vertexData[i].z);
+	}
+}
+
+#pragma mark -
+
+- (GraphMesh *)meshByName:(NSString *)meshName
+{
+    return _meshDictionary[meshName];
+}
+
+- (NSInteger)meshCount
+{
+    return [_meshDictionary count];
 }
 
 - (void)setMaterial:(GraphMaterial *)material

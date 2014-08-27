@@ -150,7 +150,7 @@ enum
     [testModel addObject:wings];
     [testModel addObject:body];
     
-    //body.material =
+    body.material =
     wings.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
 }
 
