@@ -2,16 +2,10 @@
 //  ASEConverter.h
 //  Trans Ball
 //
-//  Created by Egor Vilkin on 8/27/14.
+//  Created by Egor Vilkin on 8/29/14.
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "GraphModel.h"
-
-@interface ASEConverter : NSObject
-
-+ (GraphModel *)loadModelFromFileWithPath:(NSString *)aseFileName;
-+ (GraphModel *)paperPlaneModel;
-
-@end
+NSString *stringValue(NSString *descriptionText, NSString *parameterName);
+NSArray *allValues(NSString *descriptionText, NSString *parameterName);
+NSNumber *numberValue(NSString *descriptionText, NSString *parameterName);

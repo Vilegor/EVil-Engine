@@ -13,5 +13,9 @@
 
 + (GraphModel *)emptyModel;
 + (GraphModel *)modelWithName:(NSString *)modelName;
++ (GraphModel *)modelFromFile:(NSString *)aseFileName;
+
+///Test models
++ (GraphModel *)paperPlaneModel;
 
 @end

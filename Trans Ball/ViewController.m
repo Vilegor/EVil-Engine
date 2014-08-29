@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "ASEConverter.h"
+#import "GraphModel.h"
 
 static NSString * const kBallModelName = @"Ball";
 static NSString * const kRobotModelName = @"Robot";
@@ -108,9 +108,9 @@ enum
 - (void)setupModels
 {
     modelArray = [NSMutableArray array];
-	[modelArray addObject:[ASEConverter paperPlaneModel]];
+	[modelArray addObject:[GraphModel paperPlaneModel]];
     
-    GraphModel *ball = [ASEConverter loadModelFromFileWithPath:kBallModelName];
+    GraphModel *ball = [GraphModel modelFromFile:kBallModelName];
     if (ball)
         [modelArray addObject:ball];
 }

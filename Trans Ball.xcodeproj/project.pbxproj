@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0EA181EA19B0A8F400A1DF97 /* ASEConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EA181E919B0A8F400A1DF97 /* ASEConverter.m */; };
 		0EAF05BA19890410005483AB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EAF05B919890410005483AB /* Foundation.framework */; };
 		0EAF05BC19890410005483AB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EAF05BB19890410005483AB /* CoreGraphics.framework */; };
 		0EAF05BE19890410005483AB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EAF05BD19890410005483AB /* UIKit.framework */; };
@@ -30,7 +31,6 @@
 		0EAF05FF198914B3005483AB /* GraphObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF05FE198914B3005483AB /* GraphObject.m */; };
 		0EAF0602198914C4005483AB /* GraphMesh.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0601198914C4005483AB /* GraphMesh.m */; };
 		0EAF0605198914E0005483AB /* GraphFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0604198914E0005483AB /* GraphFace.m */; };
-		0EEB5F2A19ADF12400A8170C /* ASEConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEB5F2919ADF12400A8170C /* ASEConverter.m */; };
 		0EEB5F2F19AE04D100A8170C /* Ball.ASE in Resources */ = {isa = PBXBuildFile; fileRef = 0EEB5F2D19AE04D100A8170C /* Ball.ASE */; };
 		0EEB5F3019AE04D100A8170C /* Robot.ASE in Resources */ = {isa = PBXBuildFile; fileRef = 0EEB5F2E19AE04D100A8170C /* Robot.ASE */; };
 		0EEB5F3319AF098D00A8170C /* GraphObjectGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEB5F3219AF098D00A8170C /* GraphObjectGroup.m */; };
@@ -50,6 +50,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0EA181E819B0A8F400A1DF97 /* ASEConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASEConverter.h; sourceTree = "<group>"; };
+		0EA181E919B0A8F400A1DF97 /* ASEConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASEConverter.m; sourceTree = "<group>"; };
 		0EAF05B619890410005483AB /* Trans Ball.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Trans Ball.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EAF05B919890410005483AB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0EAF05BB19890410005483AB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -84,8 +86,6 @@
 		0EAF0604198914E0005483AB /* GraphFace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphFace.m; sourceTree = "<group>"; };
 		0EAF0606198914F8005483AB /* GraphVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphVertex.h; sourceTree = "<group>"; };
 		0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawableProtocol.h; sourceTree = "<group>"; };
-		0EEB5F2819ADF12400A8170C /* ASEConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASEConverter.h; sourceTree = "<group>"; };
-		0EEB5F2919ADF12400A8170C /* ASEConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASEConverter.m; sourceTree = "<group>"; };
 		0EEB5F2D19AE04D100A8170C /* Ball.ASE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Ball.ASE; path = Models/Ball.ASE; sourceTree = "<group>"; };
 		0EEB5F2E19AE04D100A8170C /* Robot.ASE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Robot.ASE; path = Models/Robot.ASE; sourceTree = "<group>"; };
 		0EEB5F3119AF098D00A8170C /* GraphObjectGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphObjectGroup.h; sourceTree = "<group>"; };
@@ -123,6 +123,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0EA181E719B0A8D700A1DF97 /* Converter */ = {
+			isa = PBXGroup;
+			children = (
+				0EA181E819B0A8F400A1DF97 /* ASEConverter.h */,
+				0EA181E919B0A8F400A1DF97 /* ASEConverter.m */,
+			);
+			name = Converter;
+			sourceTree = "<group>";
+		};
 		0EAF05AD19890410005483AB = {
 			isa = PBXGroup;
 			children = (
@@ -158,7 +167,7 @@
 		0EAF05C319890410005483AB /* Trans Ball */ = {
 			isa = PBXGroup;
 			children = (
-				0EEB5F2719ADEFC100A8170C /* ASE convertor */,
+				0EA181E719B0A8D700A1DF97 /* Converter */,
 				0EAF05F91989145D005483AB /* Model Components */,
 				0EEC849D1990E0B8001049F0 /* Shaders */,
 				0EEC84A01990E35A001049F0 /* Textures */,
@@ -221,15 +230,6 @@
 				0EEC84AB19938905001049F0 /* UniformProcessorProtocol.h */,
 			);
 			name = "Model Components";
-			sourceTree = "<group>";
-		};
-		0EEB5F2719ADEFC100A8170C /* ASE convertor */ = {
-			isa = PBXGroup;
-			children = (
-				0EEB5F2819ADF12400A8170C /* ASEConverter.h */,
-				0EEB5F2919ADF12400A8170C /* ASEConverter.m */,
-			);
-			name = "ASE convertor";
 			sourceTree = "<group>";
 		};
 		0EEB5F2C19ADF41200A8170C /* Models */ = {
@@ -380,9 +380,9 @@
 				0EAF05FC198914A3005483AB /* GraphModel.m in Sources */,
 				0EAF0602198914C4005483AB /* GraphMesh.m in Sources */,
 				0EAF05CA19890410005483AB /* main.m in Sources */,
-				0EEB5F2A19ADF12400A8170C /* ASEConverter.m in Sources */,
 				0EAF05FF198914B3005483AB /* GraphObject.m in Sources */,
 				0EEC849C1990D958001049F0 /* GraphVertex.m in Sources */,
+				0EA181EA19B0A8F400A1DF97 /* ASEConverter.m in Sources */,
 				0EAF0605198914E0005483AB /* GraphFace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
