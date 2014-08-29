@@ -8,8 +8,7 @@
 
 #import "GraphObject.h"
 #import "GraphFace.h"
-
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#import "GraphModel.h"
 
 @interface GraphObject() {
     GLuint _vertexBuffer;
@@ -19,8 +18,8 @@
 	GLubyte *_indices;
 	GLuint _indexCount;
 	
-	GraphMaterial *_material;
     NSMutableDictionary *_meshDictionary;
+    GraphMaterial *_material;
 }
 
 @end
@@ -51,6 +50,22 @@
     }
     
     return self;
+}
+
+- (void)dealloc
+{
+    glDeleteBuffers(1, &_vertexBuffer);
+}
+
+- (void)resetDrawableData
+{
+    if (_vertexBuffer) {
+        glDeleteBuffers(1, &_vertexBuffer);
+        _vertexBuffer = 0;
+    }
+    
+    [self setupVertexData];
+    [self setupGL];
 }
 
 - (void)setupVertexData
@@ -175,37 +190,19 @@
     return [_meshDictionary count];
 }
 
+#pragma mark - Material
+
 - (void)setMaterial:(GraphMaterial *)material
 {
-    @synchronized(self) {
-        if (!material)
-            [_material disable];
-        _material = material;
-        [material load];
-    }
+    if (!material)
+        [_material disable];
+    _material = material;
+    [material load];
 }
 
 - (GraphMaterial *)material
 {
-    @synchronized(self) {
-        return _material;
-    }
-}
-
-- (void)resetDrawableData
-{
-    if (_vertexBuffer) {
-        glDeleteBuffers(1, &_vertexBuffer);
-        _vertexBuffer = 0;
-    }
-    
-    [self setupVertexData];
-    [self setupGL];
-}
-
-- (void)dealloc
-{
-    glDeleteBuffers(1, &_vertexBuffer);
+    return _material;
 }
 
 @end

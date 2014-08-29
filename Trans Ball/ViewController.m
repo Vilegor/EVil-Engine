@@ -9,6 +9,9 @@
 #import "ViewController.h"
 #import "ASEConverter.h"
 
+static NSString * const kBallModelName = @"Ball";
+static NSString * const kRobotModelName = @"Robot";
+
 // Uniform index.
 enum
 {
@@ -34,7 +37,7 @@ enum
     GLKMatrix3 _normalMatrix;
     float _rotation;
     
-    GraphModel *testModel;
+    NSMutableArray *modelArray;
 }
 @property (strong, nonatomic) EAGLContext *context;
 
@@ -104,7 +107,12 @@ enum
 
 - (void)setupModels
 {
-	testModel = [ASEConverter paperPlaneModel];
+    modelArray = [NSMutableArray array];
+	[modelArray addObject:[ASEConverter paperPlaneModel]];
+    
+    GraphModel *ball = [ASEConverter loadModelFromFileWithPath:kBallModelName];
+    if (ball)
+        [modelArray addObject:ball];
 }
 
 - (void)tearDownGL
@@ -153,7 +161,8 @@ enum
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
     
-    [testModel draw];
+    for (GraphModel *m in modelArray)
+        [m draw];
 }
 
 #pragma mark -  OpenGL ES 2 shader compilation

@@ -31,6 +31,9 @@
 		0EAF0602198914C4005483AB /* GraphMesh.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0601198914C4005483AB /* GraphMesh.m */; };
 		0EAF0605198914E0005483AB /* GraphFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0604198914E0005483AB /* GraphFace.m */; };
 		0EEB5F2A19ADF12400A8170C /* ASEConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEB5F2919ADF12400A8170C /* ASEConverter.m */; };
+		0EEB5F2F19AE04D100A8170C /* Ball.ASE in Resources */ = {isa = PBXBuildFile; fileRef = 0EEB5F2D19AE04D100A8170C /* Ball.ASE */; };
+		0EEB5F3019AE04D100A8170C /* Robot.ASE in Resources */ = {isa = PBXBuildFile; fileRef = 0EEB5F2E19AE04D100A8170C /* Robot.ASE */; };
+		0EEB5F3319AF098D00A8170C /* GraphObjectGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEB5F3219AF098D00A8170C /* GraphObjectGroup.m */; };
 		0EEC849C1990D958001049F0 /* GraphVertex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEC849B1990D958001049F0 /* GraphVertex.m */; };
 		0EEC84A21990E367001049F0 /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0EEC84A11990E367001049F0 /* texture.jpg */; };
 		0EEC84A51990F637001049F0 /* GraphMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEC84A41990F637001049F0 /* GraphMaterial.m */; };
@@ -83,6 +86,10 @@
 		0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawableProtocol.h; sourceTree = "<group>"; };
 		0EEB5F2819ADF12400A8170C /* ASEConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASEConverter.h; sourceTree = "<group>"; };
 		0EEB5F2919ADF12400A8170C /* ASEConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASEConverter.m; sourceTree = "<group>"; };
+		0EEB5F2D19AE04D100A8170C /* Ball.ASE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Ball.ASE; path = Models/Ball.ASE; sourceTree = "<group>"; };
+		0EEB5F2E19AE04D100A8170C /* Robot.ASE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Robot.ASE; path = Models/Robot.ASE; sourceTree = "<group>"; };
+		0EEB5F3119AF098D00A8170C /* GraphObjectGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphObjectGroup.h; sourceTree = "<group>"; };
+		0EEB5F3219AF098D00A8170C /* GraphObjectGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphObjectGroup.m; sourceTree = "<group>"; };
 		0EEC849B1990D958001049F0 /* GraphVertex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphVertex.m; sourceTree = "<group>"; };
 		0EEC84A11990E367001049F0 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
 		0EEC84A31990F637001049F0 /* GraphMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphMaterial.h; sourceTree = "<group>"; };
@@ -198,6 +205,8 @@
 			children = (
 				0EAF05FA198914A3005483AB /* GraphModel.h */,
 				0EAF05FB198914A3005483AB /* GraphModel.m */,
+				0EEB5F3119AF098D00A8170C /* GraphObjectGroup.h */,
+				0EEB5F3219AF098D00A8170C /* GraphObjectGroup.m */,
 				0EAF05FD198914B3005483AB /* GraphObject.h */,
 				0EAF05FE198914B3005483AB /* GraphObject.m */,
 				0EAF0600198914C4005483AB /* GraphMesh.h */,
@@ -226,6 +235,8 @@
 		0EEB5F2C19ADF41200A8170C /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				0EEB5F2D19AE04D100A8170C /* Ball.ASE */,
+				0EEB5F2E19AE04D100A8170C /* Robot.ASE */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -336,7 +347,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0EAF05D619890410005483AB /* Shader.fsh in Resources */,
+				0EEB5F3019AE04D100A8170C /* Robot.ASE in Resources */,
 				0EEC84A21990E367001049F0 /* texture.jpg in Resources */,
+				0EEB5F2F19AE04D100A8170C /* Ball.ASE in Resources */,
 				0EAF05D419890410005483AB /* Main_iPad.storyboard in Resources */,
 				0EAF05D119890410005483AB /* Main_iPhone.storyboard in Resources */,
 				0EAF05DD19890410005483AB /* Images.xcassets in Resources */,
@@ -360,6 +373,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0EEB5F3319AF098D00A8170C /* GraphObjectGroup.m in Sources */,
 				0EAF05DB19890410005483AB /* ViewController.m in Sources */,
 				0EAF05CE19890410005483AB /* AppDelegate.m in Sources */,
 				0EEC84A51990F637001049F0 /* GraphMaterial.m in Sources */,

@@ -8,13 +8,29 @@
 
 #import "ASEConverter.h"
 
+static NSString * const kASEGroupsHeader = @"*GROUP";
+static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
+
 @implementation ASEConverter
 
-+ (GraphModel *)loadModelFromFileWithPath:(NSString *)aseFilePath
++ (GraphModel *)loadModelFromFileWithPath:(NSString *)aseFileName
 {
-    
-    
-    return nil;
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ASE"];
+    // read everything from text
+    NSError *error;
+    NSString *fileContents = [NSString stringWithContentsOfFile:filePath
+                                                       encoding:NSUTF8StringEncoding
+                                                          error:&error];
+    if (!fileContents) {
+        NSLog(@"%@", error);
+        return nil;
+    }
+    else {
+        GraphModel *model = [GraphModel modelWithName:aseFileName];
+        NSArray *meshesASE = [fileContents componentsSeparatedByString:kASEGeomobjHeader];
+        
+        return model;
+    }
 }
 
 #pragma mark - Test Plane
@@ -54,7 +70,7 @@
                                                                           [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3],
                                                                           [GraphMesh meshWithName:@"leftWing" andVertices:w_vl vsize:3],
                                                                           [GraphMesh meshWithName:@"rightWing" andVertices:w_vr vsize:3]]];
-    [planeModel addObject:plane];
+    [planeModel addChild:plane];
     planeModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
     
     return planeModel;

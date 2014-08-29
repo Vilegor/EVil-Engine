@@ -11,7 +11,7 @@
 
 @interface ASEConverter : NSObject
 
-+ (GraphModel *)loadModelFromFileWithPath:(NSString *)aseFilePath;
++ (GraphModel *)loadModelFromFileWithPath:(NSString *)aseFileName;
 + (GraphModel *)paperPlaneModel;
 
 @end
