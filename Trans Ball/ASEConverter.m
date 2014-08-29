@@ -8,22 +8,39 @@
 
 #import "ASEConverter.h"
 
-NSString *stringValue(NSString *descriptionText, NSString *parameterName)
+
+@implementation ASEConverter
+
++ (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description
 {
     NSError *error = nil;
-    NSString *pattern = @"\\*GEOMOBJECT \\{(.(?!\\*GEOMOBJECT))*\\}\\r\\n";
+    NSString *pattern = [NSString stringWithFormat:@"\\*%@ (.(?!\\*))*\\r\\n", name];
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                            options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
                                                                              error:&error];
+    if (error) {
+        NSLog(@"ERROR! ASEConverter: %@", error);
+    }
+    else {
+        NSArray *resultRegex = [regex matchesInString:description options:0 range:NSMakeRange(0, description.length)];
+        if (resultRegex.count) {
+            NSString *fullParamStr = [description substringWithRange:[(NSTextCheckingResult *)resultRegex[0] range]];
+            NSRange start = [fullParamStr rangeOfString:[NSString stringWithFormat:@"*%@ \"", name]];
+            NSRange end = [fullParamStr rangeOfString:@"\"\r\n"];
+            return [fullParamStr substringWithRange:NSMakeRange(start.location + start.length, end.location - start.location - start.length)];
+        }
+    }
     return nil;
 }
 
-NSArray *allValues(NSString *descriptionText, NSString *parameterName)
++ (NSNumber *)numberValueNamed:(NSString *)name fromTextDescription:(NSString *)description
 {
     return nil;
 }
 
-NSNumber *numberValue(NSString *descriptionText, NSString *parameterName)
++ (NSArray *)valuesNamed:(NSString *)name fromTextDescription:(NSString *)description
 {
     return nil;
 }
+
+@end

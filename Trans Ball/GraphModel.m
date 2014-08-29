@@ -50,7 +50,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
                                                                                options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
                                                                                  error:&error];
         if (error) {
-            NSLog(@"ERROR! Regex: %@", error);
+            NSLog(@"ERROR! Model: %@", error);
         }
         else {
             NSMutableArray *objectsASE = [NSMutableArray array];
@@ -70,8 +70,10 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 - (void)setupWithASEGeomobjects:(NSArray *)aseObjects
 {
     for (NSString *objDesc in aseObjects) {
-        NSArray *lines = [objDesc componentsSeparatedByString:@"\r\n"];
-        
+        //NSArray *lines = [objDesc componentsSeparatedByString:@"\r\n"];
+        //GraphObject *newObject = [GraphObject objectWithName:(NSString *) andMeshes:(NSArray *)];
+        NSString *parentName = [ASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
+        NSString *objName = [ASEConverter stringValueNamed:@"NODE_NAME" fromTextDescription:objDesc];
     }
 }
 

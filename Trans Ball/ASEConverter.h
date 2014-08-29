@@ -6,6 +6,10 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-NSString *stringValue(NSString *descriptionText, NSString *parameterName);
-NSArray *allValues(NSString *descriptionText, NSString *parameterName);
-NSNumber *numberValue(NSString *descriptionText, NSString *parameterName);
+@interface ASEConverter : NSObject
+
++ (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
++ (NSNumber *)numberValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
++ (NSArray *)valuesNamed:(NSString *)name fromTextDescription:(NSString *)description;
+
+@end
