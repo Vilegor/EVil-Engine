@@ -18,7 +18,5 @@
 
 + (GraphMesh *)meshWithName:(NSString *)meshName andFaces:(NSArray *)faces;
 + (GraphMesh *)meshWithName:(NSString *)meshName andVertices:(VertexStruct *)vertices vsize:(size_t)count;
-- (id)initWithName:(NSString *)meshName andFaces:(NSArray *)faces;
-- (id)initWithName:(NSString *)meshName andVertices:(VertexStruct *)vertices vsize:(size_t)count;
 
 @end

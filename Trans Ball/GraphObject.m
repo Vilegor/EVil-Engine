@@ -31,6 +31,15 @@
     return [[GraphObject alloc] initWithName:objectName andMeshes:meshes];
 }
 
++ (GraphObject *)initWithName:(NSString *)objectName
+          vertices:(VertexStruct *)vertices
+       vertexCount:(NSInteger)vcount
+           indices:(GLubyte *)indices
+       vertexCount:(NSInteger)icount
+{
+    return [[GraphObject alloc] initWithName:objectName vertices:vertices vertexCount:vcount indices:indices vertexCount:icount];
+}
+
 - (id)initWithName:(NSString *)objectName andMeshes:(NSArray *)meshes
 {
     self = [super init];
@@ -46,6 +55,25 @@
                 [_meshDictionary setObject:m forKey:m.name];
             }
         }
+        [self resetDrawableData];
+    }
+    
+    return self;
+}
+
+- (id)initWithName:(NSString *)objectName
+          vertices:(VertexStruct *)vertices
+       vertexCount:(NSInteger)vcount
+          indices:(GLubyte *)indices
+       vertexCount:(NSInteger)icount
+{
+    self = [super init];
+    if (self) {
+        _name = objectName;
+        _vertexCount = vcount;
+        _vertexData = vertices;
+        _indexCount = icount;
+        _indices = indices;
         [self resetDrawableData];
     }
     
@@ -76,43 +104,16 @@
         return;
     
     _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
-    NSArray *meshes = [_meshDictionary allValues];
-    int v = 0;
-    for (GraphMesh *m in meshes) {
-        for (int i = 0; i < m.vertexCount; i++) {
-            _vertexData[v++] = m.vertexData[i];
+    if (_meshDictionary) {      // was initialised with meshes. Need to init vertex and index arrays
+        NSArray *meshes = [_meshDictionary allValues];
+        int v = 0;
+        for (GraphMesh *m in meshes) {
+            for (int i = 0; i < m.vertexCount; i++) {
+                _vertexData[v++] = m.vertexData[i];
+            }
         }
+        [self minimizeVertexCount];     // removes duplicates and creates index array
     }
-    
-    [self minimizeVertexCount];
-}
-
-- (void)setupGL
-{
-    if (!_vertexBuffer)
-        glGenBuffers(1, &_vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VertexStruct)*_vertexCount, _vertexData, GL_STATIC_DRAW);
-}
-
-- (void)draw
-{
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, x));
-    glEnableVertexAttribArray(GLKVertexAttribPosition);
-    
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, nx));
-    glEnableVertexAttribArray(GLKVertexAttribNormal);
-    
-    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, r));
-    glEnableVertexAttribArray(GLKVertexAttribColor);
-    
-    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, tex_x));
-    glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
-    
-    [_material enable];
-	glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_BYTE, _indices);
-    [_material disable];
 }
 
 - (void)minimizeVertexCount
@@ -162,6 +163,36 @@
 	_vertexData = newVertexArray;
 }
 
+#pragma mark - GL usage
+
+- (void)setupGL
+{
+    if (!_vertexBuffer)
+        glGenBuffers(1, &_vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(VertexStruct)*_vertexCount, _vertexData, GL_STATIC_DRAW);
+}
+
+- (void)draw
+{
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, x));
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, nx));
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    
+    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, r));
+    glEnableVertexAttribArray(GLKVertexAttribColor);
+    
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, tex_x));
+    glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+    
+    [_material enable];
+	glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_BYTE, _indices);
+    [_material disable];
+}
+
 #pragma mark - Debug Methods
 
 - (void)printArray:(GLubyte *)arr size:(int)s
@@ -178,7 +209,7 @@
 	}
 }
 
-#pragma mark -
+#pragma mark - Meshes
 
 - (GraphMesh *)meshByName:(NSString *)meshName
 {

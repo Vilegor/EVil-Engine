@@ -18,7 +18,11 @@
 @property(nonatomic, strong) GraphMaterial *material;
 
 + (GraphObject *)objectWithName:(NSString *)objectName andMeshes:(NSArray *)meshes;
-- (id)initWithName:(NSString *)objectName andMeshes:(NSArray *)meshes;
++ (GraphObject *)initWithName:(NSString *)objectName
+                     vertices:(VertexStruct *)vertices
+                  vertexCount:(NSInteger)vcount
+                      indices:(GLubyte *)indices
+                  vertexCount:(NSInteger)icount;
 
 - (GraphMesh *)meshByName:(NSString *)meshName;
 - (NSInteger)meshCount;

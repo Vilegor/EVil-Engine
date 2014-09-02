@@ -16,6 +16,5 @@
 @property(nonatomic, readonly) size_t vertexCount;
 
 + (GraphFace *)faceWithID:(GLuint)faceID andVertices:(VertexStruct *)vertices vsize:(size_t)count;
-- (id)initWithID:(GLuint)faceID andVertices:(VertexStruct *)vertices vsize:(size_t)count;
 
 @end
