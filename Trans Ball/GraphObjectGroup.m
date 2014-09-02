@@ -12,7 +12,6 @@
 @interface GraphObjectGroup() {
     NSMutableDictionary *_childDictionary;
 }
-
 @end
 
 @implementation GraphObjectGroup
@@ -21,6 +20,7 @@
 {
     self = [super init];
     if (self) {
+        _name = name;
         _childDictionary = [NSMutableDictionary dictionary];
     }
     
@@ -54,6 +54,10 @@
 
 - (void)addChild:(GraphObject *)child
 {
+    if (!child || !child.name) {
+        NSLog(@"ERROR! %@<ADD>: Child is nil!", self.name);
+        return;
+    }
     if ([_childDictionary objectForKey:child.name])
         NSLog(@"WARNING! %@: Object name '%@' is already in use!", self.name, child.name);
     else {
@@ -63,12 +67,20 @@
 
 - (void)removeChild:(NSString *)childName
 {
-    [_childDictionary removeObjectForKey:childName];
+    if (childName) {
+        [_childDictionary removeObjectForKey:childName];
+    }
+    else {
+        NSLog(@"ERROR! %@<REMOVE>: ChildName is nil!", self.name);
+    }
 }
 
 - (GraphObject *)childByName:(NSString *)childName
 {
-    return _childDictionary[childName];
+    if (childName) {
+        return _childDictionary[childName];
+    }
+    return nil;
 }
 
 #pragma mark - Material

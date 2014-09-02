@@ -70,13 +70,82 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 - (void)setupWithASEGeomobjects:(NSArray *)aseObjects
 {
     for (NSString *objDesc in aseObjects) {
-        //NSArray *lines = [objDesc componentsSeparatedByString:@"\r\n"];
-        //GraphObject *newObject = [GraphObject objectWithName:(NSString *) andMeshes:(NSArray *)];
+        GraphObjectGroup *parentGroup = nil;
+        NSMutableArray *colors = [NSMutableArray array];
+        
+        // Check parent
         NSString *parentName = [ASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
+        if (parentName) {
+            parentGroup = (GraphObjectGroup *)[self childByName:parentName];
+            if (!parentGroup) {
+                parentGroup = [GraphObjectGroup groupWithName:parentName];
+                [self addChild:parentGroup];
+            }
+        }
+        
+        // Get main properties
         NSString *objName = [ASEConverter stringValueNamed:@"NODE_NAME" fromTextDescription:objDesc];
-        NSNumber *number = [ASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc];
-        NSArray *list = [ASEConverter valueListNamed:@"MESH_VERTEX" index:3 fromTextDescription:objDesc];
-        NSDictionary *dict = [ASEConverter valueDictionaryNamed:@"MESH_FACE" index:0 fromTextDescription:objDesc];
+        NSInteger vcount = [ASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc].intValue;
+        NSInteger fcount = [ASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
+        
+        // Load colors
+        NSInteger ccount = [ASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
+        for (int c = 0; c < ccount; c++) {
+            NSArray *color = [ASEConverter valueListNamed:@"MESH_VERTCOL" index:c fromTextDescription:objDesc];
+            if (color) {
+                [colors addObject:color];
+            }
+            else {
+                [colors addObject:@[@0,@0,@0]];
+            }
+        }
+        
+        // Setup vertex data
+        VertexStruct *vertices = calloc(vcount, sizeof(VertexStruct));
+        for (int v = 0; v < vcount; v++) {
+            // Set coord
+            NSArray *coord = [ASEConverter valueListNamed:@"MESH_VERTEX" index:v fromTextDescription:objDesc];
+            vertices[v].x = [coord[0] floatValue];
+            vertices[v].y = [coord[1] floatValue];
+            vertices[v].z = [coord[2] floatValue];
+            
+            // Set normal
+            NSArray *normal = [ASEConverter valueListNamed:@"MESH_VERTEXNORMAL" index:v fromTextDescription:objDesc];
+            vertices[v].nx = [normal[0] floatValue];
+            vertices[v].ny = [normal[1] floatValue];
+            vertices[v].nz = [normal[2] floatValue];
+            
+            // Set color
+            NSArray *colorIndices = [ASEConverter valueListNamed:@"MESH_CFACE" index:v fromTextDescription:objDesc];
+            vertices[v].r = [colors[[colorIndices[0] intValue]][0] floatValue] * 255;
+            vertices[v].g = [colors[[colorIndices[1] intValue]][0] floatValue] * 255;
+            vertices[v].b = [colors[[colorIndices[2] intValue]][0] floatValue] * 255;
+            vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment
+        }
+        
+        // Setup index data
+        NSInteger icount = fcount * ASE_FACE_SIZE;
+        GLubyte *indices = calloc(icount, sizeof(GLubyte));
+        for (int f = 0; f < fcount; f++) {
+            NSDictionary *faceInfo = [ASEConverter valueDictionaryNamed:@"MESH_FACE" index:f fromTextDescription:objDesc];
+            // Works only if ASE_FACE_SIZE = 3
+            indices[f] = [faceInfo[@"A"] intValue];
+            indices[f+1] = [faceInfo[@"B"] intValue];
+            indices[f+2] = [faceInfo[@"C"] intValue];
+        }
+        
+        // Create graph object
+        GraphObject *object = [GraphObject objectWithName:objName
+                                                 vertices:vertices
+                                              vertexCount:vcount
+                                                  indices:indices
+                                              vertexCount:icount];
+        
+        // Add current object
+        if (parentGroup)
+            [parentGroup addChild:object];
+        else
+            [self addChild:object];
     }
 }
 

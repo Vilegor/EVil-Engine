@@ -26,18 +26,11 @@
 
 @implementation GraphObject
 
+@synthesize name = _name;
+
 + (GraphObject *)objectWithName:(NSString *)objectName andMeshes:(NSArray *)meshes
 {
     return [[GraphObject alloc] initWithName:objectName andMeshes:meshes];
-}
-
-+ (GraphObject *)initWithName:(NSString *)objectName
-          vertices:(VertexStruct *)vertices
-       vertexCount:(NSInteger)vcount
-           indices:(GLubyte *)indices
-       vertexCount:(NSInteger)icount
-{
-    return [[GraphObject alloc] initWithName:objectName vertices:vertices vertexCount:vcount indices:indices vertexCount:icount];
 }
 
 - (id)initWithName:(NSString *)objectName andMeshes:(NSArray *)meshes
@@ -59,6 +52,15 @@
     }
     
     return self;
+}
+
++ (GraphObject *)objectWithName:(NSString *)objectName
+                       vertices:(VertexStruct *)vertices
+                    vertexCount:(NSInteger)vcount
+                        indices:(GLubyte *)indices
+                    vertexCount:(NSInteger)icount
+{
+    return [[GraphObject alloc] initWithName:objectName vertices:vertices vertexCount:vcount indices:indices vertexCount:icount];
 }
 
 - (id)initWithName:(NSString *)objectName

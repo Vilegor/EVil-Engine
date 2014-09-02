@@ -25,7 +25,9 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     else {
         NSArray *resultRegex = [regex matchesInString:description options:0 range:NSMakeRange(0, description.length)];
         if (resultRegex.count) {
-            return [description substringWithRange:[(NSTextCheckingResult *)resultRegex[0] range]];
+            NSRange range = [(NSTextCheckingResult *)resultRegex[0] range];
+            range.length += 1;      // substringWithRange cuts last char like a BITCH!
+            return [description substringWithRange:range];
         }
     }
     return nil;
@@ -44,7 +46,9 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     else {
         NSArray *resultRegex = [regex matchesInString:description options:0 range:NSMakeRange(0, description.length)];
         if (resultRegex.count) {
-            return [description substringWithRange:[(NSTextCheckingResult *)resultRegex[0] range]];
+            NSRange range = [(NSTextCheckingResult *)resultRegex[0] range];
+            range.length += 1;      // substringWithRange cuts last char like a BITCH!
+            return [description substringWithRange:range];
         }
     }
     return nil;
@@ -119,7 +123,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
         NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t:"]];
         list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
         NSMutableDictionary *values = [NSMutableDictionary dictionary];
-        for (int i = 1; i < list.count-1; i+=2) {       // skiping index
+        for (int i = 1; i < list.count-1; i+=2) {       
             [values setObject:@([list[i+1] floatValue]) forKey:list[i]];
         }
         return values;

@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
+#define ASE_FACE_SIZE 3
+
 @interface ASEConverter : NSObject
 
 + (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description;

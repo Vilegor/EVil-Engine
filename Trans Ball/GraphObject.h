@@ -10,7 +10,9 @@
 #import "GraphMaterial.h"
 #import "GraphMesh.h"
 
-@interface GraphObject : NSObject <GraphDrawableProtocol>
+@interface GraphObject : NSObject <GraphDrawableProtocol> {
+    NSString *_name;
+}
 
 @property(nonatomic, strong, readonly) NSString *name;
 @property(nonatomic, readonly) VertexStruct *vertexData;
@@ -18,7 +20,7 @@
 @property(nonatomic, strong) GraphMaterial *material;
 
 + (GraphObject *)objectWithName:(NSString *)objectName andMeshes:(NSArray *)meshes;
-+ (GraphObject *)initWithName:(NSString *)objectName
++ (GraphObject *)objectWithName:(NSString *)objectName
                      vertices:(VertexStruct *)vertices
                   vertexCount:(NSInteger)vcount
                       indices:(GLubyte *)indices
