@@ -74,6 +74,9 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         //GraphObject *newObject = [GraphObject objectWithName:(NSString *) andMeshes:(NSArray *)];
         NSString *parentName = [ASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
         NSString *objName = [ASEConverter stringValueNamed:@"NODE_NAME" fromTextDescription:objDesc];
+        NSNumber *number = [ASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc];
+        NSArray *list = [ASEConverter valueListNamed:@"MESH_VERTEX" index:3 fromTextDescription:objDesc];
+        NSDictionary *dict = [ASEConverter valueDictionaryNamed:@"MESH_FACE" index:0 fromTextDescription:objDesc];
     }
 }
 

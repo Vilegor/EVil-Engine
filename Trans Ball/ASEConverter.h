@@ -10,6 +10,8 @@
 
 + (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
 + (NSNumber *)numberValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
-+ (NSArray *)valuesNamed:(NSString *)name fromTextDescription:(NSString *)description;
++ (NSArray *)valueListNamed:(NSString *)name fromTextDescription:(NSString *)description;
++ (NSArray *)valueListNamed:(NSString *)name index:(NSInteger)index fromTextDescription:(NSString *)description;
++ (NSDictionary *)valueDictionaryNamed:(NSString *)name index:(NSInteger)index fromTextDescription:(NSString *)description;
 
 @end
