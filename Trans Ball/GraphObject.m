@@ -100,22 +100,23 @@
 
 - (void)setupVertexData
 {
+    if (!_meshDictionary)   // was initialised with vertex and index arrays, so data already ready to use
+        return;
+    
     if (_vertexData)
         free(_vertexData);
     if (!_vertexCount)
         return;
     
     _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
-    if (_meshDictionary) {      // was initialised with meshes. Need to init vertex and index arrays
-        NSArray *meshes = [_meshDictionary allValues];
-        int v = 0;
-        for (GraphMesh *m in meshes) {
-            for (int i = 0; i < m.vertexCount; i++) {
-                _vertexData[v++] = m.vertexData[i];
-            }
+    NSArray *meshes = [_meshDictionary allValues];
+    int v = 0;
+    for (GraphMesh *m in meshes) {
+        for (int i = 0; i < m.vertexCount; i++) {
+            _vertexData[v++] = m.vertexData[i];
         }
-        [self minimizeVertexCount];     // removes duplicates and creates index array
     }
+    [self minimizeVertexCount];     // removes duplicates and creates index array
 }
 
 - (void)minimizeVertexCount

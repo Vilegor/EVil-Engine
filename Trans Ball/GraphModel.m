@@ -129,9 +129,9 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         for (int f = 0; f < fcount; f++) {
             NSDictionary *faceInfo = [ASEConverter valueDictionaryNamed:@"MESH_FACE" index:f fromTextDescription:objDesc];
             // Works only if ASE_FACE_SIZE = 3
-            indices[f] = [faceInfo[@"A"] intValue];
-            indices[f+1] = [faceInfo[@"B"] intValue];
-            indices[f+2] = [faceInfo[@"C"] intValue];
+            indices[f*ASE_FACE_SIZE] = [faceInfo[@"A"] intValue];
+            indices[f*ASE_FACE_SIZE + 1] = [faceInfo[@"B"] intValue];
+            indices[f*ASE_FACE_SIZE + 2] = [faceInfo[@"C"] intValue];
         }
         
         // Create graph object

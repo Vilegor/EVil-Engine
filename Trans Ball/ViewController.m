@@ -134,7 +134,7 @@ enum
     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
     
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, delta - 4.0f);
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -4.0f, delta - 12.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 4.8f + delta, 1.0f, 0.0f, 0.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 0.0f, 1.0f);
     
@@ -142,10 +142,10 @@ enum
     GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -1.5f, delta);
     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, 1.57f, 0.0f, 0.0f, 1.0f);
     modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
-
+    
     _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
-
+    
     _rotation += self.timeSinceLastUpdate * (0.8 - delta);
 }
 
