@@ -92,12 +92,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         NSInteger ccount = [ASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
         for (int c = 0; c < ccount; c++) {
             NSArray *color = [ASEConverter valueListNamed:@"MESH_VERTCOL" index:c fromTextDescription:objDesc];
-            if (color) {
-                [colors addObject:color];
-            }
-            else {
-                [colors addObject:@[@0,@0,@0]];
-            }
+            [colors addObject:color];
         }
         
         // Setup vertex data
