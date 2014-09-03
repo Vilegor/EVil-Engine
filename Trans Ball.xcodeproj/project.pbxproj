@@ -16,8 +16,6 @@
 		0EAF05C819890410005483AB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0EAF05C619890410005483AB /* InfoPlist.strings */; };
 		0EAF05CA19890410005483AB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF05C919890410005483AB /* main.m */; };
 		0EAF05CE19890410005483AB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF05CD19890410005483AB /* AppDelegate.m */; };
-		0EAF05D119890410005483AB /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0EAF05CF19890410005483AB /* Main_iPhone.storyboard */; };
-		0EAF05D419890410005483AB /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0EAF05D219890410005483AB /* Main_iPad.storyboard */; };
 		0EAF05D619890410005483AB /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 0EAF05D519890410005483AB /* Shader.fsh */; };
 		0EAF05D819890410005483AB /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 0EAF05D719890410005483AB /* Shader.vsh */; };
 		0EAF05DB19890410005483AB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF05DA19890410005483AB /* ViewController.m */; };
@@ -31,11 +29,10 @@
 		0EAF05FF198914B3005483AB /* GraphObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF05FE198914B3005483AB /* GraphObject.m */; };
 		0EAF0602198914C4005483AB /* GraphMesh.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0601198914C4005483AB /* GraphMesh.m */; };
 		0EAF0605198914E0005483AB /* GraphFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0604198914E0005483AB /* GraphFace.m */; };
-		0EEB5F2F19AE04D100A8170C /* Ball.ASE in Resources */ = {isa = PBXBuildFile; fileRef = 0EEB5F2D19AE04D100A8170C /* Ball.ASE */; };
-		0EEB5F3019AE04D100A8170C /* Robot.ASE in Resources */ = {isa = PBXBuildFile; fileRef = 0EEB5F2E19AE04D100A8170C /* Robot.ASE */; };
+		0EDB0F7519B7330000B8554E /* Models in Resources */ = {isa = PBXBuildFile; fileRef = 0EDB0F7419B7330000B8554E /* Models */; };
+		0EDB0F7719B7364F00B8554E /* Textures in Resources */ = {isa = PBXBuildFile; fileRef = 0EDB0F7619B7364F00B8554E /* Textures */; };
 		0EEB5F3319AF098D00A8170C /* GraphObjectGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEB5F3219AF098D00A8170C /* GraphObjectGroup.m */; };
 		0EEC849C1990D958001049F0 /* GraphVertex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEC849B1990D958001049F0 /* GraphVertex.m */; };
-		0EEC84A21990E367001049F0 /* texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0EEC84A11990E367001049F0 /* texture.jpg */; };
 		0EEC84A51990F637001049F0 /* GraphMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEC84A41990F637001049F0 /* GraphMaterial.m */; };
 /* End PBXBuildFile section */
 
@@ -86,12 +83,11 @@
 		0EAF0604198914E0005483AB /* GraphFace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphFace.m; sourceTree = "<group>"; };
 		0EAF0606198914F8005483AB /* GraphVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphVertex.h; sourceTree = "<group>"; };
 		0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawableProtocol.h; sourceTree = "<group>"; };
-		0EEB5F2D19AE04D100A8170C /* Ball.ASE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Ball.ASE; path = Models/Ball.ASE; sourceTree = "<group>"; };
-		0EEB5F2E19AE04D100A8170C /* Robot.ASE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Robot.ASE; path = Models/Robot.ASE; sourceTree = "<group>"; };
+		0EDB0F7419B7330000B8554E /* Models */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Models; sourceTree = "<group>"; };
+		0EDB0F7619B7364F00B8554E /* Textures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Textures; sourceTree = "<group>"; };
 		0EEB5F3119AF098D00A8170C /* GraphObjectGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphObjectGroup.h; sourceTree = "<group>"; };
 		0EEB5F3219AF098D00A8170C /* GraphObjectGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphObjectGroup.m; sourceTree = "<group>"; };
 		0EEC849B1990D958001049F0 /* GraphVertex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphVertex.m; sourceTree = "<group>"; };
-		0EEC84A11990E367001049F0 /* texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture.jpg; sourceTree = "<group>"; };
 		0EEC84A31990F637001049F0 /* GraphMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphMaterial.h; sourceTree = "<group>"; };
 		0EEC84A41990F637001049F0 /* GraphMaterial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphMaterial.m; sourceTree = "<group>"; };
 		0EEC84AB19938905001049F0 /* UniformProcessorProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniformProcessorProtocol.h; sourceTree = "<group>"; };
@@ -170,8 +166,8 @@
 				0EA181E719B0A8D700A1DF97 /* Converter */,
 				0EAF05F91989145D005483AB /* Model Components */,
 				0EEC849D1990E0B8001049F0 /* Shaders */,
-				0EEC84A01990E35A001049F0 /* Textures */,
-				0EEB5F2C19ADF41200A8170C /* Models */,
+				0EDB0F7619B7364F00B8554E /* Textures */,
+				0EDB0F7419B7330000B8554E /* Models */,
 				0EEC849E1990E0CF001049F0 /* App */,
 				0EAF05D919890410005483AB /* ViewController.h */,
 				0EAF05DA19890410005483AB /* ViewController.m */,
@@ -232,15 +228,6 @@
 			name = "Model Components";
 			sourceTree = "<group>";
 		};
-		0EEB5F2C19ADF41200A8170C /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				0EEB5F2D19AE04D100A8170C /* Ball.ASE */,
-				0EEB5F2E19AE04D100A8170C /* Robot.ASE */,
-			);
-			name = Models;
-			sourceTree = "<group>";
-		};
 		0EEC849D1990E0B8001049F0 /* Shaders */ = {
 			isa = PBXGroup;
 			children = (
@@ -260,14 +247,6 @@
 				0EAF05DC19890410005483AB /* Images.xcassets */,
 			);
 			name = App;
-			sourceTree = "<group>";
-		};
-		0EEC84A01990E35A001049F0 /* Textures */ = {
-			isa = PBXGroup;
-			children = (
-				0EEC84A11990E367001049F0 /* texture.jpg */,
-			);
-			name = Textures;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -346,15 +325,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0EAF05D619890410005483AB /* Shader.fsh in Resources */,
-				0EEB5F3019AE04D100A8170C /* Robot.ASE in Resources */,
-				0EEC84A21990E367001049F0 /* texture.jpg in Resources */,
-				0EEB5F2F19AE04D100A8170C /* Ball.ASE in Resources */,
-				0EAF05D419890410005483AB /* Main_iPad.storyboard in Resources */,
-				0EAF05D119890410005483AB /* Main_iPhone.storyboard in Resources */,
+				0EDB0F7519B7330000B8554E /* Models in Resources */,
+				0EDB0F7719B7364F00B8554E /* Textures in Resources */,
 				0EAF05DD19890410005483AB /* Images.xcassets in Resources */,
 				0EAF05C819890410005483AB /* InfoPlist.strings in Resources */,
 				0EAF05D819890410005483AB /* Shader.vsh in Resources */,
+				0EAF05D619890410005483AB /* Shader.fsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

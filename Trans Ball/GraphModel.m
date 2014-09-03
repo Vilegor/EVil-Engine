@@ -35,7 +35,12 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 
 + (GraphModel *)modelFromFile:(NSString *)aseFileName
 {
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ASE"];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Models/%@", aseFileName] ofType:@"ASE"];
+    if (!filePath) {
+        NSLog(@"Error! Model %@ not found!", aseFileName);
+        return nil;
+    }
+    
     // read everything from text
     NSError *error = nil;
     NSString *fileContents = [NSString stringWithContentsOfFile:filePath
@@ -72,6 +77,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     for (NSString *objDesc in aseObjects) {
         GraphObjectGroup *parentGroup = nil;
         NSMutableArray *colors = [NSMutableArray array];
+        NSMutableArray *texCoords = [NSMutableArray array];
         
         // Check parent
         NSString *parentName = [ASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
@@ -94,6 +100,12 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
             NSArray *color = [ASEConverter valueListNamed:@"MESH_VERTCOL" index:c fromTextDescription:objDesc];
             [colors addObject:color];
         }
+        // Load texture coords
+        NSInteger tcount = [ASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
+        for (int t = 0; t < tcount; t++) {
+            NSArray *coord = [ASEConverter valueListNamed:@"MESH_TVERT" index:t fromTextDescription:objDesc];
+            [texCoords addObject:coord];
+        }
         
         // Setup vertex data
         VertexStruct *vertices = calloc(vcount, sizeof(VertexStruct));
@@ -109,13 +121,6 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
             vertices[v].nx = [normal[0] floatValue];
             vertices[v].ny = [normal[1] floatValue];
             vertices[v].nz = [normal[2] floatValue];
-            
-            // Set color
-            NSArray *colorIndices = [ASEConverter valueListNamed:@"MESH_CFACE" index:v fromTextDescription:objDesc];
-            vertices[v].r = [colors[[colorIndices[0] intValue]][0] floatValue] * 255;
-            vertices[v].g = [colors[[colorIndices[1] intValue]][0] floatValue] * 255;
-            vertices[v].b = [colors[[colorIndices[2] intValue]][0] floatValue] * 255;
-            vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment
         }
         
         // Setup index data
@@ -123,10 +128,33 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         GLubyte *indices = calloc(icount, sizeof(GLubyte));
         for (int f = 0; f < fcount; f++) {
             NSDictionary *faceInfo = [ASEConverter valueDictionaryNamed:@"MESH_FACE" index:f fromTextDescription:objDesc];
-            // Works only if ASE_FACE_SIZE = 3
-            indices[f*ASE_FACE_SIZE] = [faceInfo[@"A"] intValue];
-            indices[f*ASE_FACE_SIZE + 1] = [faceInfo[@"B"] intValue];
-            indices[f*ASE_FACE_SIZE + 2] = [faceInfo[@"C"] intValue];
+            // ASE works only with triangle faces
+            NSArray *ABC = @[faceInfo[@"A"], faceInfo[@"B"], faceInfo[@"C"]];
+            
+            if (ccount) {
+                // Set vertex color
+                NSArray *colorIndices = [ASEConverter valueListNamed:@"MESH_CFACE" index:f fromTextDescription:objDesc];
+                if (colorIndices.count != ASE_FACE_SIZE) {
+                    NSLog(@"WARNING! %@->%@: Face size doesn't normalized!", _name, objName);
+                }
+                for (int i = 0; i < ASE_FACE_SIZE; i++) {
+                    int v = [ABC[i] intValue];
+                    if (vertices[v].a == 0) {   // alpha = 0 means vertex color was not set before
+                        int c = [colorIndices[i] intValue];
+                        vertices[v].r = [colors[c][0] floatValue] * 255;
+                        vertices[v].g = [colors[c][1] floatValue] * 255;
+                        vertices[v].b = [colors[c][2] floatValue] * 255;
+                        vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment
+                    }
+                }
+            }
+            
+            // Set texture coord
+            
+            // Set indices
+            indices[f*ASE_FACE_SIZE] = [ABC[0] intValue];
+            indices[f*ASE_FACE_SIZE + 1] = [ABC[1] intValue];
+            indices[f*ASE_FACE_SIZE + 2] = [ABC[2] intValue];
         }
         
         // Create graph object
@@ -182,7 +210,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
                                                                           [GraphMesh meshWithName:@"leftWing" andVertices:w_vl vsize:3],
                                                                           [GraphMesh meshWithName:@"rightWing" andVertices:w_vr vsize:3]]];
     [planeModel addChild:plane];
-    planeModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"texture.jpg"];
+    planeModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"newspaper.jpg"];
     
     return planeModel;
 }
