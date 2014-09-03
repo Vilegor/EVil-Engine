@@ -111,15 +111,14 @@ enum
 - (void)setupModels
 {
     modelArray = [NSMutableArray array];
-	//[modelArray addObject:[GraphModel paperPlaneModel]];
+//	[modelArray addObject:[GraphModel paperPlaneModel]];
     
-    GraphModel *ball = [GraphModel modelFromFile:kBallModelName];
-    if (ball)
-        [modelArray addObject:ball];
-    
-//    GraphModel *test = [GraphModel modelFromFile:@"Test"];
-//    if (test)
-//        [modelArray addObject:test];
+    NSArray *modelsToLoad = @[@"Test"];
+    for (NSString *fileName in modelsToLoad) {
+        GraphModel *model = [GraphModel modelFromFile:fileName];
+        if (model)
+            [modelArray addObject:model];
+    }
 }
 
 - (void)tearDownGL

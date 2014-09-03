@@ -37,7 +37,7 @@ static int hasTextureUniform;
 {
     glGetError();
     NSError *theError;
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:_fileName ofType:_fileExt inDirectory:@"Texture"];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:_fileName ofType:_fileExt inDirectory:@"Textures"];
     if (filePath) {
         texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&theError];
         [self enable];
