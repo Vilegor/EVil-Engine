@@ -35,9 +35,9 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 
 + (GraphModel *)modelFromFile:(NSString *)aseFileName
 {
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Models/%@", aseFileName] ofType:@"ASE"];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
     if (!filePath) {
-        NSLog(@"Error! Model %@ not found!", aseFileName);
+        NSLog(@"Error! Model '%@' not found!", aseFileName);
         return nil;
     }
     
@@ -50,16 +50,21 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         NSLog(@"ERROR! %@", error);
     }
     else {
-        NSString *pattern = @"\\*GEOMOBJECT \\{(.(?!\\*GEOMOBJECT))*\\}\\r\\n";
+        fileContents = [ASEConverter normalizeTextDescription:fileContents];
+        NSString *pattern = @"\\*GEOMOBJECT \\{(.(?!\\*GEOMOBJECT))*\\}";
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
                                                                                  error:&error];
         if (error) {
-            NSLog(@"ERROR! Model: %@", error);
+            NSLog(@"ERROR! Load model: %@", error);
         }
         else {
             NSMutableArray *objectsASE = [NSMutableArray array];
             NSArray *resultRegex = [regex matchesInString:fileContents options:0 range:NSMakeRange(0, fileContents.length)];
+            if (!resultRegex.count) {
+                NSLog(@"Error! Model '%@' is empty or description format is wrong!", aseFileName);
+                return nil;
+            }
             for (NSTextCheckingResult *result in resultRegex) {
                 [objectsASE addObject:[fileContents substringWithRange:result.range]];
             }
@@ -131,25 +136,42 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
             // ASE works only with triangle faces
             NSArray *ABC = @[faceInfo[@"A"], faceInfo[@"B"], faceInfo[@"C"]];
             
+            // Set vertex color
             if (ccount) {
-                // Set vertex color
                 NSArray *colorIndices = [ASEConverter valueListNamed:@"MESH_CFACE" index:f fromTextDescription:objDesc];
                 if (colorIndices.count != ASE_FACE_SIZE) {
-                    NSLog(@"WARNING! %@->%@: Face size doesn't normalized!", _name, objName);
+                    NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Color>!", _name, objName);
                 }
                 for (int i = 0; i < ASE_FACE_SIZE; i++) {
                     int v = [ABC[i] intValue];
-                    if (vertices[v].a == 0) {   // alpha = 0 means vertex color was not set before
+                    if (vertices[v].a == 0) {   // alpha = 0 means vertex color or texture was not set before
                         int c = [colorIndices[i] intValue];
                         vertices[v].r = [colors[c][0] floatValue] * 255;
                         vertices[v].g = [colors[c][1] floatValue] * 255;
                         vertices[v].b = [colors[c][2] floatValue] * 255;
-                        vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment
+                        
+                        vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment, so I use it mark vertex
                     }
                 }
             }
             
             // Set texture coord
+            if (tcount) {
+                NSArray *texIndices = [ASEConverter valueListNamed:@"MESH_TFACE" index:f fromTextDescription:objDesc];
+                if (texIndices.count != ASE_FACE_SIZE) {
+                    NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Texture>!", _name, objName);
+                }
+                for (int i = 0; i < ASE_FACE_SIZE; i++) {
+                    int v = [ABC[i] intValue];
+                    if (vertices[v].a == 0) {   // alpha = 0 means vertex color or texture was not set before
+                        int t = [texIndices[i] intValue];
+                        vertices[v].tex_x = [texCoords[t][0] floatValue];
+                        vertices[v].tex_y = [texCoords[t][1] floatValue];
+                        
+                        vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment, so I use it mark vertex
+                    }
+                }
+            }
             
             // Set indices
             indices[f*ASE_FACE_SIZE] = [ABC[0] intValue];

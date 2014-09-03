@@ -7,8 +7,8 @@
 //
 
 #import "ASEConverter.h"
-static NSString * const kLineFormat =           @"\\*%@[ \\t]+(.(?!\\*))+\\r\\n";
-static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!\\*|\\r\\n))+";
+static NSString * const kLineFormat =           @"\\*%@[ \\t]+(.(?!\\*))+\\n";
+static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!\\*|\\n))+";
 
 @implementation ASEConverter
 
@@ -33,7 +33,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
-+ (NSString *)lineNamed:(NSString *)name index:(NSInteger)index fromTextDescription:(NSString *)description
++ (NSString *)lineNamed:(NSString *)name index:(int)index fromTextDescription:(NSString *)description
 {
     NSError *error = nil;
     NSString *pattern = [NSString stringWithFormat:kIndexedLineFormat, name, index];
@@ -59,7 +59,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     NSString *line = [self lineNamed:name fromTextDescription:description];
     if (line) {
         NSRange start = [line rangeOfString:[NSString stringWithFormat:@"*%@ \"", name]];
-        NSRange end = [line rangeOfString:@"\"\r\n"];
+        NSRange end = [line rangeOfString:@"\"\n"];
         return [line substringWithRange:NSMakeRange(start.location + start.length, end.location - start.location - start.length)];
     }
     return nil;
@@ -72,7 +72,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
         NSRange start = [line rangeOfString:[NSString stringWithFormat:@"*%@ ", name]];
         if (start.length == 0)
             start = [line rangeOfString:[NSString stringWithFormat:@"*%@\t", name]];
-        NSRange end = [line rangeOfString:@"\r\n"];
+        NSRange end = [line rangeOfString:@"\n"];
         NSString *valueStr = [line substringWithRange:NSMakeRange(start.location + start.length, end.location - start.location - start.length)];
         return @([valueStr floatValue]);
     }
@@ -85,7 +85,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     if (line) {
         NSRange nameRange = [line rangeOfString:name];
         NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
-        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\r\n"]];
+        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
         NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t"]];
         NSMutableArray *values = [NSMutableArray array];
         for (NSString *str in list) {
@@ -96,13 +96,13 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
-+ (NSArray *)valueListNamed:(NSString *)name index:(NSInteger)index fromTextDescription:(NSString *)description
++ (NSArray *)valueListNamed:(NSString *)name index:(int)index fromTextDescription:(NSString *)description
 {
     NSString *line = [self lineNamed:name index:index fromTextDescription:description];
     if (line) {
         NSRange nameRange = [line rangeOfString:name];
         NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
-        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\r\n"]];
+        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
         NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t"]];
         NSMutableArray *values = [NSMutableArray array];
         for (int i = 1; i < list.count; i++) {          // skiping index
@@ -113,13 +113,13 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
-+ (NSDictionary *)valueDictionaryNamed:(NSString *)name index:(NSInteger)index fromTextDescription:(NSString *)description
++ (NSDictionary *)valueDictionaryNamed:(NSString *)name index:(int)index fromTextDescription:(NSString *)description
 {
     NSString *line = [self lineNamed:name index:index fromTextDescription:description];
     if (line) {
         NSRange nameRange = [line rangeOfString:name];
         NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
-        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\r\n"]];
+        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
         NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t:"]];
         list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
         NSMutableDictionary *values = [NSMutableDictionary dictionary];
@@ -129,6 +129,11 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
         return values;
     }
     return nil;
+}
+
++ (NSString *)normalizeTextDescription:(NSString *)description
+{
+    return [description stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
 }
 
 @end

@@ -113,6 +113,10 @@ enum
     GraphModel *ball = [GraphModel modelFromFile:kBallModelName];
     if (ball)
         [modelArray addObject:ball];
+    
+//    GraphModel *test = [GraphModel modelFromFile:@"Test"];
+//    if (test)
+//        [modelArray addObject:test];
 }
 
 - (void)tearDownGL

@@ -37,13 +37,13 @@ static int hasTextureUniform;
 {
     glGetError();
     NSError *theError;
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"Textures/%@", _fileName] ofType:_fileExt];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:_fileName ofType:_fileExt inDirectory:@"Texture"];
     if (filePath) {
         texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&theError];
         [self enable];
     }
     else {
-        NSLog(@"ERROR! Material: %@ not found!", _name);
+        NSLog(@"ERROR! Material '%@' not found!", _name);
     }
 }
 
