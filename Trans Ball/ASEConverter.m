@@ -87,6 +87,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
         NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
         listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
         NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t"]];
+        list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
         NSMutableArray *values = [NSMutableArray array];
         for (NSString *str in list) {
             [values addObject:@(str.floatValue)];
@@ -104,6 +105,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
         NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
         listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
         NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t"]];
+        list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
         NSMutableArray *values = [NSMutableArray array];
         for (int i = 1; i < list.count; i++) {          // skiping index
             [values addObject:@([list[i] floatValue])];

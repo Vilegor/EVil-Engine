@@ -81,8 +81,8 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 {
     for (NSString *objDesc in aseObjects) {
         GraphObjectGroup *parentGroup = nil;
-        NSMutableArray *colors = [NSMutableArray array];
-        NSMutableArray *texCoords = [NSMutableArray array];
+        NSMutableArray *texCoords = nil;
+        NSMutableArray *colors = nil;
         
         // Check parent
         NSString *parentName = [ASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
@@ -99,17 +99,22 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         NSInteger vcount = [ASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc].intValue;
         NSInteger fcount = [ASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
         
-        // Load colors
-        NSInteger ccount = [ASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
-        for (int c = 0; c < ccount; c++) {
-            NSArray *color = [ASEConverter valueListNamed:@"MESH_VERTCOL" index:c fromTextDescription:objDesc];
-            [colors addObject:color];
-        }
         // Load texture coords
         NSInteger tcount = [ASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
+        if (tcount)
+            texCoords = [NSMutableArray array];
         for (int t = 0; t < tcount; t++) {
             NSArray *coord = [ASEConverter valueListNamed:@"MESH_TVERT" index:t fromTextDescription:objDesc];
             [texCoords addObject:coord];
+        }
+    
+        // Load colors
+        NSInteger ccount = [ASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
+        if (ccount)
+            colors = [NSMutableArray array];
+        for (int c = 0; c < ccount; c++) {
+            NSArray *color = [ASEConverter valueListNamed:@"MESH_VERTCOL" index:c fromTextDescription:objDesc];
+            [colors addObject:color];
         }
         
         // Setup vertex data
@@ -136,40 +141,30 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
             // ASE works only with triangle faces
             NSArray *ABC = @[faceInfo[@"A"], faceInfo[@"B"], faceInfo[@"C"]];
             
-            // Set vertex color
-            if (ccount) {
-                NSArray *colorIndices = [ASEConverter valueListNamed:@"MESH_CFACE" index:f fromTextDescription:objDesc];
-                if (colorIndices.count != ASE_FACE_SIZE) {
-                    NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Color>!", _name, objName);
-                }
-                for (int i = 0; i < ASE_FACE_SIZE; i++) {
-                    int v = [ABC[i] intValue];
-                    if (vertices[v].a == 0) {   // alpha = 0 means vertex color or texture was not set before
-                        int c = [colorIndices[i] intValue];
-                        vertices[v].r = [colors[c][0] floatValue] * 255;
-                        vertices[v].g = [colors[c][1] floatValue] * 255;
-                        vertices[v].b = [colors[c][2] floatValue] * 255;
-                        
-                        vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment, so I use it mark vertex
-                    }
-                }
+            // Set vertex color and texture coord
+            NSArray *colorIndices = [ASEConverter valueListNamed:@"MESH_CFACE" index:f fromTextDescription:objDesc];
+            NSArray *texIndices = [ASEConverter valueListNamed:@"MESH_TFACE" index:f fromTextDescription:objDesc];
+            if (colorIndices.count != ASE_FACE_SIZE && ccount) {
+                NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Color>!", _name, objName);
+            }
+            if (texIndices.count != ASE_FACE_SIZE && tcount) {
+                NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Texture>!", _name, objName);
             }
             
-            // Set texture coord
-            if (tcount) {
-                NSArray *texIndices = [ASEConverter valueListNamed:@"MESH_TFACE" index:f fromTextDescription:objDesc];
-                if (texIndices.count != ASE_FACE_SIZE) {
-                    NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Texture>!", _name, objName);
-                }
-                for (int i = 0; i < ASE_FACE_SIZE; i++) {
-                    int v = [ABC[i] intValue];
-                    if (vertices[v].a == 0) {   // alpha = 0 means vertex color or texture was not set before
-                        int t = [texIndices[i] intValue];
-                        vertices[v].tex_x = [texCoords[t][0] floatValue];
-                        vertices[v].tex_y = [texCoords[t][1] floatValue];
-                        
-                        vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment, so I use it mark vertex
-                    }
+            for (int i = 0; i < ASE_FACE_SIZE; i++) {
+                int v = [ABC[i] intValue];
+                if (vertices[v].a == 0) {   // alpha = 0 means vertex color or texture was not set before
+                    int c = [colorIndices[i] intValue];
+                    int t = [texIndices[i] intValue];
+                    
+                    vertices[v].tex_x = [texCoords[t][0] floatValue];
+                    vertices[v].tex_y = [texCoords[t][1] floatValue];
+                    
+                    vertices[v].r = [colors[c][0] floatValue] * 255;
+                    vertices[v].g = [colors[c][1] floatValue] * 255;
+                    vertices[v].b = [colors[c][2] floatValue] * 255;
+                    
+                    vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment, so I use it mark vertex
                 }
             }
             
