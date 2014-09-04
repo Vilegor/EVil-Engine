@@ -7,7 +7,7 @@
 //
 
 #import <GLKit/GLKit.h>
-#import "GraphMesh.h"
+#import "GraphFace.h"
 #import "GraphObject.h"
 #import "GraphDrawableProtocol.h"
 

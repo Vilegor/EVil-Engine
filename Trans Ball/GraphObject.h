@@ -8,7 +8,7 @@
 
 #import "GraphDrawableProtocol.h"
 #import "GraphMaterial.h"
-#import "GraphMesh.h"
+#import "GraphFace.h"
 
 @interface GraphObject : NSObject <GraphDrawableProtocol> {
     NSString *_name;
@@ -19,14 +19,14 @@
 @property(nonatomic, readonly) GLuint vertexCount;
 @property(nonatomic, strong) GraphMaterial *material;
 
-+ (GraphObject *)objectWithName:(NSString *)objectName andMeshes:(NSArray *)meshes;
++ (GraphObject *)objectWithName:(NSString *)objectName andFaces:(NSArray *)faces;
 + (GraphObject *)objectWithName:(NSString *)objectName
                      vertices:(VertexStruct *)vertices
                   vertexCount:(int)vcount
                       indices:(GLubyte *)indices
                   vertexCount:(int)icount;
 
-- (GraphMesh *)meshByName:(NSString *)meshName;
+- (GraphFace *)meshByName:(NSString *)meshName;
 - (NSInteger)meshCount;
 
 @end

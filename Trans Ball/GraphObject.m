@@ -7,7 +7,6 @@
 //
 
 #import "GraphObject.h"
-#import "GraphFace.h"
 #import "GraphModel.h"
 
 @interface GraphObject() {
@@ -18,7 +17,7 @@
 	GLubyte *_indices;
 	GLuint _indexCount;
 	
-    NSMutableDictionary *_meshDictionary;
+    NSMutableDictionary *_faceDictionary;
     GraphMaterial *_material;
 }
 
@@ -28,24 +27,24 @@
 
 @synthesize name = _name;
 
-+ (GraphObject *)objectWithName:(NSString *)objectName andMeshes:(NSArray *)meshes
++ (GraphObject *)objectWithName:(NSString *)objectName andFaces:(NSArray *)faces
 {
-    return [[GraphObject alloc] initWithName:objectName andMeshes:meshes];
+    return [[GraphObject alloc] initWithName:objectName andFaces:faces];
 }
 
-- (id)initWithName:(NSString *)objectName andMeshes:(NSArray *)meshes
+- (id)initWithName:(NSString *)objectName andFaces:(NSArray *)faces
 {
     self = [super init];
     if (self) {
         _name = objectName;
         _vertexCount = 0;
-        _meshDictionary = [NSMutableDictionary dictionary];
-        for (GraphMesh *m in meshes) {
-            if ([_meshDictionary objectForKey:m.name])
-                NSLog(@"WARNING! %@: Mesh name '%@' is already in use!", _name, m.name);
+        _faceDictionary = [NSMutableDictionary dictionary];
+        for (GraphFace *f in faces) {
+            if ([_faceDictionary objectForKey:f.faceId])
+                NSLog(@"WARNING! %@: Face #%d is already in use!", _name, f.faceId.intValue);
             else {
-                _vertexCount += m.vertexCount;
-                [_meshDictionary setObject:m forKey:m.name];
+                _vertexCount += f.vertexCount;
+                [_faceDictionary setObject:f forKey:f.faceId];
             }
         }
         [self resetDrawableData];
@@ -100,7 +99,7 @@
 
 - (void)setupVertexData
 {
-    if (!_meshDictionary)   // was initialised with vertex and index arrays, so data already ready to use
+    if (!_faceDictionary)   // was initialised with vertex and index arrays, so data already ready to use
         return;
     
     if (_vertexData)
@@ -109,9 +108,9 @@
         return;
     
     _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
-    NSArray *meshes = [_meshDictionary allValues];
+    NSArray *meshes = [_faceDictionary allValues];
     int v = 0;
-    for (GraphMesh *m in meshes) {
+    for (GraphFace *m in meshes) {
         for (int i = 0; i < m.vertexCount; i++) {
             _vertexData[v++] = m.vertexData[i];
         }
@@ -215,14 +214,14 @@
 
 #pragma mark - Meshes
 
-- (GraphMesh *)meshByName:(NSString *)meshName
+- (GraphFace *)meshByName:(NSString *)meshName
 {
-    return _meshDictionary[meshName];
+    return _faceDictionary[meshName];
 }
 
 - (NSInteger)meshCount
 {
-    return [_meshDictionary count];
+    return [_faceDictionary count];
 }
 
 #pragma mark - Material

@@ -222,10 +222,10 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     b_vr[2] = VertexMake(v3);
     
     GraphModel *planeModel = [GraphModel modelWithName:@"Plane_test"];
-    GraphObject *plane = [GraphObject objectWithName:@"Paper plane" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3],
-                                                                          [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3],
-                                                                          [GraphMesh meshWithName:@"leftWing" andVertices:w_vl vsize:3],
-                                                                          [GraphMesh meshWithName:@"rightWing" andVertices:w_vr vsize:3]]];
+    GraphObject *plane = [GraphObject objectWithName:@"Paper plane" andFaces:@[[GraphFace faceWithId:0 andVertices:b_vl vsize:3],
+                                                                          [GraphFace faceWithId:1 andVertices:b_vr vsize:3],
+                                                                          [GraphFace faceWithId:2 andVertices:w_vl vsize:3],
+                                                                          [GraphFace faceWithId:3 andVertices:w_vr vsize:3]]];
     [planeModel addChild:plane];
     planeModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"newspaper.png"];
     
@@ -251,8 +251,8 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     tr1[2] = VertexMake(v2);
     
     GraphModel *floorModel = [GraphModel modelWithName:@"Floor_test"];
-    GraphObject *floor = [GraphObject objectWithName:@"Wood floor" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:tr0 vsize:3],
-                                                                                [GraphMesh meshWithName:@"m1" andVertices:tr1 vsize:3]]];
+    GraphObject *floor = [GraphObject objectWithName:@"Wood floor" andFaces:@[[GraphFace faceWithId:0 andVertices:tr0 vsize:3],
+                                                                              [GraphFace faceWithId:1 andVertices:tr1 vsize:3]]];
     [floorModel addChild:floor];
     floorModel.material = [GraphMaterial materialWithName:@"Wood" andFullFileName:@"woodfloor.png"];
     

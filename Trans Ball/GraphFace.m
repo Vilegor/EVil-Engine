@@ -1,5 +1,5 @@
 //
-//  GraphFace.m
+//  GraphMesh.m
 //  Trans Ball
 //
 //  Created by Egor Vilkin on 7/30/14.
@@ -16,20 +16,21 @@
 
 @implementation GraphFace
 
-+ (GraphFace *)faceWithID:(GLuint)faceID andVertices:(VertexStruct *)vertices vsize:(size_t)count
++ (GraphFace *)faceWithId:(NSInteger)faceId andVertices:(VertexStruct *)vertices vsize:(size_t)count
 {
-    return [[GraphFace alloc] initWithID:faceID andVertices:vertices vsize:count];
+    return [[GraphFace alloc] initWithId:(NSInteger)faceId andVertices:vertices vsize:count];
 }
 
-- (id)initWithID:(GLuint)faceID andVertices:(VertexStruct *)vertices vsize:(size_t)count
+- (id)initWithId:(NSInteger)faceId andVertices:(VertexStruct *)vertices vsize:(size_t)count
 {
     self = [super init];
     if (self) {
-        _faceID = faceID;
+        _faceId = @(faceId);
         _vertexCount = count;
         _vertexData = calloc(_vertexCount, sizeof(VertexStruct));
-        for (int i = 0; i < _vertexCount; i++)
+        for (int i = 0; i < _vertexCount; i++) {
             _vertexData[i] = vertices[i];
+        }
     }
     
     return self;

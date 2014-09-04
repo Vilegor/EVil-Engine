@@ -27,8 +27,7 @@
 		0EAF05F019890410005483AB /* Trans_BallTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF05EF19890410005483AB /* Trans_BallTests.m */; };
 		0EAF05FC198914A3005483AB /* GraphModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF05FB198914A3005483AB /* GraphModel.m */; };
 		0EAF05FF198914B3005483AB /* GraphObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF05FE198914B3005483AB /* GraphObject.m */; };
-		0EAF0602198914C4005483AB /* GraphMesh.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0601198914C4005483AB /* GraphMesh.m */; };
-		0EAF0605198914E0005483AB /* GraphFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0604198914E0005483AB /* GraphFace.m */; };
+		0EAF0602198914C4005483AB /* GraphFace.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAF0601198914C4005483AB /* GraphFace.m */; };
 		0EDB0F7519B7330000B8554E /* Models in Resources */ = {isa = PBXBuildFile; fileRef = 0EDB0F7419B7330000B8554E /* Models */; };
 		0EDB0F7719B7364F00B8554E /* Textures in Resources */ = {isa = PBXBuildFile; fileRef = 0EDB0F7619B7364F00B8554E /* Textures */; };
 		0EEB5F3319AF098D00A8170C /* GraphObjectGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EEB5F3219AF098D00A8170C /* GraphObjectGroup.m */; };
@@ -77,10 +76,8 @@
 		0EAF05FB198914A3005483AB /* GraphModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphModel.m; sourceTree = "<group>"; };
 		0EAF05FD198914B3005483AB /* GraphObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphObject.h; sourceTree = "<group>"; };
 		0EAF05FE198914B3005483AB /* GraphObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphObject.m; sourceTree = "<group>"; };
-		0EAF0600198914C4005483AB /* GraphMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphMesh.h; sourceTree = "<group>"; };
-		0EAF0601198914C4005483AB /* GraphMesh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphMesh.m; sourceTree = "<group>"; };
-		0EAF0603198914E0005483AB /* GraphFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphFace.h; sourceTree = "<group>"; };
-		0EAF0604198914E0005483AB /* GraphFace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphFace.m; sourceTree = "<group>"; };
+		0EAF0600198914C4005483AB /* GraphFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphFace.h; sourceTree = "<group>"; };
+		0EAF0601198914C4005483AB /* GraphFace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphFace.m; sourceTree = "<group>"; };
 		0EAF0606198914F8005483AB /* GraphVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphVertex.h; sourceTree = "<group>"; };
 		0EAF0609198BAB32005483AB /* GraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawableProtocol.h; sourceTree = "<group>"; };
 		0EDB0F7419B7330000B8554E /* Models */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Models; sourceTree = "<group>"; };
@@ -214,10 +211,8 @@
 				0EEB5F3219AF098D00A8170C /* GraphObjectGroup.m */,
 				0EAF05FD198914B3005483AB /* GraphObject.h */,
 				0EAF05FE198914B3005483AB /* GraphObject.m */,
-				0EAF0600198914C4005483AB /* GraphMesh.h */,
-				0EAF0601198914C4005483AB /* GraphMesh.m */,
-				0EAF0603198914E0005483AB /* GraphFace.h */,
-				0EAF0604198914E0005483AB /* GraphFace.m */,
+				0EAF0600198914C4005483AB /* GraphFace.h */,
+				0EAF0601198914C4005483AB /* GraphFace.m */,
 				0EAF0606198914F8005483AB /* GraphVertex.h */,
 				0EEC849B1990D958001049F0 /* GraphVertex.m */,
 				0EEC84A31990F637001049F0 /* GraphMaterial.h */,
@@ -354,12 +349,11 @@
 				0EAF05CE19890410005483AB /* AppDelegate.m in Sources */,
 				0EEC84A51990F637001049F0 /* GraphMaterial.m in Sources */,
 				0EAF05FC198914A3005483AB /* GraphModel.m in Sources */,
-				0EAF0602198914C4005483AB /* GraphMesh.m in Sources */,
+				0EAF0602198914C4005483AB /* GraphFace.m in Sources */,
 				0EAF05CA19890410005483AB /* main.m in Sources */,
 				0EAF05FF198914B3005483AB /* GraphObject.m in Sources */,
 				0EEC849C1990D958001049F0 /* GraphVertex.m in Sources */,
 				0EA181EA19B0A8F400A1DF97 /* ASEConverter.m in Sources */,
-				0EAF0605198914E0005483AB /* GraphFace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
