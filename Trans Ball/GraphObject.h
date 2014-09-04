@@ -22,9 +22,9 @@
 + (GraphObject *)objectWithName:(NSString *)objectName andMeshes:(NSArray *)meshes;
 + (GraphObject *)objectWithName:(NSString *)objectName
                      vertices:(VertexStruct *)vertices
-                  vertexCount:(NSInteger)vcount
+                  vertexCount:(int)vcount
                       indices:(GLubyte *)indices
-                  vertexCount:(NSInteger)icount;
+                  vertexCount:(int)icount;
 
 - (GraphMesh *)meshByName:(NSString *)meshName;
 - (NSInteger)meshCount;

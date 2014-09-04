@@ -96,11 +96,11 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         
         // Get main properties
         NSString *objName = [ASEConverter stringValueNamed:@"NODE_NAME" fromTextDescription:objDesc];
-        NSInteger vcount = [ASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc].intValue;
-        NSInteger fcount = [ASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
+        int vcount = [ASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc].intValue;
+        int fcount = [ASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
         
         // Load texture coords
-        NSInteger tcount = [ASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
+        int tcount = [ASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
         if (tcount)
             texCoords = [NSMutableArray array];
         for (int t = 0; t < tcount; t++) {
@@ -109,7 +109,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         }
     
         // Load colors
-        NSInteger ccount = [ASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
+        int ccount = [ASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
         if (ccount)
             colors = [NSMutableArray array];
         for (int c = 0; c < ccount; c++) {
@@ -134,7 +134,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         }
         
         // Setup index data
-        NSInteger icount = fcount * ASE_FACE_SIZE;
+        int icount = fcount * ASE_FACE_SIZE;
         GLubyte *indices = calloc(icount, sizeof(GLubyte));
         for (int f = 0; f < fcount; f++) {
             NSDictionary *faceInfo = [ASEConverter valueDictionaryNamed:@"MESH_FACE" index:f fromTextDescription:objDesc];
@@ -194,11 +194,11 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 + (GraphModel *)paperPlaneModel
 {
     GLfloat v0[] = {0,-1,0,				0,1,0,	255,255,255,255,	0,0};
-    GLfloat v1[] = {0.1f,0.5f,0,        0,1,0,	204,204,204,255,	80,0};
-    GLfloat v2[] = {-0.1f,0.5f,0,       0,1,0,  204,204,204,255,	80,80};
-    GLfloat v3[] = {0,0.5f,-0.3,        0,1,0,  230,230,230,255,	0,80};
-    GLfloat v4[] = {0.8f,0.4f,-0.1f,    0,1,0,  255,255,255,255,	80,80};
-    GLfloat v5[] = {-0.8f,0.4f,-0.1f,   0,1,0,  255,255,255,255,	0,80};
+    GLfloat v1[] = {0.1f,0.5f,0,        0,1,0,	204,204,204,255,	0.3,0};
+    GLfloat v2[] = {-0.1f,0.5f,0,       0,1,0,  204,204,204,255,	0.3,0.3};
+    GLfloat v3[] = {0,0.5f,-0.3,        0,1,0,  230,230,230,255,	0,0.3};
+    GLfloat v4[] = {0.8f,0.4f,-0.1f,    0,1,0,  255,255,255,255,	0.3,0.3};
+    GLfloat v5[] = {-0.8f,0.4f,-0.1f,   0,1,0,  255,255,255,255,	0,0.3};
     
     VertexStruct *w_vl = calloc(3, sizeof(VertexStruct));
     VertexStruct *w_vr = calloc(3, sizeof(VertexStruct));
@@ -221,8 +221,8 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     b_vr[1] = VertexMake(v1);
     b_vr[2] = VertexMake(v3);
     
-    GraphModel * planeModel = [GraphModel modelWithName:@"Plane_test"];
-    GraphObject *plane = [GraphObject objectWithName:@"Plane" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3],
+    GraphModel *planeModel = [GraphModel modelWithName:@"Plane_test"];
+    GraphObject *plane = [GraphObject objectWithName:@"Paper plane" andMeshes:@[[GraphMesh meshWithName:@"left" andVertices:b_vl vsize:3],
                                                                           [GraphMesh meshWithName:@"right" andVertices:b_vr vsize:3],
                                                                           [GraphMesh meshWithName:@"leftWing" andVertices:w_vl vsize:3],
                                                                           [GraphMesh meshWithName:@"rightWing" andVertices:w_vr vsize:3]]];
@@ -230,6 +230,33 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     planeModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"newspaper.jpg"];
     
     return planeModel;
+}
+
++ (GraphModel *)woodFloorModel:(int)size
+{
+    GLfloat v0[] = {size,size,0,    0,1,0,	255,255,255,255,	2,2};
+    GLfloat v1[] = {size,-size,0,   0,1,0,	255,255,255,255,	2,0};
+    GLfloat v2[] = {-size,-size,0,  0,1,0,  255,255,255,255,	0,0};
+    GLfloat v3[] = {-size,size,0,   0,1,0,  255,255,255,255,	0,2};
+    
+    VertexStruct *tr0 = calloc(3, sizeof(VertexStruct));
+    VertexStruct *tr1 = calloc(3, sizeof(VertexStruct));
+    
+    tr0[0] = VertexMake(v0);
+    tr0[1] = VertexMake(v1);
+    tr0[2] = VertexMake(v2);
+    
+    tr1[0] = VertexMake(v0);
+    tr1[1] = VertexMake(v3);
+    tr1[2] = VertexMake(v2);
+    
+    GraphModel *floorModel = [GraphModel modelWithName:@"Floor_test"];
+    GraphObject *floor = [GraphObject objectWithName:@"Wood floor" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:tr0 vsize:3],
+                                                                                [GraphMesh meshWithName:@"m1" andVertices:tr1 vsize:3]]];
+    [floorModel addChild:floor];
+    floorModel.material = [GraphMaterial materialWithName:@"Wood" andFullFileName:@"woodfloor.jpg"];
+    
+    return floorModel;
 }
 
 @end

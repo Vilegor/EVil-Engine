@@ -17,5 +17,6 @@
 
 ///Test models
 + (GraphModel *)paperPlaneModel;
++ (GraphModel *)woodFloorModel:(int)size;
 
 @end

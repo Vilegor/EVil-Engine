@@ -24,8 +24,8 @@ typedef struct
     GLubyte b;
     GLubyte a;
     
-    GLubyte tex_x;
-    GLubyte tex_y;
+    GLfloat tex_x;
+    GLfloat tex_y;
     
 } VertexStruct;
 

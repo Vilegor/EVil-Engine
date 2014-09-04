@@ -56,18 +56,18 @@
 
 + (GraphObject *)objectWithName:(NSString *)objectName
                        vertices:(VertexStruct *)vertices
-                    vertexCount:(NSInteger)vcount
+                    vertexCount:(int)vcount
                         indices:(GLubyte *)indices
-                    vertexCount:(NSInteger)icount
+                    vertexCount:(int)icount
 {
     return [[GraphObject alloc] initWithName:objectName vertices:vertices vertexCount:vcount indices:indices vertexCount:icount];
 }
 
 - (id)initWithName:(NSString *)objectName
           vertices:(VertexStruct *)vertices
-       vertexCount:(NSInteger)vcount
+       vertexCount:(int)vcount
           indices:(GLubyte *)indices
-       vertexCount:(NSInteger)icount
+       vertexCount:(int)icount
 {
     self = [super init];
     if (self) {
@@ -188,8 +188,9 @@
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, r));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     
-    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, tex_x));
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, tex_x));
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+    
     
     [_material enable];
 	glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_BYTE, _indices);

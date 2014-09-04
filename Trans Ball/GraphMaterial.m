@@ -36,11 +36,16 @@ static int hasTextureUniform;
 - (void)load
 {
     glGetError();
-    NSError *theError;
+    NSError *error = nil;
     NSString *filePath = [[NSBundle mainBundle] pathForResource:_fileName ofType:_fileExt inDirectory:@"Textures"];
     if (filePath) {
-        texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&theError];
-        [self enable];
+        texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&error];
+        if (error) {
+            NSLog(@"Error! Texture '%@' cannot be loaded: %@", _fileName, error);
+        }
+        else {
+            [self enable];
+        }
     }
     else {
         NSLog(@"ERROR! Material '%@' not found!", _name);
@@ -52,6 +57,9 @@ static int hasTextureUniform;
     glUniform1i(hasTextureUniform, 1);
     glBindTexture(texInfo.target, texInfo.name);
     glEnable(texInfo.target);
+    // To let this parameters work, texture size must be normalized (power of 2)
+    glTexParameteri(texInfo.target, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(texInfo.target, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 - (void)disable

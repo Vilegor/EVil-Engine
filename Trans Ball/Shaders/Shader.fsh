@@ -13,7 +13,7 @@ uniform int hasTexture;
 
 void main()
 {
-    if(hasTexture == 0)
+    if (hasTexture == 0)
         gl_FragColor = colorVarying;
     else
         gl_FragColor = colorVarying * texture2D(texture, texCoordFrag);

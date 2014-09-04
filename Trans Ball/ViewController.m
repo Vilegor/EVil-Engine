@@ -112,6 +112,7 @@ enum
 {
     modelArray = [NSMutableArray array];
 //	[modelArray addObject:[GraphModel paperPlaneModel]];
+	[modelArray addObject:[GraphModel woodFloorModel:50]];
     
     NSArray *modelsToLoad = @[@"Test"];
     for (NSString *fileName in modelsToLoad) {
