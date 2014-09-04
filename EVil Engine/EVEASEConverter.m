@@ -12,6 +12,49 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
 
 @implementation EVEASEConverter
 
++ (NSArray *)objectsDescriptionFromFile:(NSString *)aseFileName
+{
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
+    if (!filePath) {
+        NSLog(@"Error! Model file '%@' not found!", aseFileName);
+        return nil;
+    }
+    
+    // read everything from text
+    NSError *error = nil;
+    NSString *fileContents = [NSString stringWithContentsOfFile:filePath
+                                                       encoding:NSUTF8StringEncoding
+                                                          error:&error];
+    if (!fileContents) {
+        NSLog(@"ERROR! %@", error);
+    }
+    else {
+        fileContents = [EVEASEConverter normalizeTextDescription:fileContents];
+        NSString *pattern = @"\\*GEOMOBJECT \\{(.(?!\\*GEOMOBJECT))*\\}";
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                               options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
+                                                                                 error:&error];
+        if (error) {
+            NSLog(@"ERROR! Load model file: %@", error);
+        }
+        else {
+            NSMutableArray *objectsASE = [NSMutableArray array];
+            NSArray *resultRegex = [regex matchesInString:fileContents options:0 range:NSMakeRange(0, fileContents.length)];
+            if (!resultRegex.count) {
+                NSLog(@"Error! Model file '%@' is empty or description format is wrong!", aseFileName);
+                return nil;
+            }
+            for (NSTextCheckingResult *result in resultRegex) {
+                [objectsASE addObject:[fileContents substringWithRange:result.range]];
+            }
+
+            return objectsASE;
+        }
+    }
+    return nil;
+}
+
+
 + (NSString *)lineNamed:(NSString *)name fromTextDescription:(NSString *)description
 {
     NSError *error = nil;

@@ -88,7 +88,7 @@
         used[i] = 1;            // mark to skip
         _indices[i] = v;
 		for (int j = i + 1; j < _vertexCount; j++) {
-			if (VertexCompare(_vertexData[i], _vertexData[j])) {
+			if (EVEVertexCompare(_vertexData[i], _vertexData[j])) {
 				_indices[j] = v;
                 used[j] = 255;  // mark to skip then delete
 			}

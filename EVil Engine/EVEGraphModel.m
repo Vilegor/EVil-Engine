@@ -35,45 +35,13 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 
 + (EVEGraphModel *)modelFromFile:(NSString *)aseFileName
 {
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
-    if (!filePath) {
-        NSLog(@"Error! Model '%@' not found!", aseFileName);
-        return nil;
+    NSArray *objectsASE = [EVEASEConverter objectsDescriptionFromFile:aseFileName];
+    if (objectsASE) {
+        EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
+        [model setupWithASEGeomobjects:objectsASE];
+        return model;
     }
     
-    // read everything from text
-    NSError *error = nil;
-    NSString *fileContents = [NSString stringWithContentsOfFile:filePath
-                                                       encoding:NSUTF8StringEncoding
-                                                          error:&error];
-    if (!fileContents) {
-        NSLog(@"ERROR! %@", error);
-    }
-    else {
-        fileContents = [EVEASEConverter normalizeTextDescription:fileContents];
-        NSString *pattern = @"\\*GEOMOBJECT \\{(.(?!\\*GEOMOBJECT))*\\}";
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                               options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
-                                                                                 error:&error];
-        if (error) {
-            NSLog(@"ERROR! Load model: %@", error);
-        }
-        else {
-            NSMutableArray *objectsASE = [NSMutableArray array];
-            NSArray *resultRegex = [regex matchesInString:fileContents options:0 range:NSMakeRange(0, fileContents.length)];
-            if (!resultRegex.count) {
-                NSLog(@"Error! Model '%@' is empty or description format is wrong!", aseFileName);
-                return nil;
-            }
-            for (NSTextCheckingResult *result in resultRegex) {
-                [objectsASE addObject:[fileContents substringWithRange:result.range]];
-            }
-            EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
-            [model setupWithASEGeomobjects:objectsASE];
-            
-            return model;
-        }
-    }
     return nil;
 }
 
@@ -203,12 +171,12 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     EVEVertexStruct *vertices = calloc(6, sizeof(EVEVertexStruct));
     GLubyte indices[12] = {0,2,3, 0,2,5, 0,1,3, 0,1,4};
     
-    vertices[0] = VertexMake(v0);
-    vertices[1] = VertexMake(v1);
-    vertices[2] = VertexMake(v2);
-    vertices[3] = VertexMake(v3);
-    vertices[4] = VertexMake(v4);
-    vertices[5] = VertexMake(v5);
+    vertices[0] = EVEVertexMake(v0);
+    vertices[1] = EVEVertexMake(v1);
+    vertices[2] = EVEVertexMake(v2);
+    vertices[3] = EVEVertexMake(v3);
+    vertices[4] = EVEVertexMake(v4);
+    vertices[5] = EVEVertexMake(v5);
     
     EVEGraphModel *planeModel = [EVEGraphModel modelWithName:@"Plane_test"];
     EVEGraphMesh *plane = [EVEGraphMesh meshWithName:@"Paper plane" vertices:vertices vertexCount:6 indices:indices indexCount:12];
@@ -229,10 +197,10 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     EVEVertexStruct *vertices = calloc(4, sizeof(EVEVertexStruct));
     GLubyte indices[6] = {0,1,2, 0,3,2};
     
-    vertices[0] = VertexMake(v0);
-    vertices[1] = VertexMake(v1);
-    vertices[2] = VertexMake(v2);
-    vertices[3] = VertexMake(v3);
+    vertices[0] = EVEVertexMake(v0);
+    vertices[1] = EVEVertexMake(v1);
+    vertices[2] = EVEVertexMake(v2);
+    vertices[3] = EVEVertexMake(v3);
     
     EVEGraphModel *floorModel = [EVEGraphModel modelWithName:@"Floor_test"];
     EVEGraphMesh *floor = [EVEGraphMesh meshWithName:@"Wooden floor" vertices:vertices vertexCount:4 indices:indices indexCount:6];

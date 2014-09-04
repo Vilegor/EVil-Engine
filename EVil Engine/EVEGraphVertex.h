@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#define VERTEX_DATA_SIZE 12
-#define MAX_RANGE_LIMIT 0.05f
+#define EVE_VERTEX_DATA_SIZE 12
+#define EVE_MAX_RANGE_LIMIT 0.05f
 
 typedef struct
 {
@@ -29,7 +29,7 @@ typedef struct
     
 } EVEVertexStruct;
 
-EVEVertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]);
-GLfloat* VertexData(EVEVertexStruct vertex);
-BOOL VertexCompare(EVEVertexStruct v1, EVEVertexStruct v2);
-GLfloat VerteciesRange(EVEVertexStruct v1, EVEVertexStruct v2);
+EVEVertexStruct EVEVertexMake(GLfloat data[EVE_VERTEX_DATA_SIZE]);
+GLfloat* EVEVertexData(EVEVertexStruct vertex);
+BOOL EVEVertexCompare(EVEVertexStruct v1, EVEVertexStruct v2);
+GLfloat EVEVerteciesRange(EVEVertexStruct v1, EVEVertexStruct v2);

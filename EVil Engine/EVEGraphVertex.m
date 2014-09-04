@@ -8,7 +8,7 @@
 
 #import "EVEGraphVertex.h"
 
-EVEVertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]) {
+EVEVertexStruct EVEVertexMake(GLfloat data[EVE_VERTEX_DATA_SIZE]) {
     EVEVertexStruct vertex;
     vertex.x = data[0];
     vertex.y = data[1];
@@ -29,8 +29,8 @@ EVEVertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]) {
     return vertex;
 }
 
-GLfloat* VertexData(EVEVertexStruct vertex) {
-	GLfloat *data = calloc(VERTEX_DATA_SIZE, sizeof(GLfloat));
+GLfloat* EVEVertexData(EVEVertexStruct vertex) {
+	GLfloat *data = calloc(EVE_VERTEX_DATA_SIZE, sizeof(GLfloat));
 	
 	data[0] = vertex.x;
 	data[1] = vertex.y;
@@ -51,13 +51,13 @@ GLfloat* VertexData(EVEVertexStruct vertex) {
 	return data;
 }
 
-BOOL VertexCompare(EVEVertexStruct v1, EVEVertexStruct v2) {
-	if (VerteciesRange(v1, v2) > MAX_RANGE_LIMIT)
+BOOL EVEVertexCompare(EVEVertexStruct v1, EVEVertexStruct v2) {
+	if (EVEVerteciesRange(v1, v2) > EVE_MAX_RANGE_LIMIT)
 		return NO;
 	
-	GLfloat *d1 = VertexData(v1);
-	GLfloat *d2 = VertexData(v2);
-	for (int i = 3; i < VERTEX_DATA_SIZE; i++) {
+	GLfloat *d1 = EVEVertexData(v1);
+	GLfloat *d2 = EVEVertexData(v2);
+	for (int i = 3; i < EVE_VERTEX_DATA_SIZE; i++) {
 		if (d1[i] != d2[i]) {
             free(d1);
             free(d2);
@@ -70,7 +70,7 @@ BOOL VertexCompare(EVEVertexStruct v1, EVEVertexStruct v2) {
 	return YES;
 }
 
-GLfloat VerteciesRange(EVEVertexStruct v1, EVEVertexStruct v2) {
+GLfloat EVEVerteciesRange(EVEVertexStruct v1, EVEVertexStruct v2) {
 	GLfloat dx = v1.x - v2.x;
 	GLfloat dy = v1.y - v2.y;
 	GLfloat dz = v1.z - v2.z;

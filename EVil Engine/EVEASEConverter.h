@@ -10,6 +10,8 @@
 
 @interface EVEASEConverter : NSObject
 
++ (NSArray *)objectsDescriptionFromFile:(NSString *)aseFileName;
+
 + (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
 + (NSNumber *)numberValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
 + (NSArray *)valueListNamed:(NSString *)name fromTextDescription:(NSString *)description;
