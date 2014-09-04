@@ -227,17 +227,17 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
                                                                           [GraphMesh meshWithName:@"leftWing" andVertices:w_vl vsize:3],
                                                                           [GraphMesh meshWithName:@"rightWing" andVertices:w_vr vsize:3]]];
     [planeModel addChild:plane];
-    planeModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"newspaper.jpg"];
+    planeModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"newspaper.png"];
     
     return planeModel;
 }
 
 + (GraphModel *)woodFloorModel:(int)size
 {
-    GLfloat v0[] = {size,size,0,    0,1,0,	255,255,255,255,	2,2};
-    GLfloat v1[] = {size,-size,0,   0,1,0,	255,255,255,255,	2,0};
+    GLfloat v0[] = {size,size,0,    0,1,0,	255,255,255,255,	size/10,size/10};
+    GLfloat v1[] = {size,-size,0,   0,1,0,	255,255,255,255,	size/10,0};
     GLfloat v2[] = {-size,-size,0,  0,1,0,  255,255,255,255,	0,0};
-    GLfloat v3[] = {-size,size,0,   0,1,0,  255,255,255,255,	0,2};
+    GLfloat v3[] = {-size,size,0,   0,1,0,  255,255,255,255,	0,size/10};
     
     VertexStruct *tr0 = calloc(3, sizeof(VertexStruct));
     VertexStruct *tr1 = calloc(3, sizeof(VertexStruct));
@@ -254,7 +254,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     GraphObject *floor = [GraphObject objectWithName:@"Wood floor" andMeshes:@[[GraphMesh meshWithName:@"m0" andVertices:tr0 vsize:3],
                                                                                 [GraphMesh meshWithName:@"m1" andVertices:tr1 vsize:3]]];
     [floorModel addChild:floor];
-    floorModel.material = [GraphMaterial materialWithName:@"Wood" andFullFileName:@"woodfloor.jpg"];
+    floorModel.material = [GraphMaterial materialWithName:@"Wood" andFullFileName:@"woodfloor.png"];
     
     return floorModel;
 }
