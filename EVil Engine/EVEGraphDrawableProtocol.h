@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GraphDrawableProtocol <NSObject>
+@protocol EVEGraphDrawableProtocol <NSObject>
 
 - (void)draw;
 - (void)resetDrawableData;

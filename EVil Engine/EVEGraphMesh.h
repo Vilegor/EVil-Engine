@@ -6,21 +6,21 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "GraphDrawableProtocol.h"
-#import "GraphMaterial.h"
-#import "GraphVertex.h"
+#import "EVEGraphDrawableProtocol.h"
+#import "EVEGraphMaterial.h"
+#import "EVEGraphVertex.h"
 
-@interface GraphMesh : NSObject <GraphDrawableProtocol> {
+@interface EVEGraphMesh : NSObject <EVEGraphDrawableProtocol> {
     NSString *_name;
 }
 
 @property(nonatomic, strong, readonly) NSString *name;
-@property(nonatomic, readonly) VertexStruct *vertexData;
+@property(nonatomic, readonly) EVEVertexStruct *vertexData;
 @property(nonatomic, readonly) GLuint vertexCount;
-@property(nonatomic, strong) GraphMaterial *material;
+@property(nonatomic, strong) EVEGraphMaterial *material;
 
-+ (GraphMesh *)meshWithName:(NSString *)name
-                   vertices:(VertexStruct *)vertices
++ (EVEGraphMesh *)meshWithName:(NSString *)name
+                   vertices:(EVEVertexStruct *)vertices
                 vertexCount:(int)vcount
                     indices:(GLubyte *)indices
                  indexCount:(int)icount;

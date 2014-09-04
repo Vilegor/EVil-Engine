@@ -7,7 +7,7 @@
 //
 
 #import "EVEViewController.h"
-#import "GraphModel.h"
+#import "EVEGraphModel.h"
 
 static NSString * const kBallModelName = @"Ball";
 static NSString * const kRobotModelName = @"Robot";
@@ -112,11 +112,11 @@ enum
 {
     modelArray = [NSMutableArray array];
     //	[modelArray addObject:[GraphModel paperPlaneModel]];
-	[modelArray addObject:[GraphModel woodFloorModel:50]];
+	[modelArray addObject:[EVEGraphModel woodFloorModel:50]];
     
     NSArray *modelsToLoad = @[@"Test"];
     for (NSString *fileName in modelsToLoad) {
-        GraphModel *model = [GraphModel modelFromFile:fileName];
+        EVEGraphModel *model = [EVEGraphModel modelFromFile:fileName];
         if (model)
             [modelArray addObject:model];
     }
@@ -179,12 +179,12 @@ enum
     
     // Render the object again with ES2
     glUseProgram(_program);
-    [GraphMaterial setUniformLocations:_program];
+    [EVEGraphMaterial setUniformLocations:_program];
     
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
     
-    for (GraphModel *m in modelArray)
+    for (EVEGraphModel *m in modelArray)
         [m draw];
 }
 

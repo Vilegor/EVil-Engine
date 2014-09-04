@@ -7,15 +7,15 @@
 //
 
 #import <GLKit/GLKit.h>
-#import "UniformProcessorProtocol.h"
+#import "EVEUniformProcessorProtocol.h"
 
-@interface GraphMaterial : NSObject <UniformProcessorProtocol>
+@interface EVEGraphMaterial : NSObject <EVEUniformProcessorProtocol>
 
 @property (nonatomic, strong, readonly) NSString *name;
 @property (nonatomic, strong, readonly) NSString *fileName;
 @property (nonatomic, strong, readonly) NSString *fileExt;
 
-+ (GraphMaterial *)materialWithName:(NSString *)name andFullFileName:(NSString *)fileName;
++ (EVEGraphMaterial *)materialWithName:(NSString *)name andFullFileName:(NSString *)fileName;
 - (id)initWithName:(NSString *)name andFullFileName:(NSString *)fileName;
 
 - (void)load;

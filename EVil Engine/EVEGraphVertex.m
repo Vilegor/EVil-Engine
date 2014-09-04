@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "GraphVertex.h"
+#import "EVEGraphVertex.h"
 
-VertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]) {
-    VertexStruct vertex;
+EVEVertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]) {
+    EVEVertexStruct vertex;
     vertex.x = data[0];
     vertex.y = data[1];
     vertex.z = data[2];
@@ -29,7 +29,7 @@ VertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]) {
     return vertex;
 }
 
-GLfloat* VertexData(VertexStruct vertex) {
+GLfloat* VertexData(EVEVertexStruct vertex) {
 	GLfloat *data = calloc(VERTEX_DATA_SIZE, sizeof(GLfloat));
 	
 	data[0] = vertex.x;
@@ -51,7 +51,7 @@ GLfloat* VertexData(VertexStruct vertex) {
 	return data;
 }
 
-BOOL VertexCompare(VertexStruct v1, VertexStruct v2) {
+BOOL VertexCompare(EVEVertexStruct v1, EVEVertexStruct v2) {
 	if (VerteciesRange(v1, v2) > MAX_RANGE_LIMIT)
 		return NO;
 	
@@ -70,7 +70,7 @@ BOOL VertexCompare(VertexStruct v1, VertexStruct v2) {
 	return YES;
 }
 
-GLfloat VerteciesRange(VertexStruct v1, VertexStruct v2) {
+GLfloat VerteciesRange(EVEVertexStruct v1, EVEVertexStruct v2) {
 	GLfloat dx = v1.x - v2.x;
 	GLfloat dy = v1.y - v2.y;
 	GLfloat dz = v1.z - v2.z;

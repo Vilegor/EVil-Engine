@@ -7,20 +7,20 @@
 //
 
 #import <GLKit/GLKit.h>
-#import "GraphMesh.h"
-#import "GraphDrawableProtocol.h"
+#import "EVEGraphMesh.h"
+#import "EVEGraphDrawableProtocol.h"
 
-@interface GraphObject : GraphMesh
+@interface EVEGraphObject : EVEGraphMesh
 
-@property(nonatomic, weak) GraphObject *parent;
+@property(nonatomic, weak) EVEGraphObject *parent;
 
 - (instancetype)initWithName:(NSString *)name;
-+ (GraphObject *)groupWithName:(NSString *)groupName;
++ (EVEGraphObject *)groupWithName:(NSString *)groupName;
 
 @property(nonatomic, readonly, getter = childCount) NSInteger childCount;
 @property(nonatomic, readonly, getter = allChildren) NSArray *allChildren;
-- (void)addChild:(GraphMesh *)child;
+- (void)addChild:(EVEGraphMesh *)child;
 - (void)removeChild:(NSString *)childName;
-- (GraphMesh *)childByName:(NSString *)childName;
+- (EVEGraphMesh *)childByName:(NSString *)childName;
 
 @end

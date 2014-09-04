@@ -27,9 +27,9 @@ typedef struct
     GLfloat tex_x;
     GLfloat tex_y;
     
-} VertexStruct;
+} EVEVertexStruct;
 
-VertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]);
-GLfloat* VertexData(VertexStruct vertex);
-BOOL VertexCompare(VertexStruct v1, VertexStruct v2);
-GLfloat VerteciesRange(VertexStruct v1, VertexStruct v2);
+EVEVertexStruct VertexMake(GLfloat data[VERTEX_DATA_SIZE]);
+GLfloat* VertexData(EVEVertexStruct vertex);
+BOOL VertexCompare(EVEVertexStruct v1, EVEVertexStruct v2);
+GLfloat VerteciesRange(EVEVertexStruct v1, EVEVertexStruct v2);

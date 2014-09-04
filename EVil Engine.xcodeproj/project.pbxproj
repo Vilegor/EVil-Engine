@@ -26,12 +26,12 @@
 		0EDB0FFF19B88EC300B8554E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EDB0FD619B88EC300B8554E /* UIKit.framework */; };
 		0EDB100719B88EC300B8554E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0EDB100519B88EC300B8554E /* InfoPlist.strings */; };
 		0EDB100919B88EC300B8554E /* EVil_EngineTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB100819B88EC300B8554E /* EVil_EngineTests.m */; };
-		0EDB101819B88FD700B8554E /* ASEConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB101719B88FD700B8554E /* ASEConverter.m */; };
-		0EDB102419B88FE400B8554E /* GraphMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB101B19B88FE400B8554E /* GraphMaterial.m */; };
-		0EDB102519B88FE400B8554E /* GraphMesh.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB101D19B88FE400B8554E /* GraphMesh.m */; };
-		0EDB102619B88FE400B8554E /* GraphModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB101F19B88FE400B8554E /* GraphModel.m */; };
-		0EDB102719B88FE400B8554E /* GraphObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB102119B88FE400B8554E /* GraphObject.m */; };
-		0EDB102819B88FE400B8554E /* GraphVertex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB102319B88FE400B8554E /* GraphVertex.m */; };
+		0EDB101819B88FD700B8554E /* EVEASEConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB101719B88FD700B8554E /* EVEASEConverter.m */; };
+		0EDB102419B88FE400B8554E /* EVEGraphMaterial.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB101B19B88FE400B8554E /* EVEGraphMaterial.m */; };
+		0EDB102519B88FE400B8554E /* EVEGraphMesh.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB101D19B88FE400B8554E /* EVEGraphMesh.m */; };
+		0EDB102619B88FE400B8554E /* EVEGraphModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB101F19B88FE400B8554E /* EVEGraphModel.m */; };
+		0EDB102719B88FE400B8554E /* EVEGraphObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB102119B88FE400B8554E /* EVEGraphObject.m */; };
+		0EDB102819B88FE400B8554E /* EVEGraphVertex.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EDB102319B88FE400B8554E /* EVEGraphVertex.m */; };
 		0EDB102D19B8911A00B8554E /* Models in Resources */ = {isa = PBXBuildFile; fileRef = 0EDB102B19B8911A00B8554E /* Models */; };
 		0EDB102E19B8911A00B8554E /* Textures in Resources */ = {isa = PBXBuildFile; fileRef = 0EDB102C19B8911A00B8554E /* Textures */; };
 /* End PBXBuildFile section */
@@ -71,20 +71,20 @@
 		0EDB100419B88EC300B8554E /* EVil EngineTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "EVil EngineTests-Info.plist"; sourceTree = "<group>"; };
 		0EDB100619B88EC300B8554E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0EDB100819B88EC300B8554E /* EVil_EngineTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EVil_EngineTests.m; sourceTree = "<group>"; };
-		0EDB101619B88FD700B8554E /* ASEConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASEConverter.h; sourceTree = "<group>"; };
-		0EDB101719B88FD700B8554E /* ASEConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASEConverter.m; sourceTree = "<group>"; };
-		0EDB101919B88FE400B8554E /* GraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDrawableProtocol.h; sourceTree = "<group>"; };
-		0EDB101A19B88FE400B8554E /* GraphMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphMaterial.h; sourceTree = "<group>"; };
-		0EDB101B19B88FE400B8554E /* GraphMaterial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphMaterial.m; sourceTree = "<group>"; };
-		0EDB101C19B88FE400B8554E /* GraphMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphMesh.h; sourceTree = "<group>"; };
-		0EDB101D19B88FE400B8554E /* GraphMesh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphMesh.m; sourceTree = "<group>"; };
-		0EDB101E19B88FE400B8554E /* GraphModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphModel.h; sourceTree = "<group>"; };
-		0EDB101F19B88FE400B8554E /* GraphModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphModel.m; sourceTree = "<group>"; };
-		0EDB102019B88FE400B8554E /* GraphObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphObject.h; sourceTree = "<group>"; };
-		0EDB102119B88FE400B8554E /* GraphObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphObject.m; sourceTree = "<group>"; };
-		0EDB102219B88FE400B8554E /* GraphVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphVertex.h; sourceTree = "<group>"; };
-		0EDB102319B88FE400B8554E /* GraphVertex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphVertex.m; sourceTree = "<group>"; };
-		0EDB102919B8909300B8554E /* UniformProcessorProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UniformProcessorProtocol.h; sourceTree = "<group>"; };
+		0EDB101619B88FD700B8554E /* EVEASEConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVEASEConverter.h; sourceTree = "<group>"; };
+		0EDB101719B88FD700B8554E /* EVEASEConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVEASEConverter.m; sourceTree = "<group>"; };
+		0EDB101919B88FE400B8554E /* EVEGraphDrawableProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVEGraphDrawableProtocol.h; sourceTree = "<group>"; };
+		0EDB101A19B88FE400B8554E /* EVEGraphMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVEGraphMaterial.h; sourceTree = "<group>"; };
+		0EDB101B19B88FE400B8554E /* EVEGraphMaterial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVEGraphMaterial.m; sourceTree = "<group>"; };
+		0EDB101C19B88FE400B8554E /* EVEGraphMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVEGraphMesh.h; sourceTree = "<group>"; };
+		0EDB101D19B88FE400B8554E /* EVEGraphMesh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVEGraphMesh.m; sourceTree = "<group>"; };
+		0EDB101E19B88FE400B8554E /* EVEGraphModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVEGraphModel.h; sourceTree = "<group>"; };
+		0EDB101F19B88FE400B8554E /* EVEGraphModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVEGraphModel.m; sourceTree = "<group>"; };
+		0EDB102019B88FE400B8554E /* EVEGraphObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVEGraphObject.h; sourceTree = "<group>"; };
+		0EDB102119B88FE400B8554E /* EVEGraphObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVEGraphObject.m; sourceTree = "<group>"; };
+		0EDB102219B88FE400B8554E /* EVEGraphVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVEGraphVertex.h; sourceTree = "<group>"; };
+		0EDB102319B88FE400B8554E /* EVEGraphVertex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVEGraphVertex.m; sourceTree = "<group>"; };
+		0EDB102919B8909300B8554E /* EVEUniformProcessorProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVEUniformProcessorProtocol.h; sourceTree = "<group>"; };
 		0EDB102B19B8911A00B8554E /* Models */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Models; sourceTree = "<group>"; };
 		0EDB102C19B8911A00B8554E /* Textures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Textures; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -216,16 +216,16 @@
 		0EDB101419B88F2500B8554E /* Model Components */ = {
 			isa = PBXGroup;
 			children = (
-				0EDB101E19B88FE400B8554E /* GraphModel.h */,
-				0EDB101F19B88FE400B8554E /* GraphModel.m */,
-				0EDB102019B88FE400B8554E /* GraphObject.h */,
-				0EDB102119B88FE400B8554E /* GraphObject.m */,
-				0EDB101C19B88FE400B8554E /* GraphMesh.h */,
-				0EDB101D19B88FE400B8554E /* GraphMesh.m */,
-				0EDB102219B88FE400B8554E /* GraphVertex.h */,
-				0EDB102319B88FE400B8554E /* GraphVertex.m */,
-				0EDB101A19B88FE400B8554E /* GraphMaterial.h */,
-				0EDB101B19B88FE400B8554E /* GraphMaterial.m */,
+				0EDB101E19B88FE400B8554E /* EVEGraphModel.h */,
+				0EDB101F19B88FE400B8554E /* EVEGraphModel.m */,
+				0EDB102019B88FE400B8554E /* EVEGraphObject.h */,
+				0EDB102119B88FE400B8554E /* EVEGraphObject.m */,
+				0EDB101C19B88FE400B8554E /* EVEGraphMesh.h */,
+				0EDB101D19B88FE400B8554E /* EVEGraphMesh.m */,
+				0EDB102219B88FE400B8554E /* EVEGraphVertex.h */,
+				0EDB102319B88FE400B8554E /* EVEGraphVertex.m */,
+				0EDB101A19B88FE400B8554E /* EVEGraphMaterial.h */,
+				0EDB101B19B88FE400B8554E /* EVEGraphMaterial.m */,
 				0EDB102A19B8909C00B8554E /* Protocols */,
 			);
 			name = "Model Components";
@@ -234,8 +234,8 @@
 		0EDB101519B88FC000B8554E /* Converter */ = {
 			isa = PBXGroup;
 			children = (
-				0EDB101619B88FD700B8554E /* ASEConverter.h */,
-				0EDB101719B88FD700B8554E /* ASEConverter.m */,
+				0EDB101619B88FD700B8554E /* EVEASEConverter.h */,
+				0EDB101719B88FD700B8554E /* EVEASEConverter.m */,
 			);
 			name = Converter;
 			sourceTree = "<group>";
@@ -243,8 +243,8 @@
 		0EDB102A19B8909C00B8554E /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				0EDB101919B88FE400B8554E /* GraphDrawableProtocol.h */,
-				0EDB102919B8909300B8554E /* UniformProcessorProtocol.h */,
+				0EDB101919B88FE400B8554E /* EVEGraphDrawableProtocol.h */,
+				0EDB102919B8909300B8554E /* EVEUniformProcessorProtocol.h */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -352,14 +352,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0EDB102419B88FE400B8554E /* GraphMaterial.m in Sources */,
-				0EDB102719B88FE400B8554E /* GraphObject.m in Sources */,
+				0EDB102419B88FE400B8554E /* EVEGraphMaterial.m in Sources */,
+				0EDB102719B88FE400B8554E /* EVEGraphObject.m in Sources */,
 				0EDB0FF419B88EC300B8554E /* EVEViewController.m in Sources */,
 				0EDB0FE319B88EC300B8554E /* main.m in Sources */,
-				0EDB102819B88FE400B8554E /* GraphVertex.m in Sources */,
-				0EDB102619B88FE400B8554E /* GraphModel.m in Sources */,
-				0EDB102519B88FE400B8554E /* GraphMesh.m in Sources */,
-				0EDB101819B88FD700B8554E /* ASEConverter.m in Sources */,
+				0EDB102819B88FE400B8554E /* EVEGraphVertex.m in Sources */,
+				0EDB102619B88FE400B8554E /* EVEGraphModel.m in Sources */,
+				0EDB102519B88FE400B8554E /* EVEGraphMesh.m in Sources */,
+				0EDB101819B88FD700B8554E /* EVEASEConverter.m in Sources */,
 				0EDB0FE719B88EC300B8554E /* EVEAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -575,6 +575,7 @@
 				0EDB100E19B88EC300B8554E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0EDB100F19B88EC300B8554E /* Build configuration list for PBXNativeTarget "EVil EngineTests" */ = {
 			isa = XCConfigurationList;
@@ -583,6 +584,7 @@
 				0EDB101119B88EC300B8554E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

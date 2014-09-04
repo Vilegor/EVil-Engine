@@ -8,7 +8,7 @@
 
 #import <GLKit/GLKit.h>
 
-@protocol UniformProcessorProtocol <NSObject>
+@protocol EVEUniformProcessorProtocol <NSObject>
 
 + (void)setUniformLocations:(GLint)program;
 

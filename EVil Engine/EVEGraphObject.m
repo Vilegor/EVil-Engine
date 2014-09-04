@@ -6,15 +6,15 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "GraphObject.h"
-#import "GraphObject.h"
+#import "EVEGraphObject.h"
+#import "EVEGraphObject.h"
 
-@interface GraphObject() {
+@interface EVEGraphObject() {
     NSMutableDictionary *_childDictionary;
 }
 @end
 
-@implementation GraphObject
+@implementation EVEGraphObject
 
 - (id)initWithName:(NSString *)name
 {
@@ -27,14 +27,14 @@
     return self;
 }
 
-+ (GraphObject *)groupWithName:(NSString *)groupName
++ (EVEGraphObject *)groupWithName:(NSString *)groupName
 {
-    return [[GraphObject alloc] initWithName:groupName];
+    return [[EVEGraphObject alloc] initWithName:groupName];
 }
 
 #pragma mark - Group
 
-- (void)setParent:(GraphObject *)parent
+- (void)setParent:(EVEGraphObject *)parent
 {
     if (parent != _parent)
         [parent removeChild:self.name];
@@ -52,7 +52,7 @@
     return _childDictionary.allValues;
 }
 
-- (void)addChild:(GraphMesh *)child
+- (void)addChild:(EVEGraphMesh *)child
 {
     if (!child || !child.name) {
         NSLog(@"ERROR! %@<ADD>: Child is nil!", self.name);
@@ -75,7 +75,7 @@
     }
 }
 
-- (GraphMesh *)childByName:(NSString *)childName
+- (EVEGraphMesh *)childByName:(NSString *)childName
 {
     if (childName) {
         return _childDictionary[childName];
@@ -85,17 +85,17 @@
 
 #pragma mark - Material
 
-- (void)setMaterial:(GraphMaterial *)material
+- (void)setMaterial:(EVEGraphMaterial *)material
 {
-    for (GraphMesh *obj in _childDictionary.allValues) {
+    for (EVEGraphMesh *obj in _childDictionary.allValues) {
         obj.material = material;
     }
 }
 
-- (GraphMaterial *)material
+- (EVEGraphMaterial *)material
 {
-    GraphMaterial *lastMaterial;
-    for (GraphMesh *obj in _childDictionary.allValues) {
+    EVEGraphMaterial *lastMaterial;
+    for (EVEGraphMesh *obj in _childDictionary.allValues) {
         if (!lastMaterial)
             lastMaterial = obj.material;
         else if (![lastMaterial isEqual:obj.material])
@@ -108,7 +108,7 @@
 
 - (void)draw
 {
-    for (GraphMesh *obj in _childDictionary.allValues) {
+    for (EVEGraphMesh *obj in _childDictionary.allValues) {
         [obj draw];
     }
     
@@ -116,7 +116,7 @@
 
 - (void)resetDrawableData
 {
-    for (GraphMesh *obj in _childDictionary.allValues) {
+    for (EVEGraphMesh *obj in _childDictionary.allValues) {
         [obj resetDrawableData];
     }
 

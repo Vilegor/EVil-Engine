@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "ASEConverter.h"
+#import "EVEASEConverter.h"
 static NSString * const kLineFormat =           @"\\*%@[ \\t]+(.(?!\\*))+\\n";
 static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!\\*|\\n))+";
 
-@implementation ASEConverter
+@implementation EVEASEConverter
 
 + (NSString *)lineNamed:(NSString *)name fromTextDescription:(NSString *)description
 {

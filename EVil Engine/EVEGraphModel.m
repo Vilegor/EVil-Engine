@@ -6,26 +6,26 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "GraphModel.h"
-#import "ASEConverter.h"
+#import "EVEGraphModel.h"
+#import "EVEASEConverter.h"
 
 static int modelId;
 
-@interface GraphModel() {
+@interface EVEGraphModel() {
 
 }
 @end
 
-@implementation GraphModel
+@implementation EVEGraphModel
 
-+ (GraphModel *)emptyModel
++ (EVEGraphModel *)emptyModel
 {
-    return [[GraphModel alloc] initWithName:[NSString stringWithFormat:@"Model_%d", modelId++]];
+    return [[EVEGraphModel alloc] initWithName:[NSString stringWithFormat:@"Model_%d", modelId++]];
 }
 
-+ (GraphModel *)modelWithName:(NSString *)modelName
++ (EVEGraphModel *)modelWithName:(NSString *)modelName
 {
-    return [[GraphModel alloc] initWithName:modelName];
+    return [[EVEGraphModel alloc] initWithName:modelName];
 }
 
 #pragma mark - Load from .ASE
@@ -33,7 +33,7 @@ static int modelId;
 static NSString * const kASEGroupsHeader = @"*GROUP";
 static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 
-+ (GraphModel *)modelFromFile:(NSString *)aseFileName
++ (EVEGraphModel *)modelFromFile:(NSString *)aseFileName
 {
     NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
     if (!filePath) {
@@ -50,7 +50,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         NSLog(@"ERROR! %@", error);
     }
     else {
-        fileContents = [ASEConverter normalizeTextDescription:fileContents];
+        fileContents = [EVEASEConverter normalizeTextDescription:fileContents];
         NSString *pattern = @"\\*GEOMOBJECT \\{(.(?!\\*GEOMOBJECT))*\\}";
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
@@ -68,7 +68,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
             for (NSTextCheckingResult *result in resultRegex) {
                 [objectsASE addObject:[fileContents substringWithRange:result.range]];
             }
-            GraphModel *model = [GraphModel modelWithName:aseFileName];
+            EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
             [model setupWithASEGeomobjects:objectsASE];
             
             return model;
@@ -80,54 +80,54 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 - (void)setupWithASEGeomobjects:(NSArray *)aseObjects
 {
     for (NSString *objDesc in aseObjects) {
-        GraphObject *parentGroup = nil;
+        EVEGraphObject *parentGroup = nil;
         NSMutableArray *texCoords = nil;
         NSMutableArray *colors = nil;
         
         // Check parent
-        NSString *parentName = [ASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
+        NSString *parentName = [EVEASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
         if (parentName) {
-            parentGroup = (GraphObject *)[self childByName:parentName];
+            parentGroup = (EVEGraphObject *)[self childByName:parentName];
             if (!parentGroup) {
-                parentGroup = [GraphObject groupWithName:parentName];
+                parentGroup = [EVEGraphObject groupWithName:parentName];
                 [self addChild:parentGroup];
             }
         }
         
         // Get main properties
-        NSString *objName = [ASEConverter stringValueNamed:@"NODE_NAME" fromTextDescription:objDesc];
-        int vcount = [ASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc].intValue;
-        int fcount = [ASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
+        NSString *objName = [EVEASEConverter stringValueNamed:@"NODE_NAME" fromTextDescription:objDesc];
+        int vcount = [EVEASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc].intValue;
+        int fcount = [EVEASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
         
         // Load texture coords
-        int tcount = [ASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
+        int tcount = [EVEASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
         if (tcount)
             texCoords = [NSMutableArray array];
         for (int t = 0; t < tcount; t++) {
-            NSArray *coord = [ASEConverter valueListNamed:@"MESH_TVERT" index:t fromTextDescription:objDesc];
+            NSArray *coord = [EVEASEConverter valueListNamed:@"MESH_TVERT" index:t fromTextDescription:objDesc];
             [texCoords addObject:coord];
         }
     
         // Load colors
-        int ccount = [ASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
+        int ccount = [EVEASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
         if (ccount)
             colors = [NSMutableArray array];
         for (int c = 0; c < ccount; c++) {
-            NSArray *color = [ASEConverter valueListNamed:@"MESH_VERTCOL" index:c fromTextDescription:objDesc];
+            NSArray *color = [EVEASEConverter valueListNamed:@"MESH_VERTCOL" index:c fromTextDescription:objDesc];
             [colors addObject:color];
         }
         
         // Setup vertex data
-        VertexStruct *vertices = calloc(vcount, sizeof(VertexStruct));
+        EVEVertexStruct *vertices = calloc(vcount, sizeof(EVEVertexStruct));
         for (int v = 0; v < vcount; v++) {
             // Set coord
-            NSArray *coord = [ASEConverter valueListNamed:@"MESH_VERTEX" index:v fromTextDescription:objDesc];
+            NSArray *coord = [EVEASEConverter valueListNamed:@"MESH_VERTEX" index:v fromTextDescription:objDesc];
             vertices[v].x = [coord[0] floatValue];
             vertices[v].y = [coord[1] floatValue];
             vertices[v].z = [coord[2] floatValue];
             
             // Set normal
-            NSArray *normal = [ASEConverter valueListNamed:@"MESH_VERTEXNORMAL" index:v fromTextDescription:objDesc];
+            NSArray *normal = [EVEASEConverter valueListNamed:@"MESH_VERTEXNORMAL" index:v fromTextDescription:objDesc];
             vertices[v].nx = [normal[0] floatValue];
             vertices[v].ny = [normal[1] floatValue];
             vertices[v].nz = [normal[2] floatValue];
@@ -137,13 +137,13 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         int icount = fcount * ASE_FACE_SIZE;
         GLubyte *indices = calloc(icount, sizeof(GLubyte));
         for (int f = 0; f < fcount; f++) {
-            NSDictionary *faceInfo = [ASEConverter valueDictionaryNamed:@"MESH_FACE" index:f fromTextDescription:objDesc];
+            NSDictionary *faceInfo = [EVEASEConverter valueDictionaryNamed:@"MESH_FACE" index:f fromTextDescription:objDesc];
             // ASE works only with triangle faces
             NSArray *ABC = @[faceInfo[@"A"], faceInfo[@"B"], faceInfo[@"C"]];
             
             // Set vertex color and texture coord
-            NSArray *colorIndices = [ASEConverter valueListNamed:@"MESH_CFACE" index:f fromTextDescription:objDesc];
-            NSArray *texIndices = [ASEConverter valueListNamed:@"MESH_TFACE" index:f fromTextDescription:objDesc];
+            NSArray *colorIndices = [EVEASEConverter valueListNamed:@"MESH_CFACE" index:f fromTextDescription:objDesc];
+            NSArray *texIndices = [EVEASEConverter valueListNamed:@"MESH_TFACE" index:f fromTextDescription:objDesc];
             if (colorIndices.count != ASE_FACE_SIZE && ccount) {
                 NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Color>!", _name, objName);
             }
@@ -175,7 +175,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         }
         
         // Create graph object
-        GraphMesh *object = [GraphMesh meshWithName:objName
+        EVEGraphMesh *object = [EVEGraphMesh meshWithName:objName
                                            vertices:vertices
                                         vertexCount:vcount
                                             indices:indices
@@ -191,7 +191,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 
 #pragma mark - Test Models
 
-+ (GraphModel *)paperPlaneModel
++ (EVEGraphModel *)paperPlaneModel
 {
     GLfloat v0[] = {0,-1,0,				0,1,0,	255,255,255,255,	0,0};
     GLfloat v1[] = {0.1f,0.5f,0,        0,1,0,	204,204,204,255,	0.3,0};
@@ -200,7 +200,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     GLfloat v4[] = {0.8f,0.4f,-0.1f,    0,1,0,  255,255,255,255,	0.3,0.3};
     GLfloat v5[] = {-0.8f,0.4f,-0.1f,   0,1,0,  255,255,255,255,	0,0.3};
     
-    VertexStruct *vertices = calloc(6, sizeof(VertexStruct));
+    EVEVertexStruct *vertices = calloc(6, sizeof(EVEVertexStruct));
     GLubyte indices[12] = {0,2,3, 0,2,5, 0,1,3, 0,1,4};
     
     vertices[0] = VertexMake(v0);
@@ -210,23 +210,23 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     vertices[4] = VertexMake(v4);
     vertices[5] = VertexMake(v5);
     
-    GraphModel *planeModel = [GraphModel modelWithName:@"Plane_test"];
-    GraphMesh *plane = [GraphMesh meshWithName:@"Paper plane" vertices:vertices vertexCount:6 indices:indices indexCount:12];
+    EVEGraphModel *planeModel = [EVEGraphModel modelWithName:@"Plane_test"];
+    EVEGraphMesh *plane = [EVEGraphMesh meshWithName:@"Paper plane" vertices:vertices vertexCount:6 indices:indices indexCount:12];
     
     [planeModel addChild:plane];
-    planeModel.material = [GraphMaterial materialWithName:@"Newspaper" andFullFileName:@"newspaper.png"];
+    planeModel.material = [EVEGraphMaterial materialWithName:@"Newspaper" andFullFileName:@"newspaper.png"];
     
     return planeModel;
 }
 
-+ (GraphModel *)woodFloorModel:(int)size
++ (EVEGraphModel *)woodFloorModel:(int)size
 {
     GLfloat v0[] = {size,size,0,    0,1,0,	255,255,255,255,	size/10,size/10};
     GLfloat v1[] = {size,-size,0,   0,1,0,	255,255,255,255,	size/10,0};
     GLfloat v2[] = {-size,-size,0,  0,1,0,  255,255,255,255,	0,0};
     GLfloat v3[] = {-size,size,0,   0,1,0,  255,255,255,255,	0,size/10};
     
-    VertexStruct *vertices = calloc(4, sizeof(VertexStruct));
+    EVEVertexStruct *vertices = calloc(4, sizeof(EVEVertexStruct));
     GLubyte indices[6] = {0,1,2, 0,3,2};
     
     vertices[0] = VertexMake(v0);
@@ -234,10 +234,10 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     vertices[2] = VertexMake(v2);
     vertices[3] = VertexMake(v3);
     
-    GraphModel *floorModel = [GraphModel modelWithName:@"Floor_test"];
-    GraphMesh *floor = [GraphMesh meshWithName:@"Wooden floor" vertices:vertices vertexCount:4 indices:indices indexCount:6];
+    EVEGraphModel *floorModel = [EVEGraphModel modelWithName:@"Floor_test"];
+    EVEGraphMesh *floor = [EVEGraphMesh meshWithName:@"Wooden floor" vertices:vertices vertexCount:4 indices:indices indexCount:6];
     [floorModel addChild:floor];
-    floorModel.material = [GraphMaterial materialWithName:@"Wood" andFullFileName:@"woodfloor.png"];
+    floorModel.material = [EVEGraphMaterial materialWithName:@"Wood" andFullFileName:@"woodfloor.png"];
     
     return floorModel;
 }

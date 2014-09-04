@@ -6,20 +6,20 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "GraphMaterial.h"
+#import "EVEGraphMaterial.h"
 
 static int hasTextureUniform;
 
-@interface GraphMaterial() {
+@interface EVEGraphMaterial() {
     GLKTextureInfo *texInfo;
 }
 @end
 
-@implementation GraphMaterial
+@implementation EVEGraphMaterial
 
-+ (GraphMaterial *)materialWithName:(NSString *)name andFullFileName:(NSString *)fileName
++ (EVEGraphMaterial *)materialWithName:(NSString *)name andFullFileName:(NSString *)fileName
 {
-    return [[GraphMaterial alloc] initWithName:name andFullFileName:fileName];
+    return [[EVEGraphMaterial alloc] initWithName:name andFullFileName:fileName];
 }
 
 - (id)initWithName:(NSString *)name andFullFileName:(NSString *)fileName
@@ -79,7 +79,7 @@ static int hasTextureUniform;
 - (BOOL)isEqual:(id)object
 {
     if ([object isKindOfClass:[self class]]) {
-        GraphMaterial *material = object;
+        EVEGraphMaterial *material = object;
         return [material.name isEqualToString:_name];
     }
 

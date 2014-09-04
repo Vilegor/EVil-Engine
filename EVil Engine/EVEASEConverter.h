@@ -8,7 +8,7 @@
 
 #define ASE_FACE_SIZE 3
 
-@interface ASEConverter : NSObject
+@interface EVEASEConverter : NSObject
 
 + (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
 + (NSNumber *)numberValueNamed:(NSString *)name fromTextDescription:(NSString *)description;

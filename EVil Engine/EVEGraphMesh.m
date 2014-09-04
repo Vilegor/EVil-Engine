@@ -6,37 +6,37 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "GraphMesh.h"
-#import "GraphModel.h"
+#import "EVEGraphMesh.h"
+#import "EVEGraphModel.h"
 
-@interface GraphMesh() {
+@interface EVEGraphMesh() {
     GLuint _vertexBuffer;
-    VertexStruct *_vertexData;
+    EVEVertexStruct *_vertexData;
     GLuint _vertexCount;
 	
 	GLubyte *_indices;
 	GLuint _indexCount;
 
-    GraphMaterial *_material;
+    EVEGraphMaterial *_material;
 }
 
 @end
 
-@implementation GraphMesh
+@implementation EVEGraphMesh
 
 @synthesize name = _name;
 
-+ (GraphMesh *)meshWithName:(NSString *)name
-                   vertices:(VertexStruct *)vertices
++ (EVEGraphMesh *)meshWithName:(NSString *)name
+                   vertices:(EVEVertexStruct *)vertices
                 vertexCount:(int)vcount
                     indices:(GLubyte *)indices
                  indexCount:(int)icount
 {
-    return [[GraphMesh alloc] initWithName:name vertices:vertices vertexCount:vcount indices:indices indexCount:icount];
+    return [[EVEGraphMesh alloc] initWithName:name vertices:vertices vertexCount:vcount indices:indices indexCount:icount];
 }
 
 - (id)initWithName:(NSString *)name
-          vertices:(VertexStruct *)vertices
+          vertices:(EVEVertexStruct *)vertices
        vertexCount:(int)vcount
            indices:(GLubyte *)indices
         indexCount:(int)icount
@@ -45,7 +45,7 @@
     if (self) {
         _name = name;
         _vertexCount = vcount;
-        _vertexData = calloc(vcount, sizeof(VertexStruct));
+        _vertexData = calloc(vcount, sizeof(EVEVertexStruct));
         for (int v = 0; v < vcount; v++)
             _vertexData[v] = vertices[v];
         _indexCount = icount;
@@ -110,7 +110,7 @@
 - (void)deleteVertexAt:(int)index andMark:(GLubyte *)marksArray
 {
 	_vertexCount--;
-	VertexStruct *newVertexArray = calloc(_vertexCount, sizeof(VertexStruct));
+	EVEVertexStruct *newVertexArray = calloc(_vertexCount, sizeof(EVEVertexStruct));
 	for (int i = 0; i < _vertexCount; i++) {
 		if (i >= index) {
 			newVertexArray[i] = _vertexData[i+1];
@@ -130,22 +130,22 @@
     if (!_vertexBuffer)
         glGenBuffers(1, &_vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(VertexStruct)*_vertexCount, _vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(EVEVertexStruct)*_vertexCount, _vertexData, GL_STATIC_DRAW);
 }
 
 - (void)draw
 {
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, x));
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, x));
     glEnableVertexAttribArray(GLKVertexAttribPosition);
     
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, nx));
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, nx));
     glEnableVertexAttribArray(GLKVertexAttribNormal);
     
-    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, r));
+    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, r));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     
-    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(VertexStruct), (void*)offsetof(VertexStruct, tex_x));
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, tex_x));
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
     
     
@@ -172,7 +172,7 @@
 
 #pragma mark - Material
 
-- (void)setMaterial:(GraphMaterial *)material
+- (void)setMaterial:(EVEGraphMaterial *)material
 {
     if (!material)
         [_material disable];
@@ -180,7 +180,7 @@
     [material load];
 }
 
-- (GraphMaterial *)material
+- (EVEGraphMaterial *)material
 {
     return _material;
 }
