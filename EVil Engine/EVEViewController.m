@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "EVEViewController.h"
 #import "GraphModel.h"
 
 static NSString * const kBallModelName = @"Ball";
@@ -29,7 +29,7 @@ enum
     NUM_ATTRIBUTES
 };
 
-@interface ViewController () {
+@interface EVEViewController () {
     GLuint _program;
     int _hasTextureUniform;
     float _aspect;
@@ -51,14 +51,14 @@ enum
 - (BOOL)validateProgram:(GLuint)prog;
 @end
 
-@implementation ViewController
+@implementation EVEViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-
+    
     if (!self.context) {
         NSLog(@"Failed to create ES context");
     }
@@ -71,7 +71,7 @@ enum
 }
 
 - (void)dealloc
-{    
+{
     [self tearDownGL];
     
     if ([EAGLContext currentContext] == self.context) {
@@ -82,7 +82,7 @@ enum
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-
+    
     if ([self isViewLoaded] && ([[self view] window] == nil)) {
         self.view = nil;
         
@@ -93,7 +93,7 @@ enum
         }
         self.context = nil;
     }
-
+    
     // Dispose of any resources that can be recreated.
 }
 
@@ -111,7 +111,7 @@ enum
 - (void)setupModels
 {
     modelArray = [NSMutableArray array];
-//	[modelArray addObject:[GraphModel paperPlaneModel]];
+    //	[modelArray addObject:[GraphModel paperPlaneModel]];
 	[modelArray addObject:[GraphModel woodFloorModel:50]];
     
     NSArray *modelsToLoad = @[@"Test"];
@@ -137,39 +137,39 @@ enum
 - (void)update
 {
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), _aspect, 0.1f, 150.0f);
-
+    
     GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -24.0f, -55.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 4.8f, 1.0f, 0.0f, 0.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 0.5f, 0.0f, 0.0f, 1.0f);
-
+    
     // Compute the model view matrix for the object rendered with ES2
     GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0);
     modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
-
+    
     _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     
     /*  Animation Example */
     /*
-    float delta = sinf(self.timeSinceFirstResume)/3.0f;
-    
-    float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
-    
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -4.0f, delta - 22.0f);
-    baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 4.8f, 1.0f, 0.0f, 0.0f);
-    baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 0.0f, 1.0f);
-    
-    // Compute the model view matrix for the object rendered with ES2
-    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -1.5f, delta);
-    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 0.0f, 1.0f, 1.0f);
-    modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
-    
-    _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
-    _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
-    
-    _rotation += self.timeSinceLastUpdate * (0.8 - delta);
-    */
+     float delta = sinf(self.timeSinceFirstResume)/3.0f;
+     
+     float aspect = fabsf(self.view.bounds.size.width / self.view.bounds.size.height);
+     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
+     
+     GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -4.0f, delta - 22.0f);
+     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 4.8f, 1.0f, 0.0f, 0.0f);
+     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 0.0f, 1.0f);
+     
+     // Compute the model view matrix for the object rendered with ES2
+     GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -1.5f, delta);
+     modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 0.0f, 1.0f, 1.0f);
+     modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
+     
+     _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
+     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
+     
+     _rotation += self.timeSinceLastUpdate * (0.8 - delta);
+     */
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect

@@ -1,18 +1,18 @@
 //
-//  Trans_BallTests.m
-//  Trans BallTests
+//  EVil_EngineTests.m
+//  EVil EngineTests
 //
-//  Created by Egor Vilkin on 7/30/14.
+//  Created by Egor Vilkin on 9/4/14.
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface Trans_BallTests : XCTestCase
+@interface EVil_EngineTests : XCTestCase
 
 @end
 
-@implementation Trans_BallTests
+@implementation EVil_EngineTests
 
 - (void)setUp
 {

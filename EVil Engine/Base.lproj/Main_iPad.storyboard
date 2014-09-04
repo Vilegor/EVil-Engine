@@ -7,7 +7,7 @@
         <!--class Prefix:identifier View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <glkViewController preferredFramesPerSecond="30" id="BV1-FR-VrT" customClass="ViewController" sceneMemberID="viewController">
+                <glkViewController preferredFramesPerSecond="30" id="BV1-FR-VrT" customClass="EVEViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dWe-On-idd"/>
                         <viewControllerLayoutGuide type="bottom" id="nZC-s9-Y68"/>

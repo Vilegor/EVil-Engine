@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0EAF05B519890410005483AB"
-               BuildableName = "Trans Ball.app"
-               BlueprintName = "Trans Ball"
-               ReferencedContainer = "container:Trans Ball.xcodeproj">
+               BlueprintIdentifier = "0EDB0FCE19B88EC300B8554E"
+               BuildableName = "EVil Engine.app"
+               BlueprintName = "EVil Engine"
+               ReferencedContainer = "container:EVil Engine.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,20 +32,20 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0EAF05E119890410005483AB"
-               BuildableName = "Trans BallTests.xctest"
-               BlueprintName = "Trans BallTests"
-               ReferencedContainer = "container:Trans Ball.xcodeproj">
+               BlueprintIdentifier = "0EDB0FFA19B88EC300B8554E"
+               BuildableName = "EVil EngineTests.xctest"
+               BlueprintName = "EVil EngineTests"
+               ReferencedContainer = "container:EVil Engine.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0EAF05B519890410005483AB"
-            BuildableName = "Trans Ball.app"
-            BlueprintName = "Trans Ball"
-            ReferencedContainer = "container:Trans Ball.xcodeproj">
+            BlueprintIdentifier = "0EDB0FCE19B88EC300B8554E"
+            BuildableName = "EVil Engine.app"
+            BlueprintName = "EVil Engine"
+            ReferencedContainer = "container:EVil Engine.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -61,10 +61,10 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0EAF05B519890410005483AB"
-            BuildableName = "Trans Ball.app"
-            BlueprintName = "Trans Ball"
-            ReferencedContainer = "container:Trans Ball.xcodeproj">
+            BlueprintIdentifier = "0EDB0FCE19B88EC300B8554E"
+            BuildableName = "EVil Engine.app"
+            BlueprintName = "EVil Engine"
+            ReferencedContainer = "container:EVil Engine.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -79,10 +79,10 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0EAF05B519890410005483AB"
-            BuildableName = "Trans Ball.app"
-            BlueprintName = "Trans Ball"
-            ReferencedContainer = "container:Trans Ball.xcodeproj">
+            BlueprintIdentifier = "0EDB0FCE19B88EC300B8554E"
+            BuildableName = "EVil Engine.app"
+            BlueprintName = "EVil Engine"
+            ReferencedContainer = "container:EVil Engine.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

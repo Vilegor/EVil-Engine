@@ -1,14 +1,14 @@
 //
-//  AppDelegate.m
-//  Trans Ball
+//  EVEAppDelegate.m
+//  EVil Engine
 //
-//  Created by Egor Vilkin on 7/30/14.
+//  Created by Egor Vilkin on 9/4/14.
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "EVEAppDelegate.h"
 
-@implementation AppDelegate
+@implementation EVEAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
