@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import "GraphObjectGroup.h"
+#import "GraphObject.h"
 #import "GraphMaterial.h"
 
-@interface GraphModel : GraphObjectGroup
+@interface GraphModel : GraphObject
 
 + (GraphModel *)emptyModel;
 + (GraphModel *)modelWithName:(NSString *)modelName;

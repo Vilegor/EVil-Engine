@@ -1,32 +1,26 @@
 //
-//  GraphObject.h
+//  GraphObjectGroup.h
 //  Trans Ball
 //
-//  Created by Egor Vilkin on 7/30/14.
+//  Created by Egor Vilkin on 8/28/14.
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
+#import <GLKit/GLKit.h>
+#import "GraphMesh.h"
 #import "GraphDrawableProtocol.h"
-#import "GraphMaterial.h"
-#import "GraphFace.h"
 
-@interface GraphObject : NSObject <GraphDrawableProtocol> {
-    NSString *_name;
-}
+@interface GraphObject : GraphMesh
 
-@property(nonatomic, strong, readonly) NSString *name;
-@property(nonatomic, readonly) VertexStruct *vertexData;
-@property(nonatomic, readonly) GLuint vertexCount;
-@property(nonatomic, strong) GraphMaterial *material;
+@property(nonatomic, weak) GraphObject *parent;
 
-+ (GraphObject *)objectWithName:(NSString *)objectName andFaces:(NSArray *)faces;
-+ (GraphObject *)objectWithName:(NSString *)objectName
-                     vertices:(VertexStruct *)vertices
-                  vertexCount:(int)vcount
-                      indices:(GLubyte *)indices
-                  vertexCount:(int)icount;
+- (instancetype)initWithName:(NSString *)name;
++ (GraphObject *)groupWithName:(NSString *)groupName;
 
-- (GraphFace *)meshByName:(NSString *)meshName;
-- (NSInteger)meshCount;
+@property(nonatomic, readonly, getter = childCount) NSInteger childCount;
+@property(nonatomic, readonly, getter = allChildren) NSArray *allChildren;
+- (void)addChild:(GraphMesh *)child;
+- (void)removeChild:(NSString *)childName;
+- (GraphMesh *)childByName:(NSString *)childName;
 
 @end
