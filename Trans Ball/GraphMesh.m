@@ -45,9 +45,13 @@
     if (self) {
         _name = name;
         _vertexCount = vcount;
-        _vertexData = vertices;
+        _vertexData = calloc(vcount, sizeof(VertexStruct));
+        for (int v = 0; v < vcount; v++)
+            _vertexData[v] = vertices[v];
         _indexCount = icount;
-        _indices = indices;
+        _indices = calloc(icount, sizeof(GLubyte));
+        for (int i = 0; i < icount; i++)
+            _indices[i] = indices[i];
         [self resetDrawableData];
     }
     
@@ -56,6 +60,8 @@
 
 - (void)dealloc
 {
+    free(_vertexData);
+    free(_indices);
     glDeleteBuffers(1, &_vertexBuffer);
 }
 

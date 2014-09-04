@@ -201,7 +201,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     GLfloat v5[] = {-0.8f,0.4f,-0.1f,   0,1,0,  255,255,255,255,	0,0.3};
     
     VertexStruct *vertices = calloc(6, sizeof(VertexStruct));
-    GLubyte *indices = calloc(12, sizeof(VertexStruct));
+    GLubyte indices[12] = {0,2,3, 0,2,5, 0,1,3, 0,1,4};
     
     vertices[0] = VertexMake(v0);
     vertices[1] = VertexMake(v1);
@@ -209,11 +209,6 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     vertices[3] = VertexMake(v3);
     vertices[4] = VertexMake(v4);
     vertices[5] = VertexMake(v5);
-    
-    indices[0] = 0; indices[1] = 2; indices[2] = 5;
-    indices[3] = 0; indices[4] = 2; indices[5] = 3;
-    indices[6] = 0; indices[7] = 1; indices[8] = 3;
-    indices[9] = 0; indices[10] = 1; indices[11] = 4;
     
     GraphModel *planeModel = [GraphModel modelWithName:@"Plane_test"];
     GraphMesh *plane = [GraphMesh meshWithName:@"Paper plane" vertices:vertices vertexCount:6 indices:indices indexCount:12];
@@ -232,15 +227,12 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     GLfloat v3[] = {-size,size,0,   0,1,0,  255,255,255,255,	0,size/10};
     
     VertexStruct *vertices = calloc(4, sizeof(VertexStruct));
-    GLubyte *indices = calloc(6, sizeof(VertexStruct));
+    GLubyte indices[6] = {0,1,2, 0,3,2};
     
     vertices[0] = VertexMake(v0);
     vertices[1] = VertexMake(v1);
     vertices[2] = VertexMake(v2);
     vertices[3] = VertexMake(v3);
-    
-    indices[0] = 0; indices[1] = 1; indices[2] = 2;
-    indices[3] = 0; indices[4] = 3; indices[5] = 2;
     
     GraphModel *floorModel = [GraphModel modelWithName:@"Floor_test"];
     GraphMesh *floor = [GraphMesh meshWithName:@"Wooden floor" vertices:vertices vertexCount:4 indices:indices indexCount:6];
