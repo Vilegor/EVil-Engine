@@ -15,6 +15,7 @@
 @property (nonatomic, strong, readonly) NSString *fileName;
 @property (nonatomic, strong, readonly) NSString *fileExt;
 
++ (EVEGraphMaterial *)materialWithTextDescription:(NSString *)description;
 + (EVEGraphMaterial *)materialWithName:(NSString *)name andFullFileName:(NSString *)fileName;
 - (id)initWithName:(NSString *)name andFullFileName:(NSString *)fileName;
 

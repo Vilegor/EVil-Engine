@@ -7,6 +7,7 @@
 //
 
 #import "EVEGraphMaterial.h"
+#import "EVEASEConverter.h"
 
 static int hasTextureUniform;
 
@@ -16,6 +17,15 @@ static int hasTextureUniform;
 @end
 
 @implementation EVEGraphMaterial
+
++ (EVEGraphMaterial *)materialWithTextDescription:(NSString *)description
+{
+    NSString *name = [EVEASEConverter stringValueNamed:@"MATERIAL_NAME" fromTextDescription:description];
+    NSString *filePath = [EVEASEConverter stringValueNamed:@"BITMAP" fromTextDescription:description];
+    NSString *fileName = [filePath lastPathComponent];
+    
+    return [self materialWithName:name andFullFileName:fileName];
+}
 
 + (EVEGraphMaterial *)materialWithName:(NSString *)name andFullFileName:(NSString *)fileName
 {
@@ -42,9 +52,6 @@ static int hasTextureUniform;
         texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&error];
         if (error) {
             NSLog(@"Error! Texture '%@' cannot be loaded: %@", _fileName, error);
-        }
-        else {
-            [self enable];
         }
     }
     else {

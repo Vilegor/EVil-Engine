@@ -38,19 +38,18 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     NSArray *objectsASE = [EVEASEConverter objectsDescriptionFromFile:aseFileName];
     if (objectsASE) {
         EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
-        [model setupWithASEGeomobjects:objectsASE];
+        NSArray *materialsASE = [EVEASEConverter materialsDescriptionFromFile:aseFileName];
+        [model setupWithASEGeomobjects:objectsASE andASEMaterials:materialsASE];
         return model;
     }
     
     return nil;
 }
 
-- (void)setupWithASEGeomobjects:(NSArray *)aseObjects
+- (void)setupWithASEGeomobjects:(NSArray *)aseObjects andASEMaterials:(NSArray *)materialsASE
 {
     for (NSString *objDesc in aseObjects) {
         EVEGraphObject *parentGroup = nil;
-        NSMutableArray *texCoords = nil;
-        NSMutableArray *colors = nil;
         
         // Check parent
         NSString *parentName = [EVEASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
@@ -66,24 +65,8 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         NSString *objName = [EVEASEConverter stringValueNamed:@"NODE_NAME" fromTextDescription:objDesc];
         int vcount = [EVEASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc].intValue;
         int fcount = [EVEASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
-        
-        // Load texture coords
         int tcount = [EVEASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
-        if (tcount)
-            texCoords = [NSMutableArray array];
-        for (int t = 0; t < tcount; t++) {
-            NSArray *coord = [EVEASEConverter valueListNamed:@"MESH_TVERT" index:t fromTextDescription:objDesc];
-            [texCoords addObject:coord];
-        }
-    
-        // Load colors
         int ccount = [EVEASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
-        if (ccount)
-            colors = [NSMutableArray array];
-        for (int c = 0; c < ccount; c++) {
-            NSArray *color = [EVEASEConverter valueListNamed:@"MESH_VERTCOL" index:c fromTextDescription:objDesc];
-            [colors addObject:color];
-        }
         
         // Setup vertex data
         EVEVertexStruct *vertices = calloc(vcount, sizeof(EVEVertexStruct));
@@ -99,6 +82,26 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
             vertices[v].nx = [normal[0] floatValue];
             vertices[v].ny = [normal[1] floatValue];
             vertices[v].nz = [normal[2] floatValue];
+            
+            // Set texture coord
+            if (tcount) {
+                NSArray *tex = [EVEASEConverter valueListNamed:@"MESH_TVERT" index:v fromTextDescription:objDesc];
+                vertices[v].tex_x = [tex[0] floatValue];
+                vertices[v].tex_y = [tex[1] floatValue];
+            }
+            
+            // Set color
+            NSArray *color;
+            if (ccount) {
+                color = [EVEASEConverter valueListNamed:@"MESH_VERTCOL" index:v fromTextDescription:objDesc];
+            }
+            else {
+                color = @[@1,@1,@1,@1];
+            }
+            vertices[v].r = [color[0] floatValue] * 255;
+            vertices[v].g = [color[1] floatValue] * 255;
+            vertices[v].b = [color[2] floatValue] * 255;
+            vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment
         }
         
         // Setup index data
@@ -107,47 +110,23 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         for (int f = 0; f < fcount; f++) {
             NSDictionary *faceInfo = [EVEASEConverter valueDictionaryNamed:@"MESH_FACE" index:f fromTextDescription:objDesc];
             // ASE works only with triangle faces
-            NSArray *ABC = @[faceInfo[@"A"], faceInfo[@"B"], faceInfo[@"C"]];
-            
-            // Set vertex color and texture coord
-            NSArray *colorIndices = [EVEASEConverter valueListNamed:@"MESH_CFACE" index:f fromTextDescription:objDesc];
-            NSArray *texIndices = [EVEASEConverter valueListNamed:@"MESH_TFACE" index:f fromTextDescription:objDesc];
-            if (colorIndices.count != ASE_FACE_SIZE && ccount) {
-                NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Color>!", _name, objName);
-            }
-            if (texIndices.count != ASE_FACE_SIZE && tcount) {
-                NSLog(@"WARNING! %@->%@: Face size doesn't normalized <Texture>!", _name, objName);
-            }
-            
-            for (int i = 0; i < ASE_FACE_SIZE; i++) {
-                int v = [ABC[i] intValue];
-                if (vertices[v].a == 0) {   // alpha = 0 means vertex color or texture was not set before
-                    int c = [colorIndices[i] intValue];
-                    int t = [texIndices[i] intValue];
-                    
-                    vertices[v].tex_x = [texCoords[t][0] floatValue];
-                    vertices[v].tex_y = [texCoords[t][1] floatValue];
-                    
-                    vertices[v].r = [colors[c][0] floatValue] * 255;
-                    vertices[v].g = [colors[c][1] floatValue] * 255;
-                    vertices[v].b = [colors[c][2] floatValue] * 255;
-                    
-                    vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment, so I use it mark vertex
-                }
-            }
-            
-            // Set indices
-            indices[f*ASE_FACE_SIZE] = [ABC[0] intValue];
-            indices[f*ASE_FACE_SIZE + 1] = [ABC[1] intValue];
-            indices[f*ASE_FACE_SIZE + 2] = [ABC[2] intValue];
+            indices[f*ASE_FACE_SIZE]     = [faceInfo[@"A"] intValue];
+            indices[f*ASE_FACE_SIZE + 1] = [faceInfo[@"B"] intValue];
+            indices[f*ASE_FACE_SIZE + 2] = [faceInfo[@"C"] intValue];
         }
         
         // Create graph object
         EVEGraphMesh *object = [EVEGraphMesh meshWithName:objName
-                                           vertices:vertices
-                                        vertexCount:vcount
-                                            indices:indices
-                                         indexCount:icount];
+                                                 vertices:vertices
+                                              vertexCount:vcount
+                                                  indices:indices
+                                               indexCount:icount];
+        
+        // Setup material data
+        NSNumber *materialIndex = [EVEASEConverter numberValueNamed:@"MATERIAL_REF" fromTextDescription:objDesc];
+        if (materialIndex && materialsASE.count > materialIndex.intValue) {
+            object.material = [EVEGraphMaterial materialWithTextDescription:materialsASE[materialIndex.intValue]];
+        }
         
         // Add current object
         if (parentGroup)

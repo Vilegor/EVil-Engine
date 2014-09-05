@@ -114,7 +114,7 @@ enum
     //	[modelArray addObject:[GraphModel paperPlaneModel]];
 	[modelArray addObject:[EVEGraphModel woodFloorModel:50]];
     
-    NSArray *modelsToLoad = @[@"Test"];
+    NSArray *modelsToLoad = @[@"eve_test"];
     for (NSString *fileName in modelsToLoad) {
         EVEGraphModel *model = [EVEGraphModel modelFromFile:fileName];
         if (model)

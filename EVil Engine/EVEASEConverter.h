@@ -11,6 +11,7 @@
 @interface EVEASEConverter : NSObject
 
 + (NSArray *)objectsDescriptionFromFile:(NSString *)aseFileName;
++ (NSArray *)materialsDescriptionFromFile:(NSString *)aseFileName;
 
 + (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
 + (NSNumber *)numberValueNamed:(NSString *)name fromTextDescription:(NSString *)description;

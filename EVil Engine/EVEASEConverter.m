@@ -35,7 +35,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
                                                                                options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
                                                                                  error:&error];
         if (error) {
-            NSLog(@"ERROR! Load model file: %@", error);
+            NSLog(@"ERROR! Create Model regex: %@", error);
         }
         else {
             NSMutableArray *objectsASE = [NSMutableArray array];
@@ -49,6 +49,49 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
             }
 
             return objectsASE;
+        }
+    }
+    return nil;
+}
+
++ (NSArray *)materialsDescriptionFromFile:(NSString *)aseFileName
+{
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
+    if (!filePath) {
+        NSLog(@"Error! Model file '%@' not found!", aseFileName);
+        return nil;
+    }
+    
+    // read everything from text
+    NSError *error = nil;
+    NSString *fileContents = [NSString stringWithContentsOfFile:filePath
+                                                       encoding:NSUTF8StringEncoding
+                                                          error:&error];
+    if (!fileContents) {
+        NSLog(@"ERROR! %@", error);
+    }
+    else {
+        fileContents = [EVEASEConverter normalizeTextDescription:fileContents];
+        NSString *pattern = @"\\*MATERIAL [0-9]+ \\{(.(?!\\*MATERIAL ))*\\}";
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                               options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
+                                                                                 error:&error];
+        if (error) {
+            NSLog(@"ERROR! Create Materials regex: %@", error);
+        }
+        else {
+            NSMutableArray *materialsASE = [NSMutableArray array];
+            NSArray *resultRegex = [regex matchesInString:fileContents options:0 range:NSMakeRange(0, fileContents.length)];
+            NSNumber *materialsCount = [self numberValueNamed:@"MATERIAL_COUNT" fromTextDescription:fileContents];
+            if (resultRegex.count != materialsCount.intValue) {
+                NSLog(@"Error! Model file '%@': Materials count does not match loaded count!", aseFileName);
+                return nil;
+            }
+            for (NSTextCheckingResult *result in resultRegex) {
+                [materialsASE addObject:[fileContents substringWithRange:result.range]];
+            }
+            
+            return materialsASE;
         }
     }
     return nil;
