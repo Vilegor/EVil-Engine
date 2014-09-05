@@ -49,7 +49,8 @@ static int hasTextureUniform;
     NSError *error = nil;
     NSString *filePath = [[NSBundle mainBundle] pathForResource:_fileName ofType:_fileExt inDirectory:@"Textures"];
     if (filePath) {
-        texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:nil error:&error];
+        NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft: @YES};
+        texInfo = [GLKTextureLoader textureWithContentsOfFile:filePath options:options error:&error];
         if (error) {
             NSLog(@"Error! Texture '%@' cannot be loaded: %@", _fileName, error);
         }

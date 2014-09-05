@@ -138,8 +138,8 @@ enum
 {
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), _aspect, 0.1f, 150.0f);
     
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -24.0f, -55.0f);
-    baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 4.8f, 1.0f, 0.0f, 0.0f);
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -20.0f, -40.0f);
+    baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 5.2f, 1.0f, 0.0f, 0.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 0.5f, 0.0f, 0.0f, 1.0f);
     
     // Compute the model view matrix for the object rendered with ES2

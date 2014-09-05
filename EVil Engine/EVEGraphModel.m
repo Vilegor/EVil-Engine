@@ -96,7 +96,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
                 color = [EVEASEConverter valueListNamed:@"MESH_VERTCOL" index:v fromTextDescription:objDesc];
             }
             else {
-                color = @[@1,@1,@1,@1];
+                color = @[@1,@1,@1];
             }
             vertices[v].r = [color[0] floatValue] * 255;
             vertices[v].g = [color[1] floatValue] * 255;

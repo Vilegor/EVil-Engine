@@ -448,11 +448,11 @@ class cTVertlist:
             if len( object.data.tessface_uv_textures ) == 0:
                 raise Error( "Error:  No UV texture data for " + object.name )
             else:
+                temp = cTVert( face.vertices[0], object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv3 )
+                self.vertlist.append( temp )
                 temp = cTVert( face.vertices[1], object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv1 )
                 self.vertlist.append( temp )
                 temp = cTVert( face.vertices[2], object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv2 )
-                self.vertlist.append( temp )
-                temp = cTVert( face.vertices[0], object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv3 )
                 self.vertlist.append( temp )
 
         self.length = len( self.vertlist )
