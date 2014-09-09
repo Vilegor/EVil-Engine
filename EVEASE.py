@@ -24,11 +24,11 @@
 bl_info = {
     "name": "EVE Scene Exporter",
     "author": "Egor Vilkin, EVil corp.",
-    "version": ( 1, 0, 0 ),
+    "version": ( 1, 1, 0 ),
     "blender": ( 2, 6, 3 ),
     "api": 36079,
     "location": "File > Export > EVE Scene Export(.ase)",
-    "description": "EVE Scene Export(.ase)",
+    "description": "EVil Engine Scene Export(.ase)",
     "warning": "",
     "wiki_url": "",
     "tracker_url": "",
@@ -187,10 +187,6 @@ class cDiffusemap:
             if slot.texture.type == 'IMAGE':
                 self.mapclass = 'Bitmap'
                 self.bitmap = slot.texture.image.filepath
-                if slot.texture.image.has_data:
-                    pass
-                else:
-                    self.bitmap = '\\\\base\\' + self.bitmap.replace( '/', '\\' )
             else:
                 self.mapclass = 'Bitmap'
                 self.bitmap = 'None'
@@ -443,19 +439,93 @@ class cTVertlist:
         mesh = bpy.context.object.data
         mesh.update( calc_tessface = True )
         uv_layers_count = len( object.data.tessface_uv_textures )
+        
+        # find most freq vertex
+        vf = 0
+        vi = 0
+        i = 0
+        f = 0
+        for i in object.data.vertices:
+            for face in object.data.polygons:
+                for v in face.vertices:
+                    if v == i.index:
+                        f += 1
+                if f > vf:
+                    vi = i.index
+                    vf = f
+            f = 0
+        print('TexVertex selected: ' + str(vi) + ' freq: ' + str(vf))
+        
+        # find to faces to work with
+        faceList = []
+        vertexIndices = []
+        for face in object.data.polygons:
+            i = 0
+            for v in face.vertices:
+                if v == vi:
+                    faceList.append(face.index)
+                    vertexIndices.append(i)
+                    print('Add face and index: ' + str(face.index) + ':' + str(i))
+                i += 1
+        
+        print('TexFaces count: ' + str(len(faceList)))
+        
+        # find cycle offset
+        tOffset = 0
+        while True:
+            match = True
+            
+            uiList = []
+            uvList = []
+            for i in vertexIndices:
+                uiList.append((i + tOffset)%3)
+
+            for i in range(len(faceList)):
+                uv = self.getUV(object, faceList[i], uiList[i])
+                uvList.append(uv)
+                print('UV(' + str(faceList[i]) + ',' + str(uiList[i]) + ') = ' + str(uv))
+                if i > 0:
+                    for ui in uvList:
+                        if ui != uvList[0]:
+                            match = False
+                            print('Does not match')
+
+            if match:
+                break
+            else:
+                tOffset += 1
+                if tOffset == 3:
+                    print('ERROR! Unknown texCoord sort!')
+                    break
+
+        print('TexOffset: ' + str(tOffset))
 
         for face in object.data.polygons:
             if len( object.data.tessface_uv_textures ) == 0:
                 raise Error( "Error:  No UV texture data for " + object.name )
             else:
-                temp = cTVert( face.vertices[0], object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv3 )
+                print('Face #' + str(face.index))
+                for ()
+                print(object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv)
+                temp = cTVert( face.vertices[0], self.getUV(object, face.index, 0) )
                 self.vertlist.append( temp )
-                temp = cTVert( face.vertices[1], object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv1 )
+                temp = cTVert( face.vertices[1], self.getUV(object, face.index, 1) )
                 self.vertlist.append( temp )
-                temp = cTVert( face.vertices[2], object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv2 )
+                temp = cTVert( face.vertices[2], self.getUV(object, face.index, 2) )
                 self.vertlist.append( temp )
 
         self.length = len( self.vertlist )
+    
+    def getUV(self, object, fi, ui):
+        uv = 0;
+        if ui == 0:
+            uv = object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[fi].uv1
+        else:
+            if ui == 1:
+                uv = object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[fi].uv2
+            else:
+                uv = object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[fi].uv3
+        return uv
 
     def dump( self ):
         temp = ''
