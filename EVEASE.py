@@ -438,94 +438,17 @@ class cTVertlist:
         # update tessface
         mesh = bpy.context.object.data
         mesh.update( calc_tessface = True )
-        uv_layers_count = len( object.data.tessface_uv_textures )
-        
-        # find most freq vertex
-        vf = 0
-        vi = 0
-        i = 0
-        f = 0
-        for i in object.data.vertices:
-            for face in object.data.polygons:
-                for v in face.vertices:
-                    if v == i.index:
-                        f += 1
-                if f > vf:
-                    vi = i.index
-                    vf = f
-            f = 0
-        print('TexVertex selected: ' + str(vi) + ' freq: ' + str(vf))
-        
-        # find to faces to work with
-        faceList = []
-        vertexIndices = []
+# mark
+#       if len(object.data.uv_layers) == 0:
+#           raise Error( "Error:  No UV texture data for " + object.name )
         for face in object.data.polygons:
-            i = 0
-            for v in face.vertices:
-                if v == vi:
-                    faceList.append(face.index)
-                    vertexIndices.append(i)
-                    print('Add face and index: ' + str(face.index) + ':' + str(i))
-                i += 1
-        
-        print('TexFaces count: ' + str(len(faceList)))
-        
-        # find cycle offset
-        tOffset = 0
-        while True:
-            match = True
-            
-            uiList = []
-            uvList = []
-            for i in vertexIndices:
-                uiList.append((i + tOffset)%3)
+            vi = 0
+            for li in face.loop_indices:
+                t = cTVert(face.vertices[vi], object.data.uv_layers[0].data[li].uv)
+                self.vertlist.append(t)
+                vi += 1
 
-            for i in range(len(faceList)):
-                uv = self.getUV(object, faceList[i], uiList[i])
-                uvList.append(uv)
-                print('UV(' + str(faceList[i]) + ',' + str(uiList[i]) + ') = ' + str(uv))
-                if i > 0:
-                    for ui in uvList:
-                        if ui != uvList[0]:
-                            match = False
-                            print('Does not match')
-
-            if match:
-                break
-            else:
-                tOffset += 1
-                if tOffset == 3:
-                    print('ERROR! Unknown texCoord sort!')
-                    break
-
-        print('TexOffset: ' + str(tOffset))
-
-        for face in object.data.polygons:
-            if len( object.data.tessface_uv_textures ) == 0:
-                raise Error( "Error:  No UV texture data for " + object.name )
-            else:
-                print('Face #' + str(face.index))
-                for ()
-                print(object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[face.index].uv)
-                temp = cTVert( face.vertices[0], self.getUV(object, face.index, 0) )
-                self.vertlist.append( temp )
-                temp = cTVert( face.vertices[1], self.getUV(object, face.index, 1) )
-                self.vertlist.append( temp )
-                temp = cTVert( face.vertices[2], self.getUV(object, face.index, 2) )
-                self.vertlist.append( temp )
-
-        self.length = len( self.vertlist )
-    
-    def getUV(self, object, fi, ui):
-        uv = 0;
-        if ui == 0:
-            uv = object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[fi].uv1
-        else:
-            if ui == 1:
-                uv = object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[fi].uv2
-            else:
-                uv = object.data.tessface_uv_textures[object.data.uv_textures.active_index].data[fi].uv3
-        return uv
+        self.length = len(self.vertlist)
 
     def dump( self ):
         temp = ''
@@ -801,7 +724,6 @@ def getSelectedFaces( self, index = False ):
     return selected_faces
 
 #== Core ===================================================================
-
 from bpy_extras.io_utils import ExportHelper
 from bpy.props import StringProperty, BoolProperty, FloatProperty
 
@@ -969,7 +891,7 @@ class ExportAse( bpy.types.Operator, ExportHelper ):
             else:
                 continue
 
-        aseModel = ''
+        aseModel = 'UNKNOWN'
         aseModel += aseHeader
         aseModel += aseScene
         aseModel += aseMaterials
