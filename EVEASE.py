@@ -24,8 +24,8 @@
 bl_info = {
     "name": "EVE Scene Exporter",
     "author": "Egor Vilkin, EVil corp.",
-    "version": ( 1, 1, 0 ),
-    "blender": ( 2, 6, 3 ),
+    "version": ( 1, 1, 1 ),
+    "blender": ( 2, 7, 1 ),
     "api": 36079,
     "location": "File > Export > EVE Scene Export(.ase)",
     "description": "EVil Engine Scene Export(.ase)",
@@ -39,19 +39,17 @@ bl_info = {
 --  This script is intended to export in the ASE file format for STATIC MESHES ONLY.
 --  This script WILL NOT export skeletal meshes, these should be exported using a
 --  different file format.
-
---  More Information at http://code.google.com/p/ase-export-vmc/
---  UDK Thread at http://forums.epicgames.com/threads/776986-Blender-2-57-ASE-export
 """
 
 import os
 import bpy
 import math
 import time
+import bmesh
 
 # settings
 aseFloat = lambda x: '''{0: 0.4f}'''.format( x )
-optionScale = 16.0
+optionScale = 1.0
 optionSmoothingGroups = True
 
 # ASE components
@@ -434,19 +432,15 @@ class cFacelist:
 class cTVertlist:
     def __init__( self, object ):
         self.vertlist = []
-
-        # update tessface
         mesh = bpy.context.object.data
-        mesh.update( calc_tessface = True )
+        uv_map = mesh.uv_layers.active.data
+
 # mark
-#       if len(object.data.uv_layers) == 0:
-#           raise Error( "Error:  No UV texture data for " + object.name )
-        for face in object.data.polygons:
-            vi = 0
-            for li in face.loop_indices:
-                t = cTVert(face.vertices[vi], object.data.uv_layers[0].data[li].uv)
+        for face in mesh.polygons:
+            for li in range(face.loop_start, face.loop_start + face.loop_total):
+                #print('VI: ' + str(mesh.loops[li].vertex_index))
+                t = cTVert(mesh.loops[li].vertex_index, uv_map[li].uv)
                 self.vertlist.append(t)
-                vi += 1
 
         self.length = len(self.vertlist)
 
@@ -788,7 +782,7 @@ class ExportAse( bpy.types.Operator, ExportHelper ):
             max = 1000.0,
             soft_min = 0.01,
             soft_max = 1000.0,
-            default = 16.0 )
+            default = 1.0 )
 
     def draw( self, context ):
         layout = self.layout
@@ -853,8 +847,9 @@ class ExportAse( bpy.types.Operator, ExportHelper ):
         numMats = 0
 
         # Build ASE Header, Scene
-        print( '\nEVE Scene Export by EVil corp.\n' )
-        print( 'Objects selected: ' + str( len( bpy.context.selected_objects ) ) )
+        print('\nEVE Scene Export by EVil corp.\n' )
+        print('Objects selected: ' + str( len( bpy.context.selected_objects ) ) )
+        print('Scale: ' + str(optionScale))
         aseHeader = str( cHeader() )
         aseScene = str( cScene() )
         aseMaterials = str( cMaterials() )
