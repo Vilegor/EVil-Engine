@@ -86,8 +86,8 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
             // Set texture coord
             if (tcount) {
                 NSArray *tex = [EVEASEConverter valueListNamed:@"MESH_TVERT" index:v fromTextDescription:objDesc];
-                vertices[v].tex_x = [tex[0] floatValue];
-                vertices[v].tex_y = [tex[1] floatValue];
+                vertices[v].u = [tex[0] floatValue];
+                vertices[v].v = [tex[1] floatValue];
             }
             
             // Set color

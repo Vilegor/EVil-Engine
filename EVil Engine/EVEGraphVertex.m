@@ -23,8 +23,8 @@ EVEVertexStruct EVEVertexMake(GLfloat data[EVE_VERTEX_DATA_SIZE]) {
     vertex.b = data[8];
     vertex.a = data[9];
     
-    vertex.tex_x = data[10];
-    vertex.tex_y = data[11];
+    vertex.u = data[10];
+    vertex.v = data[11];
     
     return vertex;
 }
@@ -45,8 +45,8 @@ GLfloat* EVEVertexData(EVEVertexStruct vertex) {
     data[8] = vertex.b;
     data[9] = vertex.a;
     
-    data[10] = vertex.tex_x;
-    data[11] = vertex.tex_y;
+    data[10] = vertex.u;
+    data[11] = vertex.v;
 	
 	return data;
 }

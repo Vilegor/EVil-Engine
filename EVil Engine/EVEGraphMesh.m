@@ -145,7 +145,7 @@
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, r));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     
-    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, tex_x));
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, u));
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
     
     
