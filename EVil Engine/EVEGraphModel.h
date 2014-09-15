@@ -17,6 +17,6 @@
 
 ///Test models
 + (EVEGraphModel *)paperPlaneModel;
-+ (EVEGraphModel *)woodFloorModel:(int)size;
++ (EVEGraphModel *)woodFloorModel:(float)size textureScale:(float)texScale;
 
 @end

@@ -166,12 +166,12 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     return planeModel;
 }
 
-+ (EVEGraphModel *)woodFloorModel:(int)size
++ (EVEGraphModel *)woodFloorModel:(float)size textureScale:(float)texScale
 {
-    GLfloat v0[] = {size,size,0,    0,1,0,	255,255,255,255,	size/10,size/10};
-    GLfloat v1[] = {size,-size,0,   0,1,0,	255,255,255,255,	size/10,0};
+    GLfloat v0[] = {size,size,0,    0,1,0,	255,255,255,255,	size*texScale,size*texScale};
+    GLfloat v1[] = {size,-size,0,   0,1,0,	255,255,255,255,	size*texScale,0};
     GLfloat v2[] = {-size,-size,0,  0,1,0,  255,255,255,255,	0,0};
-    GLfloat v3[] = {-size,size,0,   0,1,0,  255,255,255,255,	0,size/10};
+    GLfloat v3[] = {-size,size,0,   0,1,0,  255,255,255,255,	0,size*texScale};
     
     EVEVertexStruct *vertices = calloc(4, sizeof(EVEVertexStruct));
     GLubyte indices[6] = {0,1,2, 0,3,2};

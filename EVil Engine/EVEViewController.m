@@ -9,6 +9,8 @@
 #import "EVEViewController.h"
 #import "EVEGraphModel.h"
 
+#define SENSITIVITY 150.0
+
 static NSString * const kBallModelName = @"Ball";
 static NSString * const kRobotModelName = @"Robot";
 
@@ -36,7 +38,10 @@ enum
     
     GLKMatrix4 _modelViewProjectionMatrix;
     GLKMatrix3 _normalMatrix;
-    float _rotation;
+    float _rotationHorisontal;
+    float _rotationVertical;
+    float _rDeltaX, _rDeltaY;
+    float _tPointX, _tPointY;
     
     NSMutableArray *modelArray;
 }
@@ -112,7 +117,7 @@ enum
 {
     modelArray = [NSMutableArray array];
     //	[modelArray addObject:[GraphModel paperPlaneModel]];
-	[modelArray addObject:[EVEGraphModel woodFloorModel:50]];
+	[modelArray addObject:[EVEGraphModel woodFloorModel:5 textureScale:1.0]];
     
     NSArray *modelsToLoad = @[@"eve_test"];
     for (NSString *fileName in modelsToLoad) {
@@ -138,12 +143,16 @@ enum
 {
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), _aspect, 0.1f, 150.0f);
     
-    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -20.0f, -40.0f);
+    GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, -2.0f, -6.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 5.2f, 1.0f, 0.0f, 0.0f);
     baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, 0.5f, 0.0f, 0.0f, 1.0f);
     
     // Compute the model view matrix for the object rendered with ES2
     GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0);
+    // horizontal rotation
+    modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationHorisontal + _rDeltaX, 0.0f, 0.0f, 1.0f);
+    // vertical rotation
+    //modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotationVertical + _rDeltaY, 1.0f, 1.0f, 0.0f);
     modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
     
     _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
@@ -341,5 +350,29 @@ enum
     
     return YES;
 }
+
+#pragma mark - Rotation
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = touches.allObjects[0];
+    _rDeltaX = ([touch locationInView:self.view].x - _tPointX)/SENSITIVITY;
+    _rDeltaY = ([touch locationInView:self.view].y - _tPointY)/SENSITIVITY;
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    _rotationHorisontal += _rDeltaX;
+    _rotationVertical += _rDeltaY;
+    _rDeltaX = _rDeltaY = 0;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = touches.allObjects[0];
+    _tPointX = [touch locationInView:self.view].x;
+    _tPointY = [touch locationInView:self.view].y;
+}
+
 
 @end
