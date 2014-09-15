@@ -110,13 +110,18 @@ enum
     _aspect = fabsf(self.view.bounds.size.height / self.view.bounds.size.width);
     
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+    glEnable(GL_CULL_FACE);
+    
     [self setupModels];
 }
 
 - (void)setupModels
 {
     modelArray = [NSMutableArray array];
-    //	[modelArray addObject:[GraphModel paperPlaneModel]];
+    [modelArray addObject:[EVEGraphModel paperPlaneModel:3]];
 	[modelArray addObject:[EVEGraphModel woodFloorModel:5 textureScale:1.0]];
     
     NSArray *modelsToLoad = @[@"eve_test"];

@@ -138,17 +138,17 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 
 #pragma mark - Test Models
 
-+ (EVEGraphModel *)paperPlaneModel
++ (EVEGraphModel *)paperPlaneModel:(float)height
 {
-    GLfloat v0[] = {0,-1,0,				0,1,0,	255,255,255,255,	0,0};
-    GLfloat v1[] = {0.1f,0.5f,0,        0,1,0,	204,204,204,255,	0.3,0};
-    GLfloat v2[] = {-0.1f,0.5f,0,       0,1,0,  204,204,204,255,	0.3,0.3};
-    GLfloat v3[] = {0,0.5f,-0.3,        0,1,0,  230,230,230,255,	0,0.3};
-    GLfloat v4[] = {0.8f,0.4f,-0.1f,    0,1,0,  255,255,255,255,	0.3,0.3};
-    GLfloat v5[] = {-0.8f,0.4f,-0.1f,   0,1,0,  255,255,255,255,	0,0.3};
+    GLfloat v0[] = {0,-1,height,			0,0,1,	255,255,255,255,	0,0};
+    GLfloat v1[] = {0.1f,0.5f,height,       0,0,1,	204,204,204,255,	0.5,0};
+    GLfloat v2[] = {-0.1f,0.5f,height,      0,0,1,  204,204,204,255,	0.5,0.5};
+    GLfloat v3[] = {0,0.5f,height-0.3,      0,0,1,  230,230,230,255,	0,0.5};
+    GLfloat v4[] = {0.8f,0.4f,height-0.1f,  0,0,1,  255,255,255,255,	0.5,0.5};
+    GLfloat v5[] = {-0.8f,0.4f,height-0.1f, 0,0,1,  255,255,255,255,	0,0.5};
     
     EVEVertexStruct *vertices = calloc(6, sizeof(EVEVertexStruct));
-    GLubyte indices[12] = {0,2,3, 0,2,5, 0,1,3, 0,1,4};
+    GLubyte indices[12] = {0,3,2, 0,2,5, 0,1,3, 0,4,1};
     
     vertices[0] = EVEVertexMake(v0);
     vertices[1] = EVEVertexMake(v1);
@@ -168,13 +168,13 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 
 + (EVEGraphModel *)woodFloorModel:(float)size textureScale:(float)texScale
 {
-    GLfloat v0[] = {size,size,0,    0,1,0,	255,255,255,255,	size*texScale,size*texScale};
-    GLfloat v1[] = {size,-size,0,   0,1,0,	255,255,255,255,	size*texScale,0};
-    GLfloat v2[] = {-size,-size,0,  0,1,0,  255,255,255,255,	0,0};
-    GLfloat v3[] = {-size,size,0,   0,1,0,  255,255,255,255,	0,size*texScale};
+    GLfloat v0[] = {size,size,0,    0,0,1,	255,255,255,255,	size*texScale,size*texScale};
+    GLfloat v1[] = {size,-size,0,   0,0,1,	255,255,255,255,	size*texScale,0};
+    GLfloat v2[] = {-size,-size,0,  0,0,1,  255,255,255,255,	0,0};
+    GLfloat v3[] = {-size,size,0,   0,0,1,  255,255,255,255,	0,size*texScale};
     
     EVEVertexStruct *vertices = calloc(4, sizeof(EVEVertexStruct));
-    GLubyte indices[6] = {0,1,2, 0,3,2};
+    GLubyte indices[6] = {0,2,1, 0,3,2};
     
     vertices[0] = EVEVertexMake(v0);
     vertices[1] = EVEVertexMake(v1);

@@ -9,6 +9,10 @@
 #import "EVEGraphObject.h"
 #import "EVEGraphMaterial.h"
 
+/*!
+ All models suggest Counter Clock Wise vertex ordering
+ */
+
 @interface EVEGraphModel : EVEGraphObject
 
 + (EVEGraphModel *)emptyModel;
@@ -16,7 +20,7 @@
 + (EVEGraphModel *)modelFromFile:(NSString *)aseFileName;
 
 ///Test models
-+ (EVEGraphModel *)paperPlaneModel;
++ (EVEGraphModel *)paperPlaneModel:(float)height;
 + (EVEGraphModel *)woodFloorModel:(float)size textureScale:(float)texScale;
 
 @end
