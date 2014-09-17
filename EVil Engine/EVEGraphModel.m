@@ -72,28 +72,31 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         EVEVertexStruct *vertices = calloc(vcount, sizeof(EVEVertexStruct));
         for (int v = 0; v < vcount; v++) {
             // Set coord
-            NSArray *coord = [EVEASEConverter valueListNamed:@"MESH_VERTEX" index:v fromTextDescription:objDesc];
+            NSArray *coord = [EVEASEConverter valueListNamed:@"MESH_VERTEX" atIndex:v fromTextDescription:objDesc];
             vertices[v].x = [coord[0] floatValue];
             vertices[v].y = [coord[1] floatValue];
             vertices[v].z = [coord[2] floatValue];
             
             // Set normal
-            NSArray *normal = [EVEASEConverter valueListNamed:@"MESH_VERTEXNORMAL" index:v fromTextDescription:objDesc];
+            NSArray *normal = [EVEASEConverter valueListNamed:@"MESH_VERTEXNORMAL" atIndex:v fromTextDescription:objDesc];
             vertices[v].nx = [normal[0] floatValue];
             vertices[v].ny = [normal[1] floatValue];
             vertices[v].nz = [normal[2] floatValue];
             
             // Set texture coord
-            if (tcount) {
-                NSArray *tex = [EVEASEConverter valueListNamed:@"MESH_TVERT" index:v fromTextDescription:objDesc];
+            if (tcount > v) {
+                NSArray *tex = [EVEASEConverter valueListNamed:@"MESH_TVERT" atIndex:v fromTextDescription:objDesc];
                 vertices[v].u = [tex[0] floatValue];
                 vertices[v].v = [tex[1] floatValue];
+                
+                NSArray *allTex = [EVEASEConverter allMatchedValuesListNamed:@"MESH_TVERT" atIndex:v fromTextDescription:objDesc];
+                NSLog(@"%d: TexCount = %d", v, allTex.count);
             }
             
             // Set color
             NSArray *color;
-            if (ccount) {
-                color = [EVEASEConverter valueListNamed:@"MESH_VERTCOL" index:v fromTextDescription:objDesc];
+            if (ccount > v) {
+                color = [EVEASEConverter valueListNamed:@"MESH_VERTCOL" atIndex:v fromTextDescription:objDesc];
             }
             else {
                 color = @[@1,@1,@1];
@@ -108,7 +111,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         int icount = fcount * ASE_FACE_SIZE;
         GLubyte *indices = calloc(icount, sizeof(GLubyte));
         for (int f = 0; f < fcount; f++) {
-            NSDictionary *faceInfo = [EVEASEConverter valueDictionaryNamed:@"MESH_FACE" index:f fromTextDescription:objDesc];
+            NSDictionary *faceInfo = [EVEASEConverter valueDictionaryNamed:@"MESH_FACE" atIndex:f fromTextDescription:objDesc];
             // ASE works only with triangle faces
             indices[f*ASE_FACE_SIZE]     = [faceInfo[@"A"] intValue];
             indices[f*ASE_FACE_SIZE + 1] = [faceInfo[@"B"] intValue];

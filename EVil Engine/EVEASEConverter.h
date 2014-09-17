@@ -16,10 +16,9 @@
 + (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
 + (NSNumber *)numberValueNamed:(NSString *)name fromTextDescription:(NSString *)description;
 + (NSArray *)valueListNamed:(NSString *)name fromTextDescription:(NSString *)description;
-+ (NSArray *)valueListNamed:(NSString *)name index:(int)index fromTextDescription:(NSString *)description;
-+ (NSDictionary *)valueDictionaryNamed:(NSString *)name index:(int)index fromTextDescription:(NSString *)description;
++ (NSArray *)valueListNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description;
++ (NSDictionary *)valueDictionaryNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description;
 
-/// Needed until we use ASE file from both 3DS Max and Blender
-+ (NSString *)normalizeTextDescription:(NSString *)description;
++ (NSArray *)allMatchedValuesListNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description;
 
 @end

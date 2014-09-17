@@ -12,6 +12,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
 
 @implementation EVEASEConverter
 
+/// List of strings, describing GEOMOBJECTs
 + (NSArray *)objectsDescriptionFromFile:(NSString *)aseFileName
 {
     NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
@@ -29,7 +30,6 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
         NSLog(@"ERROR! %@", error);
     }
     else {
-        fileContents = [EVEASEConverter normalizeTextDescription:fileContents];
         NSString *pattern = @"\\*GEOMOBJECT \\{(.(?!\\*GEOMOBJECT))*\\}";
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
@@ -54,6 +54,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
+/// List of strings, describing MATERIALSs
 + (NSArray *)materialsDescriptionFromFile:(NSString *)aseFileName
 {
     NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
@@ -71,7 +72,6 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
         NSLog(@"ERROR! %@", error);
     }
     else {
-        fileContents = [EVEASEConverter normalizeTextDescription:fileContents];
         NSString *pattern = @"\\*MATERIAL [0-9]+ \\{(.(?!\\*MATERIAL ))*\\}";
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
                                                                                options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
@@ -97,6 +97,30 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
++ (NSArray *)allLinesNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
+{
+    NSError *error = nil;
+    NSString *pattern = [NSString stringWithFormat:kIndexedLineFormat, name, index];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
+                                                                           options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
+                                                                             error:&error];
+    if (error) {
+        NSLog(@"ERROR! ASEConverter: %@", error);
+    }
+    else {
+        NSArray *resultRegex = [regex matchesInString:description options:0 range:NSMakeRange(0, description.length)];
+        if (resultRegex.count) {
+            NSMutableSet *set = [NSMutableSet set];
+            for (NSTextCheckingResult *result in resultRegex) {
+                NSRange range = [result range];
+                range.length += 1;      // substringWithRange cuts last char like a BITCH!
+                [set addObject:[description substringWithRange:range]];
+            }
+            return set.allObjects;
+        }
+    }
+    return nil;
+}
 
 + (NSString *)lineNamed:(NSString *)name fromTextDescription:(NSString *)description
 {
@@ -119,7 +143,7 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
-+ (NSString *)lineNamed:(NSString *)name index:(int)index fromTextDescription:(NSString *)description
++ (NSString *)lineNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
 {
     NSError *error = nil;
     NSString *pattern = [NSString stringWithFormat:kIndexedLineFormat, name, index];
@@ -183,9 +207,9 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
-+ (NSArray *)valueListNamed:(NSString *)name index:(int)index fromTextDescription:(NSString *)description
++ (NSArray *)valueListNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
 {
-    NSString *line = [self lineNamed:name index:index fromTextDescription:description];
+    NSString *line = [self lineNamed:name atIndex:index fromTextDescription:description];
     if (line) {
         NSRange nameRange = [line rangeOfString:name];
         NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
@@ -201,9 +225,9 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
-+ (NSDictionary *)valueDictionaryNamed:(NSString *)name index:(int)index fromTextDescription:(NSString *)description
++ (NSDictionary *)valueDictionaryNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
 {
-    NSString *line = [self lineNamed:name index:index fromTextDescription:description];
+    NSString *line = [self lineNamed:name atIndex:index fromTextDescription:description];
     if (line) {
         NSRange nameRange = [line rangeOfString:name];
         NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
@@ -219,9 +243,26 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
-+ (NSString *)normalizeTextDescription:(NSString *)description
++ (NSArray *)allMatchedValuesListNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
 {
-    return [description stringByReplacingOccurrencesOfString:@"\r\n" withString:@"\n"];
+    NSArray *lines = [self allLinesNamed:name atIndex:index fromTextDescription:description];
+    if (lines) {
+        NSMutableArray *allValues = [NSMutableArray array];
+        for (NSString *line in lines) {
+            NSRange nameRange = [line rangeOfString:name];
+            NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
+            listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
+            NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t"]];
+            list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
+            NSMutableArray *values = [NSMutableArray array];
+            for (NSString *str in list) {
+                [values addObject:@(str.floatValue)];
+            }
+            [allValues addObject:values];
+        }
+        return allValues;
+    }
+    return nil;
 }
 
 @end
