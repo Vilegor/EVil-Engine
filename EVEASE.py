@@ -117,12 +117,7 @@ class cMaterials:
 
         self.material_count = len( self.material_list )
         numMats = self.material_count
-
-        # Raise an error if there are no materials found
-        if self.material_count == 0:
-            raise Error( 'Mesh must have at least one applied material' )
-        else:
-            self.dump = cMultiMaterials( self.material_list )
+        self.dump = cMultiMaterials( self.material_list )
 
     def __repr__( self ):
         return str( self.dump )
@@ -286,15 +281,16 @@ class MeshProcessor:
     # duplicate vertices with several tex coords
     def prepareVertexAndFaceLists(self, object):
         mesh = object.data
-        uv_map = mesh.uv_layers.active.data
+        uv_map = [None]
         
         self.vertexList = [None] * len(object.data.vertices)
-        self.hasTexture = (len(uv_map) > 0)
+        self.hasTexture = not (mesh.uv_layers.active is None)
         self.hasColor = (len(mesh.vertex_colors) > 0)
+        if self.hasTexture:
+            uv_map = mesh.uv_layers.active.data;
         
         for face in mesh.polygons:
             vertIndices = []
-            print('Face ' + str(face.index))
             for li in range(face.loop_start, face.loop_start + face.loop_total):
                 index = mesh.loops[li].vertex_index
                 coord = object.data.vertices[index].co.to_tuple(4)
@@ -303,10 +299,12 @@ class MeshProcessor:
                     uv = uv_map[li].uv
                 color = [1,1,1]
                 if self.hasColor:
-                    color = mesh.vertex_colors[0].data[face.index].color[index]
+                    color = mesh.vertex_colors[0].data[index].color
+                    print('*VERTEX_COLOR SIZE ' + str(len(mesh.vertex_colors)))
+                    print('*DATA SIZE ' + str(len(mesh.vertex_colors[0].data)))
+                    print('*COLOR ' + str(color))
                 
                 v = VertexData(index, coord, uv, color)
-                print(v.tvert_str())
                 vi = self.vertexList[index]
                 if vi is None:
                     # set vertex
@@ -370,6 +368,14 @@ class MeshProcessor:
         output += '''\t\t}'''
         return output
 
+    def cTexture_list_str(self):
+        output = '''\n\t\t*MESH_NUMCVERTEX {0}'''.format(len(self.vertexList))
+        output += '''\n\t\t*MESH_CVERTLIST {\n'''
+        for v in self.vertexList:
+            output += v.cvert_str()
+        output += '''\t\t}'''
+        return output
+
     def vColor_list_str(self):
         output = '''\n\t\t*MESH_NUMCVERTEX {0}'''.format(len(self.vertexList))
         output += '''\n\t\t*MESH_CVERTLIST {\n'''
@@ -426,7 +432,7 @@ class VertexData:
     def cvert_str(self):
         return '''\t\t\t*MESH_CVERT {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.r), aseFloat(self.g), aseFloat(self.b))
     def cvert_str(self):
-        return '''\t\t\t*MESH_CVERT {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.r), aseFloat(self.g), aseFloat(self.b))
+        return '''\t\t\t*MESH_VERTCOL {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.r), aseFloat(self.g), aseFloat(self.b))
     def vertex_normal_str(self):
         return '''\t\t\t*MESH_VERTEXNORMAL {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.normal[0]), aseFloat(self.normal[1]), aseFloat(self.normal[2]))
 

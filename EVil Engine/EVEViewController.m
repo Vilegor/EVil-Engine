@@ -121,7 +121,7 @@ enum
 - (void)setupModels
 {
     modelArray = [NSMutableArray array];
-    [modelArray addObject:[EVEGraphModel paperPlaneModel:3]];
+    //[modelArray addObject:[EVEGraphModel paperPlaneModel:3]];
 	[modelArray addObject:[EVEGraphModel woodFloorModel:5 textureScale:1.0]];
     
     NSArray *modelsToLoad = @[@"eve_test"];

@@ -136,16 +136,16 @@
 - (void)draw
 {
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, x));
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void *)offsetof(EVEVertexStruct, x));
     glEnableVertexAttribArray(GLKVertexAttribPosition);
     
-    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, nx));
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void *)offsetof(EVEVertexStruct, nx));
     glEnableVertexAttribArray(GLKVertexAttribNormal);
     
-    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, r));
+    glVertexAttribPointer(GLKVertexAttribColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(EVEVertexStruct), (void *)offsetof(EVEVertexStruct, r));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     
-    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void*)offsetof(EVEVertexStruct, u));
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, sizeof(EVEVertexStruct), (void *)offsetof(EVEVertexStruct, u));
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
     
     
