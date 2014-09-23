@@ -88,9 +88,6 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
                 NSArray *tex = [EVEASEConverter valueListNamed:@"MESH_TVERT" atIndex:v fromTextDescription:objDesc];
                 vertices[v].u = [tex[0] floatValue];
                 vertices[v].v = [tex[1] floatValue];
-                
-                NSArray *allTex = [EVEASEConverter allMatchedValuesListNamed:@"MESH_TVERT" atIndex:v fromTextDescription:objDesc];
-                NSLog(@"%d: TexCount = %d", v, allTex.count);
             }
             
             // Set color

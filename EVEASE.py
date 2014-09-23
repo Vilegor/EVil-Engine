@@ -24,7 +24,7 @@
 bl_info = {
     "name": "EVE Scene Exporter",
     "author": "Egor Vilkin, EVil corp.",
-    "version": ( 1, 1, 1 ),
+    "version": ( 1, 0),
     "blender": ( 2, 7, 1 ),
     "api": 36079,
     "location": "File > Export > EVE Scene Export(.ase)",
@@ -63,36 +63,36 @@ matList = []
 numMats = 0
 currentMatId = 0
 
-#== Error ==================================================================
+#=== Error ==================================================================
 class Error( Exception ):
 
     def __init__( self, message ):
         self.message = message
         print( '\n\n' + message + '\n\n' )
 
-#== Header =================================================================
+#=== Header =================================================================
 class cHeader:
     def __init__( self ):
         self.comment = "EVE Scene Exporter v1.0"
 
     def __repr__( self ):
-        return '''*3DSMAX_ASCIIEXPORT\t200\n*COMMENT "{0}"\n'''.format( self.comment )
+        return '''*BLENDER_ASCIIEXPORT\n*COMMENT "{0}"\n'''.format( self.comment )
 
-#== Scene ==================================================================
+#=== Scene ==================================================================
 class cScene:
     def __init__( self ):
         self.filename = bpy.data.filepath
-        self.firstframe = 0
-        self.lastframe = 100
-        self.framespeed = 30
-        self.ticksperframe = 160
-        self.backgroundstatic = ''.join( [aseFloat( x ) for x in [0.0, 0.0, 0.0]] )
-        self.ambientstatic = ''.join( [aseFloat( x ) for x in [0.0, 0.0, 0.0]] )
+        self.firstframe = bpy.context.scene.frame_start
+        self.lastframe = bpy.context.scene.frame_end
+        self.framespeed = bpy.context.scene.frame_step
+        #self.ticksperframe = 160
+        #self.backgroundstatic = ''.join( [aseFloat( x ) for x in [0.0, 0.0, 0.0]] )
+        #self.ambientstatic = ''.join( [aseFloat( x ) for x in [0.0, 0.0, 0.0]] )
 
     def __repr__( self ):
-        return '''*SCENE {{\n\t*SCENE_FILENAME "{0}"\n\t*SCENE_FIRSTFRAME {1}\n\t*SCENE_LASTFRAME {2}\n\t*SCENE_FRAMESPEED {3}\n\t*SCENE_TICKSPERFxRAME {4}\n\t*SCENE_BACKGROUND_STATIC {5}\n\t*SCENE_AMBIENT_STATIC {6}\n}}\n'''.format( self.filename, self.firstframe, self.lastframe, self.framespeed, self.ticksperframe, self.backgroundstatic, self.ambientstatic )
+        return '''*SCENE {{\n\t*SCENE_FILENAME "{0}"\n\t*SCENE_FIRSTFRAME {1}\n\t*SCENE_LASTFRAME {2}\n\t*SCENE_FRAMESPEED {3}\n}}\n'''.format( self.filename, self.firstframe, self.lastframe, self.framespeed )
 
-#== Materials ==============================================================
+#=== Materials ==============================================================
 class cMaterials:
     def __init__( self ):
         global optionSubmaterials
@@ -209,10 +209,10 @@ class cDiffusemap:
     def __repr__( self ):
         return self.dump
 
-#== Geometry ===============================================================
+#=== Geometry ===============================================================
 class cGeomObject:
-    def __init__( self, object ):
-        print( object.name + ": Constructing Geometry" )
+    def __init__(self, object):
+        print(object.name + " : Parsing Geometry")
         global currentMatId
 
         self.name = object.name
@@ -222,13 +222,14 @@ class cGeomObject:
 
         self.material_ref = currentMatId
 
-        self.nodetm = cNodeTM( object )
-        self.mesh = cMesh( object )
+        self.nodetm = cNodeTM(object)
+        self.mesh = cMesh(object)
 
-        self.dump = '''\n*GEOMOBJECT {{\n\t*NODE_NAME "{0}"\n{1}\n{2}\n\t*PROP_MOTIONBLUR {3}\n\t*PROP_CASTSHADOW {4}\n\t*PROP_RECVSHADOW {5}\n\t*MATERIAL_REF {6}\n}}'''.format( self.name, self.nodetm, self.mesh, self.prop_motionblur, self.prop_castshadow, self.prop_recvshadow, self.material_ref )
+        self.dump = '''\n*GEOMOBJECT {{\n\t*NODE_NAME "{0}"\n{1}\n{2}\n\t*PROP_MOTIONBLUR {3}\n\t*PROP_CASTSHADOW {4}\n\t*PROP_RECVSHADOW {5}\n\t*MATERIAL_REF {6}\n}}'''.format(self.name, self.nodetm, self.mesh, self.prop_motionblur, self.prop_castshadow, self.prop_recvshadow, self.material_ref)
 
-    def __repr__( self ):
+    def __repr__(self):
         return self.dump
+
 class cNodeTM:
     def __init__( self, object ):
         self.name = object.name
@@ -250,327 +251,201 @@ class cNodeTM:
 
     def __repr__( self ):
         return self.dump
+
 class cMesh:
-    def __init__( self, object ):
+    def __init__(self, object):
+        global currentMatId
+        global numMats
+        
         bpy.ops.mesh.reveal
 
-        if collisionObject( object ) == False:
-            object.data.uv_textures.active_index = 0
-            object.data.uv_texture_stencil_index = 0
-            self.tvertlist = cTVertlist( object )
-            self.numtvertex = self.tvertlist.length
-            self.numtvfaces = len( object.data.uv_texture_stencil.data )
-            self.tfacelist = cTFacelist( self.numtvfaces )
-            self.uvmapchannels = self.uvdump( object )
+        self.mp = MeshProcessor()
+        if collisionObject(object) == False:
+            self.mp.prepareVertexAndFaceLists(object)
+            self.mp.setNormals(object)
+            if self.mp.hasTexture:
+                if currentMatId < numMats - 1:
+                    currentMatId += 1
+                else:
+                    currentMatId = 0
+    
+    def __repr__(self):
+        return self.mp.mesh_str()
 
-            # OUTPUT
-            self.numtvertex_str = '\n\t\t*MESH_NUMTVERTEX ' + str( self.numtvertex )
-            self.tvertlist_str = '\n\t\t*MESH_TVERTLIST ' + str( self.tvertlist )
-            self.numtvfaces_str = '\n\t\t*MESH_NUMTVFACES ' + str( self.numtvfaces )
-            self.tfacelist_str = '\n\t\t*MESH_TFACELIST ' + str( self.tfacelist )
-
-        else:
-            self.tvertlist_str = ''
-            self.numtvertex_str = ''
-            self.numtvfaces_str = ''
-            self.tfacelist_str = ''
-            self.uvmapchannels = ''
-
-        self.timevalue = '0'
-        self.numvertex = len( object.data.vertices )
-        self.numfaces = len( object.data.polygons )
-        self.vertlist = cVertlist( object )
-        self.facelist = cFacelist( object )
-
-        # Vertex Paint
-        if len( object.data.vertex_colors ) > 0:
-            self.cvertlist = cCVertlist( object )
-            self.numcvertex = self.cvertlist.length
-            self.numcvfaces = len( object.data.vertex_colors.data.polygons )
-            self.cfacelist = cCFacelist( self.numcvfaces )
-            # change them into strings now
-            self.cvertlist = '\n{0}'.format( self.cvertlist )
-            self.numcvertex = '\n\t\t*MESH_NUMCVERTEX {0}'.format( self.numcvertex )
-            self.numcvfaces = '\n\t\t*MESH_NUMCVFACES {0}'.format( self.numcvfaces )
-            self.cfacelist = '\n{0}'.format( self.cfacelist )
-        else:
-            self.cvertlist = ''
-            self.numcvertex = ''
-            self.numcvfaces = ''
-            self.cfacelist = ''
-
-        self.normals = cNormallist( object )
-
-    # get uv layer names for specified object
-    def getUVLayerNames( self, object ):
-        self.uvLayerNames = []
-        obj = object.data
-        for uv in obj.uv_textures.keys():
-            self.uvLayerNames.append( str( uv ) )
-
-    def uvdump( self, object ):
-        self.mappingchannels = ''
-        # if there is more than 1 uv layer
-        if collisionObject( object ) == False:
-            self.getUVLayerNames( object )
-            if len( self.uvLayerNames ) > 1:
-                # save uv actives
-                active_uv = object.data.uv_textures.active_index
-                obj = object.data
-                activeUV = 0
-                for uvname in self.uvLayerNames:
-                    if activeUV == 0:
-                        activeUV += 1
-                        continue
-                    obj.uv_textures.active_index = activeUV
-                    obj.uv_texture_stencil_index = activeUV
-                    self.uvm_tvertlist = cTVertlist( object )
-                    self.uvm_numtvertex = self.uvm_tvertlist.length
-                    self.uvm_numtvfaces = len( object.data.uv_texture_stencil.data )
-                    self.uvm_tfacelist = cTFacelist( self.uvm_numtvfaces )
-
-                    # if len(object.data.vertex_colors) > 0:
-                        # self.uvm_cvertlist = cCVertlist(object)
-                        # self.uvm_numcvertex = self.uvm_cvertlist.length
-                        # self.uvm_numcvfaces = len(object.data.vertex_colors[0].data)
-                        # self.uvm_cfacelist = cCFacelist(self.uvm_numcvfaces)
-
-                        # self.uvm_cvertlist = '\n{0}'.format(self.uvm_cvertlist)
-                        # self.uvm_numcvertex = '\n\t\t*MESH_NUMCVERTEX {0}'.format(self.uvm_numcvertex)
-                        # self.uvm_numcvfaces = '\n\t\t*MESH_NUMCVFACES {0}'.format(self.uvm_numcvfaces)
-                        # self.uvm_cfacelist = '\n{0}'.format(self.uvm_cfacelist)
-                    # else:
-                    self.uvm_numcvertex = ''
-                    self.uvm_numcvfaces = ''
-                    self.uvm_cvertlist = ''
-                    self.uvm_cfacelist = ''
-
-                    # print extra mapping channels
-                    self.mappingchannels += '''\n\t\t*MESH_MAPPINGCHANNEL {0} {{\n\t\t\t*MESH_NUMTVERTEX {1}\n\t\t\t*MESH_TVERTLIST {2}\n\t\t*MESH_NUMTVFACES {3}\n\t\t*MESH_TFACELIST {4}{5}{6}{7}{8}\n\t\t}}'''.format( str( activeUV + 1 ), self.uvm_numtvertex, self.uvm_tvertlist, self.uvm_numtvfaces, self.uvm_tfacelist, self.uvm_numcvertex, self.uvm_cvertlist, self.uvm_numcvfaces, self.uvm_cfacelist )
-                    activeUV = activeUV + 1
-
-                # restore uv actives
-                object.data.uv_textures.active_index = active_uv
-
-        return self.mappingchannels
-
-    # UV textures go AFTER MESH_FACE_LIST
-    # MESH_NUMTVERTEX, MESH_TVERTLIST, MESH_NUMTVFACES, MESH_TFACELIST         
-    def __repr__( self ):
-        temp = '''\t*MESH {{\n\t\t*TIMEVALUE {0}\n\t\t*MESH_NUMVERTEX {1}\n\t\t*MESH_NUMFACES {2}\n\t\t*MESH_VERTEX_LIST {3}\n\t\t*MESH_FACE_LIST {4}{5}{6}{9}{10}{13}\n{14}\n\t}}'''.format( self.timevalue, self.numvertex, self.numfaces, self.vertlist, self.facelist, self.numtvertex_str, self.tvertlist_str, self.numtvfaces_str, self.tfacelist_str, self.numcvertex, self.cvertlist, self.numcvfaces, self.cfacelist, self.uvmapchannels, self.normals )
-        return temp
-class cVertlist:
-    def __init__( self, object ):
-        self.vertlist = []
-        for data in object.data.vertices:
-            temp = cVert( data.index, data.co.to_tuple( 4 ) )
-            self.vertlist.append( temp )
-
-    def dump( self ):
-        temp = ''
-        for x in self.vertlist:
-            temp += str( x )
-        return temp
-
-    def __repr__( self ):
-        return '''{{\n{0}\t\t}}'''.format( self.dump() )
-class cVert:
-    def __init__( self, index, coord ):
-        global optionScale
-
-        self.index = index
-        self.x = aseFloat( coord[0] * optionScale )
-        self.y = aseFloat( coord[1] * optionScale )
-        self.z = aseFloat( coord[2] * optionScale )
-
-    def __repr__( self ):
-        return '''\t\t\t*MESH_VERTEX {0} {1} {2} {3}\n'''.format( self.index, self.x, self.y, self.z )
-class cFacelist:
-    def __init__( self, object ):
-        global matList
-        global numMats
-        global currentMatId
-
-        self.facelist = []
-        sgID = 0
-
-        # Define smoothing groups (if enabled)
-        if ( collisionObject( object ) == False ):
-            if ( optionSmoothingGroups ):
-                self.smoothing_groups = defineSmoothing( self, object )
-            else:
-                self.smoothing_groups = ''
-
-        for face in object.data.polygons:
-            self.matid = currentMatId
-            if ( collisionObject( object ) == False ):
-                if ( optionSmoothingGroups ):
-                    for group in self.smoothing_groups:
-                        if group.count( face.index ) == 0:
-                            continue
-                        else:
-                            #TODO: Compress sg's
-                            index = self.smoothing_groups.index( group )
-                            sgID = index % 32
-
-            temp = '''\t\t\t*MESH_FACE {0}: A: {1} B: {2} C: {3} *MESH_SMOOTHING {4} *MESH_MTLID {5}\n'''.format( face.index, face.vertices[0], face.vertices[1], face.vertices[2], sgID, self.matid )
-            self.facelist.append( temp )
-
-        if currentMatId < numMats - 1:
-            currentMatId += 1
-        else:
-            currentMatId = 0
-
-    def dump( self ):
-        temp = ''
-        for x in self.facelist:
-            temp = temp + str( x )
-        return temp
-
-    def __repr__( self ):
-        return '''{{\n{0}\t\t}}'''.format( self.dump() )
-class cTVertlist:
-    def __init__( self, object ):
-        self.vertlist = []
-        mesh = bpy.context.object.data
+#--- EVE Processor ---------------------------
+class MeshProcessor:
+    def __init__(self):
+        self.vertexList = []
+        self.faceList = []
+        self.hasTexture = False
+        self.hasColor = False
+    
+        self.timevalue = 0
+        self.materialID = currentMatId;
+    
+    # duplicate vertices with several tex coords
+    def prepareVertexAndFaceLists(self, object):
+        mesh = object.data
         uv_map = mesh.uv_layers.active.data
-
-# mark
+        
+        self.vertexList = [None] * len(object.data.vertices)
+        self.hasTexture = (len(uv_map) > 0)
+        self.hasColor = (len(mesh.vertex_colors) > 0)
+        
         for face in mesh.polygons:
+            vertIndices = []
             for li in range(face.loop_start, face.loop_start + face.loop_total):
-                #print('VI: ' + str(mesh.loops[li].vertex_index))
-                t = cTVert(mesh.loops[li].vertex_index, uv_map[li].uv)
-                self.vertlist.append(t)
+                index = mesh.loops[li].vertex_index
+                coord = object.data.vertices[index].co.to_tuple(4)
+                uv = [0,0]
+                if self.hasTexture:
+                    uv = uv_map[li].uv
+                color = [1,1,1]
+                if self.hasColor:
+                    color = mesh.vertex_colors[0].data[face.index].color[index]
+                
+                v = VertexData(index, coord, uv, color)
+                
+                vi = self.vertexList[index]
+                if vi is None:
+                    # set vertex
+                    self.vertexList[index] = v
+                else:
+                    # check if exactly same vertex existst
+                    v_exists = False
+                    for vj in self.vertexList:
+                        if v == vj:
+                            v_exists = True
+                            break
+                    # add vertex with new TexCoords
+                    if not v_exists:
+                        print('Duplicate vertex #' + str(v.index))
+                        v.index = len(self.vertexList)
+                        self.vertexList.append(v)
+                # add vertex to face's list
+                vertIndices.append(v.index)
+            f = FaceData(face.index, vertIndices)
+            f.materialID = self.materialID
+            self.faceList.append(f)
+        
+        print('Face count: ' + str(len(self.faceList)))
+        print('Vertex count: ' + str(len(self.vertexList)))
 
-        self.length = len(self.vertlist)
+    def setNormals(self, object):
+        mesh = object.data
+        for face in mesh.polygons:
+            self.faceList[face.index].normal = face.normal.to_tuple(4)
+            for i in range(len(face.vertices)):
+                vi_private = self.faceList[face.index].vertices[i]
+                vi_public = face.vertices[i]
+                self.vertexList[vi_private].normal = mesh.vertices[vi_public].normal.to_tuple(4)
 
-    def dump( self ):
-        temp = ''
-        for x in self.vertlist:
-            temp += str( x )
-        return temp
+    def mesh_str(self):
+        output = '''\t*MESH {{\n\t\t*TIMEVALUE {0}'''.format(str(self.timevalue))
+        output += self.vertex_list_str()
+        output += self.face_list_str()
+        if self.hasTexture:
+            output += self.vTexture_list_str()
+        if self.hasColor:
+            output += self.cTexture_list_str()
+        output += self.normal_list_str()
+        output += '\n\t}'
+        return output
 
-    def __repr__( self ):
-        return '''{{\n{0}\t\t}}'''.format( self.dump() )
-class cTVert:
-    def __init__( self, index, coord ):
+    def vertex_list_str(self):
+        output = '''\n\t\t*MESH_NUMVERTEX {0}'''.format(len(self.vertexList))
+        output += '''\n\t\t*MESH_VERTEX_LIST {\n'''
+        for v in self.vertexList:
+            output += v.vertex_str()
+        output += '''\t\t}'''
+        return output
+
+    def vTexture_list_str(self):
+        output = '''\n\t\t*MESH_NUMTVERTEX {0}'''.format(len(self.vertexList))
+        output += '''\n\t\t*MESH_TVERTLIST {\n'''
+        for v in self.vertexList:
+            output += v.tvert_str()
+        output += '''\t\t}'''
+        return output
+
+    def vColor_list_str(self):
+        output = '''\n\t\t*MESH_NUMCVERTEX {0}'''.format(len(self.vertexList))
+        output += '''\n\t\t*MESH_CVERTLIST {\n'''
+        for v in self.vertexList:
+            output += v.cvert_str()
+        output += '''\t\t}'''
+        return output
+
+    def face_list_str(self):
+        output = '''\n\t\t*MESH_NUMFACES {0}'''.format(len(self.faceList))
+        output += '''\n\t\t*MESH_FACE_LIST {\n'''
+        for f in self.faceList:
+            output += f.face_str()
+        output += '''\t\t}'''
+        return output
+
+    def normal_list_str(self):
+        output = '''\n\t\t*MESH_NORMALS {\n'''
+        for v in self.vertexList:
+            output += v.vertex_normal_str()
+        output += '\n'
+        for f in self.faceList:
+            output += f.face_normal_str()
+        output += '''\t\t}'''
+        return output
+
+
+class VertexData:
+    def __init__(self, index, coord, texCoord, color):
         self.index = index
-        self.u = aseFloat( coord[0] )
-        self.v = aseFloat( coord[1] )
+        
+        self.x = coord[0]
+        self.y = coord[1]
+        self.z = coord[2]
+        
+        self.u = texCoord[0]
+        self.v = texCoord[1]
+        
+        self.r = color[0]
+        self.g = color[1]
+        self.b = color[2]
+    
+        self.normal = [0,0,0]
 
-    def __repr__( self ):
-        return '''\t\t\t*MESH_TVERT {0} {1} {2}\n'''.format( self.index, self.u, self.v )
-class cTFacelist:
-    def __init__( self, facecount ):
-        self.facelist = []
-        for data in range( facecount ):
-            temp = cTFace( data )
-            self.facelist.append( temp )
+    def __eq__(self, other):
+        return isinstance(other, VertexData) and (self.x == other.x) and (self.y == other.y) and (self.z == other.z) and (self.r == other.r) and (self.g == other.g) and (self.b == other.b) and (self.u == other.u) and (self.v == other.v)
+    def __ne__(self, other):
+        return not(self == other)
 
-    def dump( self ):
-        temp = ''
-        for x in self.facelist:
-            temp = temp + str( x )
-        return temp
+    def vertex_str(self):
+        return '''\t\t\t*MESH_VERTEX {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.x), aseFloat(self.y), aseFloat(self.z))
+    def tvert_str(self):
+        return '''\t\t\t*MESH_TVERT {0} {1} {2}\n'''.format(self.index, aseFloat(self.u), aseFloat(self.v))
+    def cvert_str(self):
+        return '''\t\t\t*MESH_CVERT {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.r), aseFloat(self.g), aseFloat(self.b))
+    def cvert_str(self):
+        return '''\t\t\t*MESH_CVERT {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.r), aseFloat(self.g), aseFloat(self.b))
+    def vertex_normal_str(self):
+        return '''\t\t\t*MESH_VERTEXNORMAL {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.normal[0]), aseFloat(self.normal[1]), aseFloat(self.normal[2]))
 
-    def __repr__( self ):
-        return '''{{\n{0}\t\t}}'''.format( self.dump() )
-class cTFace:
-    def __init__( self, x ):
-        self.index = x
-        self.vertices = []
-        self.vertices.append( x * 3 )
-        self.vertices.append( ( x * 3 ) + 1 )
-        self.vertices.append( ( x * 3 ) + 2 )
+    def __repr__(self):
+        return self.vertex_str() + self.tvert_str()
 
-    def __repr__( self ):
-        return '''\t\t\t*MESH_TFACE {0} {1} {2} {3}\n'''.format( self.index, self.vertices[0], self.vertices[1], self.vertices[2] )
-class cCVertlist:
-    def __init__( self, object ):
-        self.vertlist = []
-        self.index = 0
-
-        # Blender 2.63+
-        bpy.ops.object.mode_set( mode = 'OBJECT' )
-        object.data.calc_tessface()
-
-        for face in object.data.polygons:
-            temp = object.data.tessface_vertex_colors[0].data[face.index].color1
-            self.vertlist.append( cCVert( face.vertices[1], temp ) )
-            temp = object.data.tessface_vertex_colors[0].data[face.index].color2
-            self.vertlist.append( cCVert( face.vertices[2], temp ) )
-            temp = object.data.tessface_vertex_colors[0].data[face.index].color3
-            self.vertlist.append( cCVert( face.vertices[0], temp ) )
-            self.index += 3
-
-        self.length = len( self.vertlist )
-
-    def dump( self ):
-        temp = ''
-        for x in self.vertlist:
-            temp = temp + str( x )
-        return temp
-
-    def __repr__( self ):
-        return '''\t\t*MESH_CVERTLIST {{\n{0}\t\t}}'''.format( self.dump() )
-class cCVert:
-    def __init__( self, index, temp ):
+class FaceData:
+    def __init__(self, index, vertexIndices):
         self.index = index
-        self.r = aseFloat( float( temp[0] ) )
-        self.g = aseFloat( float( temp[1] ) )
-        self.b = aseFloat( float( temp[2] ) )
+        self.vertices = vertexIndices    # array[3]
+        self.materialID = 0
+        self.smothID = 0
+        self.normal = [0,0,0]
 
-    def __repr__( self ):
-        return '''\t\t\t*MESH_VERTCOL {0} {1} {2} {3}\n'''.format( self.index, self.r, self.g, self.b )
-class cCFacelist:
-    def __init__( self, facecount ):
-        temp = [0 for x in range( facecount )]
-        self.facelist = []
-        for index, data in enumerate( temp ):
-            self.facelist.append( cCFace( index, data ) )
+    def face_str(self):
+        return '''\t\t\t*MESH_FACE {0}: A: {1} B: {2} C: {3} *MESH_SMOOTHING {4} *MESH_MTLID {5}\n'''.format(self.index, self.vertices[0], self.vertices[1], self.vertices[2], self.smothID, self.materialID)
+    def face_normal_str(self):
+        return '''\t\t\t*MESH_FACENORMAL {0} {1} {2} {3}\n'''.format(self.index, aseFloat(self.normal[0]), aseFloat(self.normal[1]), aseFloat(self.normal[2]))
 
-    def dump( self ):
-        temp = ''
-        for x in self.facelist:
-            temp = temp + str( x )
-        return temp
-
-    def __repr__( self ):
-        return '''\t\t*MESH_CFACELIST {{\n{0}\t\t}}'''.format( self.dump() )
-class cCFace:
-    def __init__( self, index, data ):
-        self.index = index
-        self.vertices = []
-        self.vertices.append( index * 3 )
-        self.vertices.append( ( index * 3 ) + 1 )
-        self.vertices.append( ( index * 3 ) + 2 )
-
-    def __repr__( self ):
-        return '''\t\t\t*MESH_CFACE {0} {1} {2} {3}\n'''.format( self.index, self.vertices[0], self.vertices[1], self.vertices[2] )
-class cNormallist:
-    def __init__( self, object ):
-        self.normallist = []
-        for face in object.data.polygons:
-            self.normallist.append( cNormal( face, object ) )
-
-    def dump( self ):
-        temp = ''
-        for x in self.normallist:
-            temp = temp + str( x )
-        return temp
-
-    def __repr__( self ):
-        return '''\t\t*MESH_NORMALS {{\n{0}\t\t}}'''.format( self.dump() )
-class cNormal:
-    def __init__( self, face, object ):
-        self.faceindex = face.index
-        self.facenormal = [aseFloat( x ) for x in face.normal.to_tuple( 4 )]
-        self.vertnormals = []
-        for x in face.vertices:
-            self.vertnormals.append( [x, [aseFloat( y ) for y in object.data.vertices[x].normal.to_tuple( 4 )]] )
-
-    def __repr__( self ):
-        return '''\t\t\t*MESH_FACENORMAL {0} {1} {2} {3}\n\t\t\t\t*MESH_VERTEXNORMAL {4} {5} {6} {7}\n\t\t\t\t*MESH_VERTEXNORMAL {8} {9} {10} {11}\n\t\t\t\t*MESH_VERTEXNORMAL {12} {13} {14} {15}\n'''.format( self.faceindex, self.facenormal[0], self.facenormal[1], self.facenormal[2], self.vertnormals[0][0], self.vertnormals[0][1][0], self.vertnormals[0][1][1], self.vertnormals[0][1][2], self.vertnormals[1][0], self.vertnormals[1][1][0], self.vertnormals[1][1][1], self.vertnormals[1][1][2], self.vertnormals[2][0], self.vertnormals[2][1][0], self.vertnormals[2][1][1], self.vertnormals[2][1][2] )
+    def __repr__(self):
+        return self.face_str()
 
 #== Smoothing Groups and Helper Methods =================================
 def defineSmoothing( self, object ):
@@ -723,7 +598,7 @@ from bpy.props import StringProperty, BoolProperty, FloatProperty
 
 class ExportAse( bpy.types.Operator, ExportHelper ):
     '''Load an EVE Scene Export File'''
-    bl_idname = "export.ase"
+    bl_idname = "export.eve"
     bl_label = "Export"
     __doc__ = "EVE Scene Exporter (.ase)"
     filename_ext = ".ase"
@@ -733,22 +608,22 @@ class ExportAse( bpy.types.Operator, ExportHelper ):
         name = "File Path",
         description = "File path used for exporting the ASE file",
         maxlen = 1024,
-        default = "" )
+        default = "export.ase")
 
-    option_triangulate = BoolProperty( 
+    option_triangulate = BoolProperty(
             name = "Triangulate",
             description = "Triangulates all exportable objects",
-            default = True )
+            default = True)
 
     option_normals = BoolProperty( 
             name = "Recalculate Normals",
             description = "Recalculate normals before exporting",
-            default = True )
+            default = True)
 
     option_remove_doubles = BoolProperty( 
             name = "Remove Doubles",
             description = "Remove any duplicate vertices before exporting",
-            default = True )
+            default = True)
 
     option_apply_scale = BoolProperty( 
             name = "Scale",
@@ -773,7 +648,7 @@ class ExportAse( bpy.types.Operator, ExportHelper ):
     option_separate = BoolProperty( 
             name = "Separate",
             description = "A separate ASE file for every selected object",
-            default = False )
+            default = False)
 
     option_scale = FloatProperty( 
             name = "Scale",
@@ -784,7 +659,7 @@ class ExportAse( bpy.types.Operator, ExportHelper ):
             soft_max = 1000.0,
             default = 1.0 )
 
-    def draw( self, context ):
+    def draw(self, context):
         layout = self.layout
 
         box = layout.box()
@@ -801,24 +676,24 @@ class ExportAse( bpy.types.Operator, ExportHelper ):
         box.prop( self, 'option_smoothinggroups' )
 
     @classmethod
-    def poll( cls, context ):
+    def poll(cls, context):
         active = context.active_object
         selected = context.selected_objects
         camera = context.scene.camera
         ok = selected or camera
         return ok
 
-    def writeASE( self, filename, data ):
-        print( '\nWriting', filename )
+    def writeASE(self, filename, data):
+        print('\nWriting to', filename)
         try:
-            file = open( filename, 'w' )
+            file = open(filename, 'w')
         except IOError:
             print( 'Error: The file could not be written to. Aborting.' )
         else:
-            file.write( data )
+            file.write(data)
             file.close()
 
-    def execute( self, context ):
+    def execute(self, context):
         start = time.clock()
 
         global optionScale
@@ -882,18 +757,20 @@ class ExportAse( bpy.types.Operator, ExportHelper ):
 
                 #Construct ASE Geometry Nodes
                 aseGeometry += str( cGeomObject( object ) )
+                bpy.ops.object.mode_set( mode = 'OBJECT' )
 
             else:
                 continue
 
-        aseModel = 'UNKNOWN'
-        aseModel += aseHeader
+        aseModel = aseHeader + '\n'
         aseModel += aseScene
         aseModel += aseMaterials
         aseModel += aseGeometry
 
         # Write the ASE file
         self.writeASE( self.filepath, aseModel )
+        # For debug
+        #print(aseModel)
 
         lapse = ( time.clock() - start )
         print( 'Completed in ' + str( lapse ) + ' seconds' )
@@ -913,3 +790,5 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+    #run from command line
+    bpy.ops.export.eve();

@@ -97,31 +97,6 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
     return nil;
 }
 
-+ (NSArray *)allLinesNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
-{
-    NSError *error = nil;
-    NSString *pattern = [NSString stringWithFormat:kIndexedLineFormat, name, index];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                           options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
-                                                                             error:&error];
-    if (error) {
-        NSLog(@"ERROR! ASEConverter: %@", error);
-    }
-    else {
-        NSArray *resultRegex = [regex matchesInString:description options:0 range:NSMakeRange(0, description.length)];
-        if (resultRegex.count) {
-            NSMutableSet *set = [NSMutableSet set];
-            for (NSTextCheckingResult *result in resultRegex) {
-                NSRange range = [result range];
-                range.length += 1;      // substringWithRange cuts last char like a BITCH!
-                [set addObject:[description substringWithRange:range]];
-            }
-            return set.allObjects;
-        }
-    }
-    return nil;
-}
-
 + (NSString *)lineNamed:(NSString *)name fromTextDescription:(NSString *)description
 {
     NSError *error = nil;
@@ -239,28 +214,6 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
             [values setObject:@([list[i+1] floatValue]) forKey:list[i]];
         }
         return values;
-    }
-    return nil;
-}
-
-+ (NSArray *)allMatchedValuesListNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
-{
-    NSArray *lines = [self allLinesNamed:name atIndex:index fromTextDescription:description];
-    if (lines) {
-        NSMutableArray *allValues = [NSMutableArray array];
-        for (NSString *line in lines) {
-            NSRange nameRange = [line rangeOfString:name];
-            NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
-            listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
-            NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t"]];
-            list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
-            NSMutableArray *values = [NSMutableArray array];
-            for (NSString *str in list) {
-                [values addObject:@(str.floatValue)];
-            }
-            [allValues addObject:values];
-        }
-        return allValues;
     }
     return nil;
 }

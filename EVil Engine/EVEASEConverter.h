@@ -19,6 +19,4 @@
 + (NSArray *)valueListNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description;
 + (NSDictionary *)valueDictionaryNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description;
 
-+ (NSArray *)allMatchedValuesListNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description;
-
 @end
