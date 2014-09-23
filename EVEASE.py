@@ -294,6 +294,7 @@ class MeshProcessor:
         
         for face in mesh.polygons:
             vertIndices = []
+            print('Face ' + str(face.index))
             for li in range(face.loop_start, face.loop_start + face.loop_total):
                 index = mesh.loops[li].vertex_index
                 coord = object.data.vertices[index].co.to_tuple(4)
@@ -305,7 +306,7 @@ class MeshProcessor:
                     color = mesh.vertex_colors[0].data[face.index].color[index]
                 
                 v = VertexData(index, coord, uv, color)
-                
+                print(v.tvert_str())
                 vi = self.vertexList[index]
                 if vi is None:
                     # set vertex
@@ -316,6 +317,7 @@ class MeshProcessor:
                     for vj in self.vertexList:
                         if v == vj:
                             v_exists = True
+                            v.index = vj.index
                             break
                     # add vertex with new TexCoords
                     if not v_exists:
