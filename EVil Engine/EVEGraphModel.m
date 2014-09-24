@@ -33,10 +33,11 @@ static int modelId;
 static NSString * const kASEGroupsHeader = @"*GROUP";
 static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
 
-+ (EVEGraphModel *)modelFromFile:(NSString *)aseFileName
++ (EVEGraphModel *)modelFromASEFile:(NSString *)aseFileName
 {
     NSArray *objectsASE = [EVEASEConverter objectsDescriptionFromFile:aseFileName];
     if (objectsASE) {
+        NSLog(@"Start parsing file: %@", aseFileName);
         EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
         NSArray *materialsASE = [EVEASEConverter materialsDescriptionFromFile:aseFileName];
         [model setupWithASEGeomobjects:objectsASE andASEMaterials:materialsASE];
@@ -67,6 +68,8 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         int fcount = [EVEASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
         int tcount = [EVEASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
         int ccount = [EVEASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
+        
+        NSLog(@"Parsing object: %@", objName);
         
         // Setup vertex data
         EVEVertexStruct *vertices = calloc(vcount, sizeof(EVEVertexStruct));

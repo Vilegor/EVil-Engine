@@ -17,7 +17,7 @@
 
 + (EVEGraphModel *)emptyModel;
 + (EVEGraphModel *)modelWithName:(NSString *)modelName;
-+ (EVEGraphModel *)modelFromFile:(NSString *)aseFileName;
++ (EVEGraphModel *)modelFromASEFile:(NSString *)aseFileName;
 
 ///Test models
 + (EVEGraphModel *)paperPlaneModel:(float)height;

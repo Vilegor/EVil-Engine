@@ -126,7 +126,7 @@ enum
     
     NSArray *modelsToLoad = @[@"eve_test"];
     for (NSString *fileName in modelsToLoad) {
-        EVEGraphModel *model = [EVEGraphModel modelFromFile:fileName];
+        EVEGraphModel *model = [EVEGraphModel modelFromASEFile:fileName];
         if (model)
             [modelArray addObject:model];
     }
