@@ -1,26 +1,7 @@
-## ***** BEGIN GPL LICENSE BLOCK ***** 
-# 
-# This program is free software; you can redistribute it and/or 
-# modify it under the terms of the GNU General Public License 
-# as published by the Free Software Foundation; either version 2 
-# of the License, or (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software Foundation, 
-# Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA. 
-# 
-# ***** END GPL LICENCE BLOCK *****
-# 
-#
-# REQUIRED OPTIONS -
-# - Make Normals Consistent
-# - Remove Doubles
-# **********************************
+#--- REQUIRED OPTIONS --------
+#- Make Normals Consistent
+#- Remove Doubles
+
 bl_info = {
     "name": "EVE Scene Exporter",
     "author": "Egor Vilkin, EVil corp.",
@@ -289,8 +270,10 @@ class MeshProcessor:
         if self.hasTexture:
             uv_map = mesh.uv_layers.active.data;
         
+        colorIndex = 0
         for face in mesh.polygons:
             vertIndices = []
+            
             for li in range(face.loop_start, face.loop_start + face.loop_total):
                 index = mesh.loops[li].vertex_index
                 coord = object.data.vertices[index].co.to_tuple(4)
@@ -299,9 +282,9 @@ class MeshProcessor:
                     uv = uv_map[li].uv
                 color = [1,1,1]
                 if self.hasColor:
-                    color = mesh.vertex_colors[0].data[index].color
-                    print('*VERTEX_COLOR SIZE ' + str(len(mesh.vertex_colors)))
-                    print('*DATA SIZE ' + str(len(mesh.vertex_colors[0].data)))
+                    color = mesh.vertex_colors[0].data[colorIndex].color
+                    colorIndex += 1
+                    print('*VERTEX ' + str(index))
                     print('*COLOR ' + str(color))
                 
                 v = VertexData(index, coord, uv, color)
@@ -327,6 +310,7 @@ class MeshProcessor:
             f = FaceData(face.index, vertIndices)
             f.materialID = self.materialID
             self.faceList.append(f)
+            print('')
         
         print('Face count: ' + str(len(self.faceList)))
         print('Vertex count: ' + str(len(self.vertexList)))

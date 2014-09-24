@@ -10,22 +10,26 @@
 	<string>EVil Engine</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>75BC492018B04745B7C4CEF92B56FD04EE05CE15</key>
+		<string>https://github.com/Vilegor/EVil-Engine.git</string>
 		<key>9D037807-4B6D-4184-8781-44136825DCDF</key>
 		<string>https://github.com/Vilegor/EVil-Engine.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>EVil Engine.xcodeproj/project.xcworkspace</string>
+	<string>EVil Engine.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>9D037807-4B6D-4184-8781-44136825DCDF</key>
+		<key>75BC492018B04745B7C4CEF92B56FD04EE05CE15</key>
 		<string>../..</string>
+		<key>9D037807-4B6D-4184-8781-44136825DCDF</key>
+		<string>../../../EVil Engine</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/Vilegor/EVil-Engine.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>9D037807-4B6D-4184-8781-44136825DCDF</string>
+	<string>75BC492018B04745B7C4CEF92B56FD04EE05CE15</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -35,6 +39,14 @@
 			<string>9D037807-4B6D-4184-8781-44136825DCDF</string>
 			<key>IDESourceControlWCCName</key>
 			<string>EVil Engine</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>75BC492018B04745B7C4CEF92B56FD04EE05CE15</string>
+			<key>IDESourceControlWCCName</key>
+			<string>EVil%20Engine</string>
 		</dict>
 	</array>
 </dict>
