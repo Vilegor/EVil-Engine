@@ -310,7 +310,6 @@ class MeshProcessor:
             f = FaceData(face.index, vertIndices)
             f.materialID = self.materialID
             self.faceList.append(f)
-            print('')
         
         print('Face count: ' + str(len(self.faceList)))
         print('Vertex count: ' + str(len(self.vertexList)))
@@ -331,7 +330,7 @@ class MeshProcessor:
         if self.hasTexture:
             output += self.vTexture_list_str()
         if self.hasColor:
-            output += self.cTexture_list_str()
+            output += self.vColor_list_str()
         output += self.normal_list_str()
         output += '\n\t}'
         return output
@@ -340,7 +339,8 @@ class MeshProcessor:
         output = '''\n\t\t*MESH_NUMVERTEX {0}'''.format(len(self.vertexList))
         output += '''\n\t\t*MESH_VERTEX_LIST {\n'''
         for v in self.vertexList:
-            output += v.vertex_str()
+            if isinstance(v, VertexData):
+                output += v.vertex_str()
         output += '''\t\t}'''
         return output
 
@@ -348,15 +348,8 @@ class MeshProcessor:
         output = '''\n\t\t*MESH_NUMTVERTEX {0}'''.format(len(self.vertexList))
         output += '''\n\t\t*MESH_TVERTLIST {\n'''
         for v in self.vertexList:
-            output += v.tvert_str()
-        output += '''\t\t}'''
-        return output
-
-    def cTexture_list_str(self):
-        output = '''\n\t\t*MESH_NUMCVERTEX {0}'''.format(len(self.vertexList))
-        output += '''\n\t\t*MESH_CVERTLIST {\n'''
-        for v in self.vertexList:
-            output += v.cvert_str()
+            if isinstance(v, VertexData):
+                output += v.tvert_str()
         output += '''\t\t}'''
         return output
 
@@ -364,7 +357,8 @@ class MeshProcessor:
         output = '''\n\t\t*MESH_NUMCVERTEX {0}'''.format(len(self.vertexList))
         output += '''\n\t\t*MESH_CVERTLIST {\n'''
         for v in self.vertexList:
-            output += v.cvert_str()
+            if isinstance(v, VertexData):
+                output += v.cvert_str()
         output += '''\t\t}'''
         return output
 
@@ -372,17 +366,20 @@ class MeshProcessor:
         output = '''\n\t\t*MESH_NUMFACES {0}'''.format(len(self.faceList))
         output += '''\n\t\t*MESH_FACE_LIST {\n'''
         for f in self.faceList:
-            output += f.face_str()
+            if isinstance(f, FaceData):
+                output += f.face_str()
         output += '''\t\t}'''
         return output
 
     def normal_list_str(self):
         output = '''\n\t\t*MESH_NORMALS {\n'''
         for v in self.vertexList:
-            output += v.vertex_normal_str()
+            if isinstance(v, VertexData):
+                output += v.vertex_normal_str()
         output += '\n'
         for f in self.faceList:
-            output += f.face_normal_str()
+            if isinstance(f, FaceData):
+                output += f.face_normal_str()
         output += '''\t\t}'''
         return output
 
