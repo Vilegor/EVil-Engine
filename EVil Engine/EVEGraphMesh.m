@@ -18,7 +18,7 @@
     EVEVertexStruct *_vertexData;
     GLuint _vertexCount;
 	
-	GLubyte *_indices;
+	GLushort *_indices;
 	GLuint _indexCount;
 
     EVEGraphMaterial *_material;
@@ -53,7 +53,7 @@
         for (int v = 0; v < vcount; v++)
             _vertexData[v] = vertices[v];
         _indexCount = icount;
-        _indices = calloc(icount, sizeof(GLubyte));
+        _indices = calloc(icount, sizeof(GLushort));
         for (int i = 0; i < icount; i++)
             _indices[i] = indices[i];
         [self resetDrawableData];
@@ -67,6 +67,8 @@
     free(_vertexData);
     free(_indices);
     glDeleteBuffers(1, &_vertexBuffer);
+    glDeleteBuffers(1, &_indexBuffer);
+    glDeleteVertexArrays(1, &_meshVBA);
 }
 
 - (void)resetDrawableData
@@ -74,6 +76,14 @@
     if (_vertexBuffer) {
         glDeleteBuffers(1, &_vertexBuffer);
         _vertexBuffer = 0;
+    }
+    if (_indexBuffer) {
+        glDeleteBuffers(1, &_indexBuffer);
+        _indexBuffer = 0;
+    }
+    if (_meshVBA) {
+        glDeleteVertexArrays(1, &_meshVBA);
+        _meshVBA = 0;
     }
     
     [self setupGL];
@@ -85,7 +95,8 @@
 - (void)setupGL
 {
     // Create VBA
-    glGenVertexArrays(1,&_meshVBA);
+    if (!_meshVBA)
+        glGenVertexArrays(1,&_meshVBA);
     glBindVertexArray(_meshVBA);
     
     // Create VBs
@@ -110,7 +121,7 @@
     if (!_indexBuffer)
         glGenBuffers(1, &_indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GL_UNSIGNED_BYTE)*_indexCount, _indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GL_UNSIGNED_SHORT)*_indexCount, _indices, GL_STATIC_DRAW);
     
     // Clean up VBs
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -123,9 +134,9 @@
     
     [_material enable];
 #ifdef SHOW_LINES
-	glDrawElements(GL_LINE_LOOP, _indexCount, GL_UNSIGNED_BYTE, (void *)NULL);
+	glDrawElements(GL_LINE_LOOP, _indexCount, GL_UNSIGNED_SHORT, (void *)NULL);
 #else
-    glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_BYTE, (void *)NULL);
+    glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_SHORT, (void *)NULL);
 #endif
     [_material disable];
 }
@@ -150,7 +161,7 @@
 - (void)minimizeVertexCount
 {
     _indexCount = _vertexCount;
-    _indices = calloc(_indexCount, sizeof(GLubyte));
+    _indices = calloc(_indexCount, sizeof(GLushort));
     GLubyte *used = calloc(_vertexCount, sizeof(GLubyte));
     for (int i = 0, v = 0; i < _vertexCount; i++) {
         if (used[i] != 0)
