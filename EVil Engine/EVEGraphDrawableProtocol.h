@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <GLKit/GLKit.h>
 
 @protocol EVEGraphDrawableProtocol <NSObject>
 

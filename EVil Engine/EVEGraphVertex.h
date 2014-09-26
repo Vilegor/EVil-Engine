@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 EVil corp. All rights reserved.
 //
 
+#import <GLKit/GLKit.h>
+
 #define EVE_VERTEX_DATA_SIZE 12
 #define EVE_MAX_RANGE_LIMIT 0.05f
 
