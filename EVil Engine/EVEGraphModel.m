@@ -41,6 +41,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
         NSArray *materialsASE = [EVEASEConverter materialsDescriptionFromFile:aseFileName];
         [model setupWithASEGeomobjects:objectsASE andASEMaterials:materialsASE];
+        NSLog(@"Complete!");
         return model;
     }
     

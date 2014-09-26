@@ -156,6 +156,8 @@
     return _material;
 }
 
+
+
 #pragma mark - Additional Functionality
 
 - (void)minimizeVertexCount
