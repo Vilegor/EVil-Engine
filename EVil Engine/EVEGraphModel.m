@@ -30,9 +30,23 @@ static int modelId;
 
 #pragma mark - Load from .ASE
 
-static NSString * const kASEGroupsHeader = @"*GROUP";
-static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
+// Fast Load
++ (EVEGraphModel *)modelFromASEFile_fast:(NSString *)aseFileName
+{
+    NSArray *objectsASE = [EVEASEConverter objectsDescriptionFromFile:aseFileName];
+    if (objectsASE) {
+        NSLog(@"Start parsing file: %@", aseFileName);
+        EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
+        NSArray *materialsASE = [EVEASEConverter materialsDescriptionFromFile:aseFileName];
+        [model setupWithASEGeomobjects:objectsASE andASEMaterials:materialsASE];
+        NSLog(@"Complete!");
+        return model;
+    }
+    
+    return nil;
+}
 
+// Easy load
 + (EVEGraphModel *)modelFromASEFile:(NSString *)aseFileName
 {
     NSArray *objectsASE = [EVEASEConverter objectsDescriptionFromFile:aseFileName];

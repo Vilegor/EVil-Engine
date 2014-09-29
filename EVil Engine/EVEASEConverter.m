@@ -7,10 +7,16 @@
 //
 
 #import "EVEASEConverter.h"
-static NSString * const kLineFormat =           @"\\*%@[ \\t]+(.(?!\\*))+\\n";
-static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!\\*|\\n))+";
+
 
 @implementation EVEASEConverter
+
+#pragma mark - Fast loading
+
+#pragma mark - Regex(slow) loading
+
+static NSString * const kLineFormat =           @"\\*%@[ \\t]+(.(?!\\*))+\\n";
+static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!\\*|\\n))+";
 
 /// List of strings, describing GEOMOBJECTs
 + (NSArray *)objectsDescriptionFromFile:(NSString *)aseFileName

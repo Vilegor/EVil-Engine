@@ -150,7 +150,7 @@
 		0EDB0FDC19B88EC300B8554E /* EVil Engine */ = {
 			isa = PBXGroup;
 			children = (
-				0EDB101519B88FC000B8554E /* Converter */,
+				0EDB101519B88FC000B8554E /* Converters */,
 				0EDB101419B88F2500B8554E /* Model Components */,
 				0EDB101319B88F1A00B8554E /* Shaders */,
 				0EDB102B19B8911A00B8554E /* Models */,
@@ -231,13 +231,13 @@
 			name = "Model Components";
 			sourceTree = "<group>";
 		};
-		0EDB101519B88FC000B8554E /* Converter */ = {
+		0EDB101519B88FC000B8554E /* Converters */ = {
 			isa = PBXGroup;
 			children = (
 				0EDB101619B88FD700B8554E /* EVEASEConverter.h */,
 				0EDB101719B88FD700B8554E /* EVEASEConverter.m */,
 			);
-			name = Converter;
+			name = Converters;
 			sourceTree = "<group>";
 		};
 		0EDB102A19B8909C00B8554E /* Protocols */ = {
