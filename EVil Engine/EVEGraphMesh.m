@@ -33,7 +33,7 @@
 + (EVEGraphMesh *)meshWithName:(NSString *)name
                    vertices:(EVEVertexStruct *)vertices
                 vertexCount:(int)vcount
-                    indices:(GLubyte *)indices
+                    indices:(GLushort *)indices
                  indexCount:(int)icount
 {
     return [[EVEGraphMesh alloc] initWithName:name vertices:vertices vertexCount:vcount indices:indices indexCount:icount];
@@ -42,7 +42,7 @@
 - (id)initWithName:(NSString *)name
           vertices:(EVEVertexStruct *)vertices
        vertexCount:(int)vcount
-           indices:(GLubyte *)indices
+           indices:(GLushort *)indices
         indexCount:(int)icount
 {
     self = [super init];
@@ -121,7 +121,7 @@
     if (!_indexBuffer)
         glGenBuffers(1, &_indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GL_UNSIGNED_SHORT)*_indexCount, _indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * _indexCount, _indices, GL_STATIC_DRAW);
     
     // Clean up VBs
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -157,6 +157,29 @@
 }
 
 
+
+#pragma mark - Debug Methods
+
+- (void)printArray:(GLubyte *)arr size:(int)s
+{
+    for (int i = 0; i < s; i++) {
+        printf("%d - %d\n", i, arr[i]);
+    }
+}
+
+- (void)printIndices
+{
+    for (int i = 0; i < _indexCount; i++) {
+        printf("%d - %d\n", i, _indices[i]);
+    }
+}
+
+- (void)printVertecies
+{
+    for (int i = 0; i < _vertexCount; i++) {
+        printf("%d - (%.1f,%.1f,%.1f)\n", i, _vertexData[i].x,_vertexData[i].y,_vertexData[i].z);
+    }
+}
 
 #pragma mark - Additional Functionality
 
@@ -205,22 +228,6 @@
         }
     }
     _vertexData = newVertexArray;
-}
-
-#pragma mark - Debug Methods
-
-- (void)printArray:(GLubyte *)arr size:(int)s
-{
-    for (int i = 0; i < s; i++) {
-        printf("%d - %d\n", i, arr[i]);
-    }
-}
-
-- (void)printVertecies
-{
-    for (int i = 0; i < _vertexCount; i++) {
-        printf("%d - (%.1f,%.1f,%.1f)\n", i, _vertexData[i].x,_vertexData[i].y,_vertexData[i].z);
-    }
 }
 
 @end

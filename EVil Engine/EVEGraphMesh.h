@@ -21,7 +21,7 @@
 + (EVEGraphMesh *)meshWithName:(NSString *)name
                    vertices:(EVEVertexStruct *)vertices
                 vertexCount:(int)vcount
-                    indices:(GLubyte *)indices
+                    indices:(GLushort *)indices
                  indexCount:(int)icount;
 
 @end

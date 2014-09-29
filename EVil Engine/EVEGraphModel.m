@@ -110,7 +110,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
         
         // Setup index data
         int icount = fcount * ASE_FACE_SIZE;
-        GLubyte *indices = calloc(icount, sizeof(GLubyte));
+        GLushort *indices = calloc(icount, sizeof(GLushort));
         for (int f = 0; f < fcount; f++) {
             NSDictionary *faceInfo = [EVEASEConverter valueDictionaryNamed:@"MESH_FACE" atIndex:f fromTextDescription:objDesc];
             // ASE works only with triangle faces
@@ -152,7 +152,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     GLfloat v5[] = {-0.8f,0.4f,height-0.1f, 0,0,1,  255,255,255,255,	0,0.5};
     
     EVEVertexStruct *vertices = calloc(6, sizeof(EVEVertexStruct));
-    GLubyte indices[12] = {0,3,2, 0,2,5, 0,1,3, 0,4,1};
+    GLushort indices[12] = {0,3,2, 0,2,5, 0,1,3, 0,4,1};
     
     vertices[0] = EVEVertexMake(v0);
     vertices[1] = EVEVertexMake(v1);
@@ -178,7 +178,7 @@ static NSString * const kASEGeomobjHeader = @"*GEOMOBJECT";
     GLfloat v3[] = {-size,size,0,   0,0,1,  255,255,255,255,	0,size*texScale};
     
     EVEVertexStruct *vertices = calloc(4, sizeof(EVEVertexStruct));
-    GLubyte indices[6] = {0,2,1, 0,3,2};
+    GLushort indices[6] = {0,2,1, 0,3,2};
     
     vertices[0] = EVEVertexMake(v0);
     vertices[1] = EVEVertexMake(v1);
