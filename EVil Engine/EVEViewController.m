@@ -58,6 +58,11 @@ enum
 
 @implementation EVEViewController
 
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -71,6 +76,11 @@ enum
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    
+    // Set bounds for landskape orientation (iOS 8.0)
+    CGFloat min = MIN(self.view.bounds.size.width, self.view.bounds.size.height);
+    CGFloat max = MAX(self.view.bounds.size.width, self.view.bounds.size.height);
+    self.view.bounds = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, min, max);
     
     [self setupGL];
 }
@@ -88,7 +98,7 @@ enum
 {
     [super didReceiveMemoryWarning];
     
-    if ([self isViewLoaded] && ([[self view] window] == nil)) {
+    if ([self isViewLoaded] && (self.view.window == nil)) {
         self.view = nil;
         
         [self tearDownGL];
@@ -188,6 +198,8 @@ enum
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
+    // iOS 8.0 <GLKView: 0x7fe82851b860; frame = (0 0; 568 320); autoresize = W+H; layer = <CAEAGLLayer: 0x7fe828524530>>
+    // iOS 7.0 <GLKView: 0x7fd41bc38360; frame = (0 0; 320 568); transform = [0, -1, 1, 0, 0, 0]; autoresize = RM+BM; layer = <CAEAGLLayer: 0x7fd41bc37980>>
     glClearColor(0.52f, 0.9f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -356,7 +368,7 @@ enum
     return YES;
 }
 
-#pragma mark - Rotation
+#pragma mark - Navigation
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
