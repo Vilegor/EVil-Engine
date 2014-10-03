@@ -200,6 +200,10 @@ class cGeomObject:
         self.mesh = cMesh(object)
         if self.mesh.mp.hasTexture:
             self.material_ref = currentMatId
+            if currentMatId < numMats - 1:
+                currentMatId += 1
+            else:
+                currentMatId = 0
             self.dump = '''\n*GEOMOBJECT {{\n\t*NODE_NAME "{0}"\n{1}\n{2}\n\t*PROP_MOTIONBLUR {3}\n\t*PROP_CASTSHADOW {4}\n\t*PROP_RECVSHADOW {5}\n\t*MATERIAL_REF {6}\n}}'''.format(self.name, self.nodetm, self.mesh, self.prop_motionblur, self.prop_castshadow, self.prop_recvshadow, self.material_ref)
         else:
             self.material_ref = -1
@@ -241,11 +245,6 @@ class cMesh:
         if collisionObject(object) == False:
             self.mp.prepareVertexAndFaceLists(object)
             self.mp.setNormals(object)
-            if self.mp.hasTexture:
-                if currentMatId < numMats - 1:
-                    currentMatId += 1
-                else:
-                    currentMatId = 0
     
     def __repr__(self):
         return self.mp.mesh_str()
