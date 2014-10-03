@@ -511,9 +511,11 @@ class ExportAse(bpy.types.Operator, ExportHelper):
         numMats = 0
 
         # Build ASE Header, Scene
-        print('\nEVE Scene Export by EVil corp.\n')
+        print('\n* EVE Scene Export by EVil corp. *\n')
         print('Objects selected: ' + str(len(bpy.context.selected_objects)))
-        print('Scale: ' + str(optionScale))
+        print('Set frame to 1')
+        bpy.context.scene.frame_set(1)
+        
         aseHeader = str(cHeader())
         aseScene = str(cScene())
         aseMaterials = str(cMaterials())
