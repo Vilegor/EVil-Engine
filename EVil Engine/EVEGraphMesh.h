@@ -14,8 +14,6 @@
 }
 
 @property(nonatomic, strong, readonly) NSString *name;
-@property(nonatomic, readonly) EVEVertexStruct *vertexData;
-@property(nonatomic, readonly) GLuint vertexCount;
 @property(nonatomic, strong) EVEGraphMaterial *material;
 
 + (EVEGraphMesh *)meshWithName:(NSString *)name

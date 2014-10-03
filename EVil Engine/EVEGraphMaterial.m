@@ -7,7 +7,6 @@
 //
 
 #import "EVEGraphMaterial.h"
-#import "EVEASEConverter.h"
 
 static int hasTextureUniform;
 
@@ -18,13 +17,9 @@ static int hasTextureUniform;
 
 @implementation EVEGraphMaterial
 
-+ (EVEGraphMaterial *)materialWithTextDescription:(NSString *)description
++ (EVEGraphMaterial *)materialWithASEMaterialInfo:(ASEMaterialInfo *)info
 {
-    NSString *name = [EVEASEConverter stringValueNamed:@"MATERIAL_NAME" fromTextDescription:description];
-    NSString *filePath = [EVEASEConverter stringValueNamed:@"BITMAP" fromTextDescription:description];
-    NSString *fileName = [filePath lastPathComponent];
-    
-    return [self materialWithName:name andFullFileName:fileName];
+    return [self materialWithName:info.name andFullFileName:info.fileName];
 }
 
 + (EVEGraphMaterial *)materialWithName:(NSString *)name andFullFileName:(NSString *)fileName

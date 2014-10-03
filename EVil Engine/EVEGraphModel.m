@@ -30,127 +30,55 @@ static int modelId;
 
 #pragma mark - Load from .ASE
 
-// Fast Load
-+ (EVEGraphModel *)modelFromASEFile_fast:(NSString *)aseFileName
-{
-    NSArray *objectsASE = [EVEASEConverter objectsDescriptionFromFile:aseFileName];
-    if (objectsASE) {
-        NSLog(@"Start parsing file: %@", aseFileName);
-        EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
-        NSArray *materialsASE = [EVEASEConverter materialsDescriptionFromFile:aseFileName];
-        [model setupWithASEGeomobjects:objectsASE andASEMaterials:materialsASE];
-        NSLog(@"Complete!");
-        return model;
-    }
-    
-    return nil;
-}
-
-// Easy load
 + (EVEGraphModel *)modelFromASEFile:(NSString *)aseFileName
 {
-    NSArray *objectsASE = [EVEASEConverter objectsDescriptionFromFile:aseFileName];
-    if (objectsASE) {
-        NSLog(@"Start parsing file: %@", aseFileName);
-        EVEGraphModel *model = [EVEGraphModel modelWithName:aseFileName];
-        NSArray *materialsASE = [EVEASEConverter materialsDescriptionFromFile:aseFileName];
-        [model setupWithASEGeomobjects:objectsASE andASEMaterials:materialsASE];
-        NSLog(@"Complete!");
-        return model;
+    NSLog(@"Start parsing file(fast): %@", aseFileName);
+    NSDate *startTime = [NSDate date];
+    
+    EVEGraphModel *model = nil;
+    ASEModelInfo *info = [EVEASEConverter modelInfoFromFile:aseFileName];
+    if (info) {
+        model = [EVEGraphModel modelWithName:aseFileName];
+        [model setupWithASEModelInfo:info];
     }
     
-    return nil;
+    NSTimeInterval delta = [[NSDate date] timeIntervalSinceDate:startTime];
+    NSLog(@"Done (in %3f sec)", delta);
+    
+    return model;
 }
 
-- (void)setupWithASEGeomobjects:(NSArray *)aseObjects andASEMaterials:(NSArray *)materialsASE
+- (void)setupWithASEModelInfo:(ASEModelInfo *)aseInfo
 {
-    for (NSString *objDesc in aseObjects) {
-        EVEGraphObject *parentGroup = nil;
-        
-        // Check parent
-        NSString *parentName = [EVEASEConverter stringValueNamed:@"NODE_PARENT" fromTextDescription:objDesc];
-        if (parentName) {
-            parentGroup = (EVEGraphObject *)[self childByName:parentName];
-            if (!parentGroup) {
-                parentGroup = [EVEGraphObject groupWithName:parentName];
-                [self addChild:parentGroup];
+    NSArray *objects = aseInfo[kObjectsKey];
+    NSArray *materials = aseInfo[kMaterialsKey];
+    
+    for (ASEGeomObjectInfo *obj in objects) {
+        EVEGraphObject *parent = nil;
+        if (obj.parentName) {
+            parent = (EVEGraphObject *)[self childByName:obj.parentName];
+            if (!parent) {
+                parent = [[EVEGraphObject alloc] initWithName:obj.parentName];
+                [self addChild:parent];
             }
         }
         
-        // Get main properties
-        NSString *objName = [EVEASEConverter stringValueNamed:@"NODE_NAME" fromTextDescription:objDesc];
-        int vcount = [EVEASEConverter numberValueNamed:@"MESH_NUMVERTEX" fromTextDescription:objDesc].intValue;
-        int fcount = [EVEASEConverter numberValueNamed:@"MESH_NUMFACES" fromTextDescription:objDesc].intValue;
-        int tcount = [EVEASEConverter numberValueNamed:@"MESH_NUMTVERTEX" fromTextDescription:objDesc].intValue;
-        int ccount = [EVEASEConverter numberValueNamed:@"MESH_NUMCVERTEX" fromTextDescription:objDesc].intValue;
-        
-        NSLog(@"Parsing object: %@", objName);
-        
-        // Setup vertex data
-        EVEVertexStruct *vertices = calloc(vcount, sizeof(EVEVertexStruct));
-        for (int v = 0; v < vcount; v++) {
-            // Set coord
-            NSArray *coord = [EVEASEConverter valueListNamed:@"MESH_VERTEX" atIndex:v fromTextDescription:objDesc];
-            vertices[v].x = [coord[0] floatValue];
-            vertices[v].y = [coord[1] floatValue];
-            vertices[v].z = [coord[2] floatValue];
-            
-            // Set normal
-            NSArray *normal = [EVEASEConverter valueListNamed:@"MESH_VERTEXNORMAL" atIndex:v fromTextDescription:objDesc];
-            vertices[v].nx = [normal[0] floatValue];
-            vertices[v].ny = [normal[1] floatValue];
-            vertices[v].nz = [normal[2] floatValue];
-            
-            // Set texture coord
-            if (tcount > v) {
-                NSArray *tex = [EVEASEConverter valueListNamed:@"MESH_TVERT" atIndex:v fromTextDescription:objDesc];
-                vertices[v].u = [tex[0] floatValue];
-                vertices[v].v = [tex[1] floatValue];
-            }
-            
-            // Set color
-            NSArray *color;
-            if (ccount > v) {
-                color = [EVEASEConverter valueListNamed:@"MESH_VERTCOL" atIndex:v fromTextDescription:objDesc];
-            }
-            else {
-                color = @[@1,@1,@1];
-            }
-            vertices[v].r = [color[0] floatValue] * 255;
-            vertices[v].g = [color[1] floatValue] * 255;
-            vertices[v].b = [color[2] floatValue] * 255;
-            vertices[v].a = 1;  // ASE doesn't support alpha channel for the moment
+        EVEGraphMesh *mesh = [EVEGraphMesh meshWithName:obj.name
+                                               vertices:obj.vertices
+                                            vertexCount:obj.vertexCount
+                                                indices:obj.indices
+                                             indexCount:obj.indexCount];
+        if (obj.materialIndex >= 0) {
+            ASEMaterialInfo *mat = materials[obj.materialIndex];
+            mesh.material = [EVEGraphMaterial materialWithASEMaterialInfo:mat];
         }
         
-        // Setup index data
-        int icount = fcount * ASE_FACE_SIZE;
-        GLushort *indices = calloc(icount, sizeof(GLushort));
-        for (int f = 0; f < fcount; f++) {
-            NSDictionary *faceInfo = [EVEASEConverter valueDictionaryNamed:@"MESH_FACE" atIndex:f fromTextDescription:objDesc];
-            // ASE works only with triangle faces
-            indices[f*ASE_FACE_SIZE]     = [faceInfo[@"A"] intValue];
-            indices[f*ASE_FACE_SIZE + 1] = [faceInfo[@"B"] intValue];
-            indices[f*ASE_FACE_SIZE + 2] = [faceInfo[@"C"] intValue];
+        if (parent) {
+            [parent addChild:mesh];
         }
-        
-        // Create graph object
-        EVEGraphMesh *object = [EVEGraphMesh meshWithName:objName
-                                                 vertices:vertices
-                                              vertexCount:vcount
-                                                  indices:indices
-                                               indexCount:icount];
-        
-        // Setup material data
-        NSNumber *materialIndex = [EVEASEConverter numberValueNamed:@"MATERIAL_REF" fromTextDescription:objDesc];
-        if (materialIndex && materialsASE.count > materialIndex.intValue) {
-            object.material = [EVEGraphMaterial materialWithTextDescription:materialsASE[materialIndex.intValue]];
+        else {
+            [self addChild:mesh];
         }
-        
-        // Add current object
-        if (parentGroup)
-            [parentGroup addChild:object];
-        else
-            [self addChild:object];
     }
 }
 

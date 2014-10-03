@@ -7,6 +7,7 @@
 //
 
 #import <GLKit/GLKit.h>
+#import "EVEASEConverter.h"
 #import "EVEUniformProcessorProtocol.h"
 
 @interface EVEGraphMaterial : NSObject <EVEUniformProcessorProtocol>
@@ -15,7 +16,7 @@
 @property (nonatomic, strong, readonly) NSString *fileName;
 @property (nonatomic, strong, readonly) NSString *fileExt;
 
-+ (EVEGraphMaterial *)materialWithTextDescription:(NSString *)description;
++ (EVEGraphMaterial *)materialWithASEMaterialInfo:(ASEMaterialInfo *)info;
 + (EVEGraphMaterial *)materialWithName:(NSString *)name andFullFileName:(NSString *)fileName;
 - (id)initWithName:(NSString *)name andFullFileName:(NSString *)fileName;
 

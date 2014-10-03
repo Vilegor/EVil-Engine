@@ -8,25 +8,65 @@
 
 #import "EVEASEConverter.h"
 
+typedef enum {
+    SCENE_FILENAME, SCENE_FIRSTFRAME, SCENE_LASTFRAME, SCENE_FRAMESPEED,
+    MATERIAL_COUNT, MATERIAL, MATERIAL_NAME, BITMAP,
+    GEOMOBJECT, NODE_NAME, NODE_PARENT, MESH_NUMVERTEX, MESH_VERTEX, MESH_NUMFACES, MESH_FACE, MESH_TVERT, MESH_VERTCOL, MESH_VERTEXNORMAL, MATERIAL_REF, PROP_RECVSHADOW
+} ASEToken;
+
+@implementation ASESceneInfo
+@end
+
+@implementation ASEMaterialInfo
+@end
+
+@implementation ASEGeomObjectInfo
+@end
 
 @implementation EVEASEConverter
 
 #pragma mark - Fast loading
 
-#pragma mark - Regex(slow) loading
++ (NSDictionary *)tokenMap
+{
+    static NSDictionary *map;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        map = @{
+                @"*SCENE_FILENAME" : @(SCENE_FILENAME),
+                @"*SCENE_FIRSTFRAME" : @(SCENE_FIRSTFRAME),
+                @"*SCENE_LASTFRAME" : @(SCENE_LASTFRAME),
+                @"*SCENE_FRAMESPEED" : @(SCENE_FRAMESPEED),
+                
+                @"*MATERIAL_COUNT" : @(MATERIAL_COUNT),
+                @"*MATERIAL" : @(MATERIAL),
+                @"*MATERIAL_NAME" : @(MATERIAL_NAME),
+                @"*BITMAP" : @(BITMAP),
+                
+                @"*GEOMOBJECT" : @(GEOMOBJECT),
+                @"*NODE_NAME" : @(NODE_NAME),
+                @"*NODE_PARENT" : @(NODE_PARENT),
+                @"*MESH_NUMVERTEX" : @(MESH_NUMVERTEX),
+                @"*MESH_VERTEX" : @(MESH_VERTEX),
+                @"*MESH_NUMFACES" : @(MESH_NUMFACES),
+                @"*MESH_FACE" : @(MESH_FACE),
+                @"*MESH_TVERT" : @(MESH_TVERT),
+                @"*MESH_VERTCOL" : @(MESH_VERTCOL),
+                @"*MESH_VERTEXNORMAL" : @(MESH_VERTEXNORMAL),
+                @"*MATERIAL_REF" : @(MATERIAL_REF),
+                @"*PROP_RECVSHADOW" : @(PROP_RECVSHADOW)
+                };
+    });
+    return map;
+}
 
-static NSString * const kLineFormat =           @"\\*%@[ \\t]+(.(?!\\*))+\\n";
-static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!\\*|\\n))+";
-
-/// List of strings, describing GEOMOBJECTs
-+ (NSArray *)objectsDescriptionFromFile:(NSString *)aseFileName
++ (ASEModelInfo *)modelInfoFromFile:(NSString *)aseFileName
 {
     NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
     if (!filePath) {
         NSLog(@"Error! Model file '%@' not found!", aseFileName);
-        return nil;
     }
-    
+    // get lines of file (all at a time :( )
     // read everything from text
     NSError *error = nil;
     NSString *fileContents = [NSString stringWithContentsOfFile:filePath
@@ -36,192 +76,162 @@ static NSString * const kIndexedLineFormat =    @"\\*%@[ \\t]+%d([ \\t]|:)+(.(?!
         NSLog(@"ERROR! %@", error);
     }
     else {
-        NSString *pattern = @"\\*GEOMOBJECT \\{(.(?!\\*GEOMOBJECT))*\\}";
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                               options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
-                                                                                 error:&error];
-        if (error) {
-            NSLog(@"ERROR! Create Model regex: %@", error);
+        NSArray *lines = [fileContents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        if (lines.count <= 1) {
+            NSLog(@"Error! Model file '%@' is empty or description format is wrong!", aseFileName);
+            return nil;
         }
-        else {
-            NSMutableArray *objectsASE = [NSMutableArray array];
-            NSArray *resultRegex = [regex matchesInString:fileContents options:0 range:NSMakeRange(0, fileContents.length)];
-            if (!resultRegex.count) {
-                NSLog(@"Error! Model file '%@' is empty or description format is wrong!", aseFileName);
-                return nil;
-            }
-            for (NSTextCheckingResult *result in resultRegex) {
-                [objectsASE addObject:[fileContents substringWithRange:result.range]];
-            }
+        
+        NSMutableDictionary *info = [NSMutableDictionary dictionary];
+        NSMutableArray *materialList;
+        NSMutableArray *objectList = [NSMutableArray array];
+        ASESceneInfo *scene = [ASESceneInfo new];
+        ASEMaterialInfo *currentMaterial = nil;
+        ASEGeomObjectInfo *currentObject = nil;
+        
+        for (NSString *line in lines) {
+            NSCharacterSet *separators = [NSCharacterSet characterSetWithCharactersInString:@" \t"];
+            NSString *clearLine = [line stringByTrimmingCharactersInSet:separators];
+            NSArray *components = [clearLine componentsSeparatedByCharactersInSet:separators];
+            components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
+            NSNumber *tokenNum = components.count ? [self tokenMap][components[0]] : nil;
+            if (tokenNum) {
+                ASEToken token = [tokenNum intValue];
+                switch (token) {
+                /* parse scene info */
+                    case SCENE_FILENAME: {
+                        scene.blendFileName = [self getStringValueFromLine:line];
+                        break;
+                    }
+                    case SCENE_FIRSTFRAME: {
+                        scene.firstFrame = [components[1] intValue];
+                        break;
+                    }
+                    case SCENE_LASTFRAME: {
+                        scene.lastFrame = [components[1] intValue];
+                        break;
+                    }
+                    case SCENE_FRAMESPEED: {
+                        scene.frameRate = [components[1] intValue];
+                        break;
+                    }
+                        
+                /* parse materials info */
+                    case MATERIAL_COUNT: {
+                        int materialCount = [components[1] intValue];
+                        materialList = [NSMutableArray arrayWithCapacity:materialCount];
+                        break;
+                    }
+                    case MATERIAL: {
+                        currentMaterial = [ASEMaterialInfo new];
+                        currentMaterial.materialId = [components[1] intValue];
+                        break;
+                    }
+                    case MATERIAL_NAME: {
+                        currentMaterial.name = [self getStringValueFromLine:line];
+                        break;
+                    }
+                    case BITMAP: {  // last material token
+                        currentMaterial.filePath = [self getStringValueFromLine:line];
+                        currentMaterial.fileName = [currentMaterial.filePath lastPathComponent];
+                        [materialList insertObject:currentMaterial atIndex:currentMaterial.materialId];
+                        break;
+                    }
+                        
+                /* parse geomobjects */
+                    case GEOMOBJECT: {
+                        currentObject = [ASEGeomObjectInfo new];
+                        currentObject.materialIndex = -1;
+                        break;
+                    }
+                    case NODE_NAME: {
+                        currentObject.name = [self getStringValueFromLine:line];
+                        break;
+                    }
+                    case NODE_PARENT: {
+                        currentObject.parentName = [self getStringValueFromLine:line];
+                        break;
+                    }
+                    case MESH_NUMVERTEX: {
+                        currentObject.vertexCount = [components[1] intValue];
+                        currentObject.vertices = malloc(currentObject.vertexCount * sizeof(EVEVertexStruct));
+                        break;
+                    }
+                    case MESH_VERTEX: {
+                        int vi = [components[1] intValue];
+                        currentObject.vertices[vi].x = [components[2] floatValue];
+                        currentObject.vertices[vi].y = [components[3] floatValue];
+                        currentObject.vertices[vi].z = [components[4] floatValue];
+                        
+                        // set default color to white
+                        currentObject.vertices[vi].r =
+                        currentObject.vertices[vi].g =
+                        currentObject.vertices[vi].b =
+                        currentObject.vertices[vi].a = 255;
+                        break;
+                    }
+                    case MESH_TVERT: {
+                        int vi = [components[1] intValue];
+                        currentObject.vertices[vi].u = [components[2] floatValue];
+                        currentObject.vertices[vi].v = [components[3] floatValue];
+                        break;
+                    }
+                    case MESH_VERTCOL: {
+                        int vi = [components[1] intValue];
+                        currentObject.vertices[vi].r = [components[2] floatValue] * 255;
+                        currentObject.vertices[vi].g = [components[3] floatValue] * 255;
+                        currentObject.vertices[vi].b = [components[4] floatValue] * 255;
+                        break;
+                    }
+                    case MESH_VERTEXNORMAL: {
+                        int vi = [components[1] intValue];
+                        currentObject.vertices[vi].nx = [components[2] floatValue];
+                        currentObject.vertices[vi].ny = [components[3] floatValue];
+                        currentObject.vertices[vi].nz = [components[4] floatValue];
+                        break;
+                    }
+                    case MESH_NUMFACES: {
+                        currentObject.indexCount = [components[1] intValue] * ASE_FACE_SIZE;
+                        currentObject.indices = malloc(currentObject.indexCount * sizeof(GLushort));
+                        break;
+                    }
+                    case MESH_FACE: {   //*MESH_FACE 0: A: 5 B: 1 C: 0 *MESH_SMOOTHING 0 *MESH_MTLID 1
+                        int fi = [components[1] intValue];
+                        currentObject.indices[fi * ASE_FACE_SIZE] = [components[3] intValue];
+                        currentObject.indices[fi * ASE_FACE_SIZE + 1] = [components[5] intValue];
+                        currentObject.indices[fi * ASE_FACE_SIZE + 2] = [components[7] intValue];
+                        break;
+                    }
+                    case MATERIAL_REF: {
+                        currentObject.materialIndex = [components[1] intValue];
+                        break;
+                    }
+                    case PROP_RECVSHADOW: { // last geomobject token
+                        [objectList addObject:currentObject];
+                        break;
+                    }
 
-            return objectsASE;
+                    default:
+                        break;
+                }
+            }
         }
-    }
-    return nil;
-}
-
-/// List of strings, describing MATERIALSs
-+ (NSArray *)materialsDescriptionFromFile:(NSString *)aseFileName
-{
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:aseFileName ofType:@"ase" inDirectory:@"Models"];
-    if (!filePath) {
-        NSLog(@"Error! Model file '%@' not found!", aseFileName);
-        return nil;
+        
+        [info setValue:scene forKey:kSceneKey];
+        [info setValue:materialList forKey:kMaterialsKey];
+        [info setValue:objectList forKey:kObjectsKey];
+        
+        return info;
     }
     
-    // read everything from text
-    NSError *error = nil;
-    NSString *fileContents = [NSString stringWithContentsOfFile:filePath
-                                                       encoding:NSUTF8StringEncoding
-                                                          error:&error];
-    if (!fileContents) {
-        NSLog(@"ERROR! %@", error);
-    }
-    else {
-        NSString *pattern = @"\\*MATERIAL [0-9]+ \\{(.(?!\\*MATERIAL ))*\\}";
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                               options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
-                                                                                 error:&error];
-        if (error) {
-            NSLog(@"ERROR! Create Materials regex: %@", error);
-        }
-        else {
-            NSMutableArray *materialsASE = [NSMutableArray array];
-            NSArray *resultRegex = [regex matchesInString:fileContents options:0 range:NSMakeRange(0, fileContents.length)];
-            NSNumber *materialsCount = [self numberValueNamed:@"MATERIAL_COUNT" fromTextDescription:fileContents];
-            if (resultRegex.count != materialsCount.intValue) {
-                NSLog(@"Error! Model file '%@': Materials count does not match loaded count!", aseFileName);
-                return nil;
-            }
-            for (NSTextCheckingResult *result in resultRegex) {
-                [materialsASE addObject:[fileContents substringWithRange:result.range]];
-            }
-            
-            return materialsASE;
-        }
-    }
     return nil;
 }
 
-+ (NSString *)lineNamed:(NSString *)name fromTextDescription:(NSString *)description
++ (NSString *)getStringValueFromLine:(NSString *)line
 {
-    NSError *error = nil;
-    NSString *pattern = [NSString stringWithFormat:kLineFormat, name];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                           options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
-                                                                             error:&error];
-    if (error) {
-        NSLog(@"ERROR! ASEConverter: %@", error);
-    }
-    else {
-        NSArray *resultRegex = [regex matchesInString:description options:0 range:NSMakeRange(0, description.length)];
-        if (resultRegex.count) {
-            NSRange range = [(NSTextCheckingResult *)resultRegex[0] range];
-            range.length += 1;      // substringWithRange cuts last char like a BITCH!
-            return [description substringWithRange:range];
-        }
-    }
-    return nil;
-}
-
-+ (NSString *)lineNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
-{
-    NSError *error = nil;
-    NSString *pattern = [NSString stringWithFormat:kIndexedLineFormat, name, index];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern
-                                                                           options:NSRegularExpressionCaseInsensitive | NSRegularExpressionDotMatchesLineSeparators
-                                                                             error:&error];
-    if (error) {
-        NSLog(@"ERROR! ASEConverter: %@", error);
-    }
-    else {
-        NSArray *resultRegex = [regex matchesInString:description options:0 range:NSMakeRange(0, description.length)];
-        if (resultRegex.count) {
-            NSRange range = [(NSTextCheckingResult *)resultRegex[0] range];
-            range.length += 1;      // substringWithRange cuts last char like a BITCH!
-            return [description substringWithRange:range];
-        }
-    }
-    return nil;
-}
-
-+ (NSString *)stringValueNamed:(NSString *)name fromTextDescription:(NSString *)description
-{
-    NSString *line = [self lineNamed:name fromTextDescription:description];
-    if (line) {
-        NSRange start = [line rangeOfString:[NSString stringWithFormat:@"*%@ \"", name]];
-        NSRange end = [line rangeOfString:@"\"\n"];
-        return [line substringWithRange:NSMakeRange(start.location + start.length, end.location - start.location - start.length)];
-    }
-    return nil;
-}
-
-+ (NSNumber *)numberValueNamed:(NSString *)name fromTextDescription:(NSString *)description
-{
-    NSString *line = [self lineNamed:name fromTextDescription:description];
-    if (line) {
-        NSRange start = [line rangeOfString:[NSString stringWithFormat:@"*%@ ", name]];
-        if (start.length == 0)
-            start = [line rangeOfString:[NSString stringWithFormat:@"*%@\t", name]];
-        NSRange end = [line rangeOfString:@"\n"];
-        NSString *valueStr = [line substringWithRange:NSMakeRange(start.location + start.length, end.location - start.location - start.length)];
-        return @([valueStr floatValue]);
-    }
-    return nil;
-}
-
-+ (NSArray *)valueListNamed:(NSString *)name fromTextDescription:(NSString *)description
-{
-    NSString *line = [self lineNamed:name fromTextDescription:description];
-    if (line) {
-        NSRange nameRange = [line rangeOfString:name];
-        NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
-        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
-        NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t"]];
-        list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
-        NSMutableArray *values = [NSMutableArray array];
-        for (NSString *str in list) {
-            [values addObject:@(str.floatValue)];
-        }
-        return values;
-    }
-    return nil;
-}
-
-+ (NSArray *)valueListNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
-{
-    NSString *line = [self lineNamed:name atIndex:index fromTextDescription:description];
-    if (line) {
-        NSRange nameRange = [line rangeOfString:name];
-        NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
-        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
-        NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t"]];
-        list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
-        NSMutableArray *values = [NSMutableArray array];
-        for (int i = 1; i < list.count; i++) {          // skiping index
-            [values addObject:@([list[i] floatValue])];
-        }
-        return values;
-    }
-    return nil;
-}
-
-+ (NSDictionary *)valueDictionaryNamed:(NSString *)name atIndex:(int)index fromTextDescription:(NSString *)description
-{
-    NSString *line = [self lineNamed:name atIndex:index fromTextDescription:description];
-    if (line) {
-        NSRange nameRange = [line rangeOfString:name];
-        NSString *listStr = [line substringFromIndex:nameRange.location + nameRange.length];
-        listStr = [listStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t\n"]];
-        NSArray *list = [listStr componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@" \t:"]];
-        list = [list filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
-        NSMutableDictionary *values = [NSMutableDictionary dictionary];
-        for (int i = 1; i < list.count-1; i+=2) {       
-            [values setObject:@([list[i+1] floatValue]) forKey:list[i]];
-        }
-        return values;
-    }
-    return nil;
+    NSRange start = [line rangeOfString:@"\""];
+    NSRange end = [line rangeOfString:@"\"" options:0 range:NSMakeRange(start.location + 1, [line length] - start.location - 1)];
+    return [line substringWithRange:NSMakeRange(start.location + start.length, end.location - start.location - start.length)];
 }
 
 @end
