@@ -102,9 +102,7 @@ class cMaterials:
 
         # Get all of the materials used by non-collision object meshes  
         for object in bpy.context.selected_objects:
-            if collisionObject(object) == True:
-                continue
-            elif object.type != 'MESH':
+            if object.type != 'MESH':
                 continue
             else:
                 print(object.name + ': Constructing Materials')
@@ -260,9 +258,8 @@ class cMesh:
         bpy.ops.mesh.reveal
 
         self.mp = MeshProcessor()
-        if collisionObject(object) == False:
-            self.mp.prepareVertexAndFaceLists(object)
-            self.mp.setNormals(object)
+        self.mp.prepareVertexAndFaceLists(object)
+        self.mp.setNormals(object)
     
     def __repr__(self):
         return self.mp.mesh_str()
@@ -455,152 +452,7 @@ class FaceData:
     def __repr__(self):
         return self.face_str()
 
-#== Smoothing Groups and Helper Methods =================================
-def defineSmoothing(self, object):
-    print(object.name + ": Constructing Smoothing Groups")
-
-    seam_edge_list = []
-    sharp_edge_list = []
-
-    _mode = bpy.context.scene.objects.active.mode
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.ops.mesh.select_all(action = 'DESELECT')
-    setSelMode('EDGE')
-
-    # Get seams and clear them
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    for edge in object.data.edges:
-        if edge.use_seam:
-            seam_edge_list.append(edge.index)
-            edge.select = True
-
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.ops.mesh.select_all(action = 'SELECT')
-    bpy.ops.mesh.mark_seam(clear = True)
-
-    # Get sharp edges, convert them to seams
-    bpy.ops.mesh.select_all(action = 'DESELECT')
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    for edge in object.data.edges:
-        if edge.use_edge_sharp:
-            sharp_edge_list.append(edge)
-            edge.select = True
-
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.ops.mesh.mark_seam()
-
-    bpy.ops.mesh.select_all(action = 'DESELECT')
-
-    smoothing_groups = []
-    face_list = []
-
-    mode = getSelMode(self, False)
-    setSelMode('FACE')
-
-    for face in object.data.polygons:
-        face_list.append(face.index)
-
-    while len(face_list) > 0:
-        bpy.ops.object.mode_set(mode = 'OBJECT')
-        object.data.polygons[face_list[0]].select = True
-        bpy.ops.object.mode_set(mode = 'EDIT')
-        bpy.ops.mesh.select_linked(limit = True)
-
-        # TODO - update when API is updated
-        selected_faces = getSelectedFaces(self, True)
-        smoothing_groups.append(selected_faces)
-        for face_index in selected_faces:
-            if face_list.count(face_index) > 0:
-                face_list.remove(face_index)
-        bpy.ops.mesh.select_all(action = 'DESELECT')
-
-    setSelMode(mode, False)
-
-    # Clear seams created by sharp edges
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    for edge in object.data.edges:
-        if edge.use_seam:
-            edge.select = True
-
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.ops.mesh.mark_seam(clear = True)
-
-    bpy.ops.mesh.select_all(action = 'DESELECT')
-    # Restore original uv seams
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    for edge_index in seam_edge_list:
-        object.data.edges[edge_index].select = True
-
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.ops.mesh.mark_seam()
-
-    print('\t' + str(len(smoothing_groups)) + ' smoothing groups found.')
-    return smoothing_groups
-
-#===========================================================================
-# // General Helpers
-#===========================================================================
-
-# Check if the mesh is a collider
-# Return True if collision model, else: false
-def collisionObject(object):
-    collisionPrefixes = ['UCX_', 'UBX_', 'USX_']
-    for prefix in collisionPrefixes:
-        if object.name.find(str(prefix)) >= 0:
-            return True
-    return False
-
-# Set the selection mode    
-def setSelMode(mode, default = True):
-    if default:
-        if mode == 'VERT':
-            bpy.context.tool_settings.mesh_select_mode = [True, False, False]
-        elif mode == 'EDGE':
-            bpy.context.tool_settings.mesh_select_mode = [False, True, False]
-        elif mode == 'FACE':
-            bpy.context.tool_settings.mesh_select_mode = [False, False, True]
-        else:
-            return False
-    else:
-        bpy.context.tool_settings.mesh_select_mode = mode
-        return True
-def getSelMode(self, default = True):
-    if default:
-        if bpy.context.tool_settings.mesh_select_mode[0] == True:
-            return 'VERT'
-        elif bpy.context.tool_settings.mesh_select_mode[1] == True:
-            return 'EDGE'
-        elif bpy.context.tool_settings.mesh_select_mode[2] == True:
-            return 'FACE'
-        return False
-    else:
-        mode = []
-        for value in bpy.context.tool_settings.mesh_select_mode:
-            mode.append(value)
-
-        return mode
-def getSelectedFaces(self, index = False):
-    selected_faces = []
-    # Update mesh data
-    bpy.ops.object.editmode_toggle()
-    bpy.ops.object.editmode_toggle()
-
-    _mode = bpy.context.scene.objects.active.mode
-    bpy.ops.object.mode_set(mode = 'EDIT')
-
-    object = bpy.context.scene.objects.active
-    for face in object.data.polygons:
-        if face.select == True:
-            if index == False:
-                selected_faces.append(face)
-            else:
-                selected_faces.append(face.index)
-
-    bpy.ops.object.mode_set(mode = _mode)
-
-    return selected_faces
-
-#== Core ===================================================================
+#== Main ===================================================================
 from bpy_extras.io_utils import ExportHelper
 from bpy.props import StringProperty, BoolProperty, FloatProperty
 
@@ -618,78 +470,13 @@ class ExportAse(bpy.types.Operator, ExportHelper):
         maxlen = 1024,
         default = "export.ase")
 
-    option_triangulate = BoolProperty(
-            name = "Triangulate",
-            description = "Triangulates all exportable objects",
-            default = True)
-
-    option_normals = BoolProperty(
-            name = "Recalculate Normals",
-            description = "Recalculate normals before exporting",
-            default = True)
-
-    option_remove_doubles = BoolProperty(
-            name = "Remove Doubles",
-            description = "Remove any duplicate vertices before exporting",
-            default = True)
-
-    option_apply_scale = BoolProperty(
-            name = "Scale",
-            description = "Apply scale transformation",
-            default = True)
-
-    option_apply_location = BoolProperty(
-            name = "Location",
-            description = "Apply location transformation",
-            default = True)
-
-    option_apply_rotation = BoolProperty(
-            name = "Rotation",
-            description = "Apply rotation transformation",
-            default = True)
-
-    option_smoothinggroups = BoolProperty(
-            name = "Smoothing Groups",
-            description = "Construct hard edge islands as smoothing groups",
-            default = True)
-
-    option_separate = BoolProperty(
-            name = "Separate",
-            description = "A separate ASE file for every selected object",
-            default = False)
-
-    option_scale = FloatProperty(
-            name = "Scale",
-            description = "Object scaling factor (default: 1.0)",
-            min = 0.01,
-            max = 1000.0,
-            soft_min = 0.01,
-            soft_max = 1000.0,
-            default = 1.0)
-
     def draw(self, context):
         layout = self.layout
-
         box = layout.box()
-        box.label('Essentials:')
-        box.prop(self, 'option_triangulate')
-        box.prop(self, 'option_normals')
-        box.prop(self, 'option_remove_doubles')
-        box.label("Transformations:")
-        box.prop(self, 'option_apply_scale')
-        box.prop(self, 'option_apply_rotation')
-        box.prop(self, 'option_apply_location')
-        box.label("Advanced:")
-        box.prop(self, 'option_scale')
-        box.prop(self, 'option_smoothinggroups')
 
     @classmethod
     def poll(cls, context):
-        active = context.active_object
-        selected = context.selected_objects
-        camera = context.scene.camera
-        ok = selected or camera
-        return ok
+        return context.selected_objects
 
     def writeASE(self, filename, data):
         print('\nWriting to', filename)
@@ -703,10 +490,7 @@ class ExportAse(bpy.types.Operator, ExportHelper):
 
     def execute(self, context):
         start = time.clock()
-
-        global optionScale
-        global optionSmoothingGroups
-
+        
         global aseHeader
         global aseScene
         global aseMaterials
@@ -721,9 +505,6 @@ class ExportAse(bpy.types.Operator, ExportHelper):
         aseScene = ''
         aseMaterials = ''
         aseGeometry = ''
-
-        optionScale = self.option_scale
-        optionSmoothingGroups = self.option_smoothinggroups
 
         matList = []
         currentMatId = 0
@@ -744,26 +525,13 @@ class ExportAse(bpy.types.Operator, ExportHelper):
                 object.select = True
 
                 # Options
+                print(object.name + ': Triangulation')
                 bpy.ops.object.mode_set(mode = 'EDIT')
-                if self.option_remove_doubles:
-                    bpy.ops.object.mode_set(mode = 'EDIT')
-                    bpy.ops.mesh.select_all(action = 'SELECT')
-                    bpy.ops.mesh.remove_doubles()
-                if self.option_triangulate:
-                    print(object.name + ': Converting to triangles')
-                    bpy.ops.mesh.select_all(action = 'SELECT')
-                    bpy.ops.mesh.quads_convert_to_tris()
-                if self.option_normals:
-                    print(object.name + ': Recalculating normals')
-                    bpy.ops.object.mode_set(mode = 'EDIT')
-                    bpy.ops.mesh.select_all(action = 'SELECT')
-                    bpy.ops.mesh.normals_make_consistent()
-
-                # Transformations
-                bpy.ops.object.mode_set(mode = 'OBJECT')
-                bpy.ops.object.transform_apply(location = self.option_apply_location, rotation = self.option_apply_rotation, scale = self.option_apply_scale)
+                bpy.ops.mesh.select_all(action = 'SELECT')
+                bpy.ops.mesh.quads_convert_to_tris()
 
                 #Construct ASE Geometry Nodes
+                bpy.ops.object.mode_set(mode = 'OBJECT')
                 aseGeometry += str(cGeomObject(object))
                 bpy.ops.object.mode_set(mode = 'OBJECT')
 
